@@ -37,9 +37,9 @@ public class DemoServer extends JFrame{
             box[i].setLayout(new BorderLayout());
             container.add(box[i]);
 
-            User[i] = new JLabel("" + i);
+            User[i] = new JLabel("Player " + (i+1));
             User[i].setHorizontalAlignment(SwingConstants.CENTER);
-            User[i].setFont(new Font("Tahoma", Font.BOLD, 40));
+            User[i].setFont(new Font("Tahoma", Font.BOLD, 30));
             box[i].add(User[i], BorderLayout.CENTER);
         }
     }
