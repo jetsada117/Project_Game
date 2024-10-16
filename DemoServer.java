@@ -2,8 +2,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -94,11 +96,10 @@ class ServerThread extends Thread {
                             System.out.println("Received object: " + playerob.getName());
 
                             if (!players.containsKey(playerob.getName()) && index < 4) {
+                                // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.put(playerob.getName(), index);
                                 server.User[index].setText(playerob.getName());
                                 playerServers[index] = new PlayerServer();
-                                PlayerThread thread = new PlayerThread(playerServers[index], index,clientIP);
-                                thread.start();
 
                                 index++;
                             }
@@ -107,6 +108,15 @@ class ServerThread extends Thread {
                                 int i = players.get(playerob.getName());
                                 playerServers[i].setName(playerob.getName());
                                 playerServers[i].setX(playerob.getX());
+
+                                for (int k = 0; k < index; k++) {
+                                    if (k==i) continue;
+                                
+                                    playerServers[k].setX(playerob.getX());
+                                }
+
+                                PlayerThread thread = new PlayerThread(playerServers[i], index, clientIP);
+                                thread.start();
                             }
                         }
                     }
@@ -137,7 +147,17 @@ class PlayerThread extends Thread {
             x = playerServer.getX();
             name = playerServer.getName();
 
+            playerServer.setX(x + 1);
+
             System.out.println("Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+           
+            try (Socket socket = new Socket(clientIP, 5)) {
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(playerServer);
+            } catch (IOException e1) {
+                System.out.println(e1);
+            }
+            
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
