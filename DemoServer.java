@@ -2,12 +2,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -60,7 +60,10 @@ public class DemoServer extends JFrame{
 
 
 class ServerThread extends Thread {
-    DemoServer server;    
+    DemoServer server;
+    PlayerServer [] playerServers = new PlayerServer[4]; 
+    HashMap <String, Integer> players = new HashMap<>();
+    int index = 0;
 
     public ServerThread(DemoServer server) {
         this.server = server;
@@ -74,18 +77,72 @@ class ServerThread extends Thread {
             serverSock = new ServerSocket(50101);
 
             while (true) {
-                String line = "";
                 Socket socket = serverSock.accept();
+                String clientIP = socket.getInetAddress().getHostAddress();
                 InputStream input = socket.getInputStream();
-                InputStreamReader reader = new InputStreamReader(input);
-                BufferedReader buffer = new BufferedReader(reader);
 
-                while ((line = buffer.readLine()) != null) {
-                    server.User[0].setText(line);
+                // รับค่าแบบเป็น object
+                ObjectInputStream objectInput = new ObjectInputStream(input);
+                Object receivedObject = objectInput.readObject();
+                
+                System.out.println("Connected with client IP: " + clientIP);
+
+                try {       
+                    if (receivedObject != null) {
+                        // ตรวจสอบว่า object ที่รับเข้ามาเป็นประเภทใด เช่น Player
+                        if (receivedObject instanceof Player playerob) {
+                            System.out.println("Received object: " + playerob.getName());
+
+                            if (!players.containsKey(playerob.getName()) && index < 4) {
+                                players.put(playerob.getName(), index);
+                                server.User[index].setText(playerob.getName());
+                                playerServers[index] = new PlayerServer();
+                                PlayerThread thread = new PlayerThread(playerServers[index], index,clientIP);
+                                thread.start();
+
+                                index++;
+                            }
+
+                            if (players.containsKey(playerob.getName())) {
+                                int i = players.get(playerob.getName());
+                                playerServers[i].setName(playerob.getName());
+                                playerServers[i].setX(playerob.getX());
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
             }
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) {}
     }   
+}
+
+class PlayerThread extends Thread {
+    PlayerServer playerServer;
+    int index;
+    String clientIP;
+    int x;
+    String name;
+
+    public PlayerThread(PlayerServer playerServer, int index, String clientIP) {
+        this.playerServer = playerServer;
+        this.index = index;
+        this.clientIP = clientIP;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            x = playerServer.getX();
+            name = playerServer.getName();
+
+            System.out.println("Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+
+            }
+        }
+    }
 }
