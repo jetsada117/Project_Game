@@ -101,6 +101,7 @@ class ServerThread extends Thread {
                                 players.add(clientIP);
                                 Serversob[index] = new PlayerServer();
                                 Serversob[index].setIp(clientIP);
+                                System.out.println(clientIP);
 
                                 index++;
                             }
@@ -120,17 +121,24 @@ class ServerThread extends Thread {
                                     server.User[i].setText(Serversob[i].getName() +"(Wait)");
                                 }
 
-                                for (int k = 0; k < players.size() ;k++)
+                                if(!Serversob[i].isReady()) 
                                 {
-                                    String IpAddress = players.get(k);
-
-                                    if(!Serversob[i].isReady()) 
-                                    {
-                                        socket = new Socket(IpAddress, 5);
-                                        ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                                        objectOutput.writeObject(Serversob[k]);
-
-                                        System.out.println("Output : "+ IpAddress);
+                                    for (int k = 0; k < players.size(); k++) {
+                                        System.out.println(k);
+                                        String IpAddress = players.get(k);
+    
+                                        try (Socket clientSocket = new Socket(IpAddress, 5);
+                                        ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                                       
+                                        for (int j = 0; j < players.size(); j++) {
+                                            objectOutput.writeObject(Serversob[j]);
+                                            System.out.println("Output : " + IpAddress);
+                                            System.out.println(Serversob[j].getIp());
+                                        }
+                                       
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
                             }

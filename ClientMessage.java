@@ -107,32 +107,36 @@ class clientThread extends Thread{
             serverSock = new ServerSocket(5);
 
             while (true) {
-                Socket socket = serverSock.accept();
+                try (Socket socket = serverSock.accept();
+                    InputStream input = socket.getInputStream();
+                    ObjectInputStream objectInput = new ObjectInputStream(input)) {
 
-                InputStream input = socket.getInputStream();
+                    Object receivedObject = objectInput.readObject();
 
-                ObjectInputStream objectInput = new ObjectInputStream(input);
-                Object receivedObject = objectInput.readObject();
-            
                 if (receivedObject instanceof PlayerServer playerServer) {
-                    
-                    if (playerServer.isReady()) {
 
-                        if (playerServer.getCount() > 0) {
-                            client.textshow.insert(playerServer.getCount() +"\n", 0);
-                        }
-                        else
+                    if (playerServer.isReady()) {
+                        if (playerServer.getCount() > 0) 
                         {
-                            client.textshow.insert(playerServer.getName() +" , Speed : "+ playerServer.getX() +"\n", 0);
+                            client.textshow.insert(playerServer.getCount() + "\n", 0);
+                        } 
+                        else 
+                        {
+                        client.textshow.insert(playerServer.getName() + " , Speed : " + playerServer.getX() + "\n", 0);
                         }
-                    }
-                    else
+                    } 
+                    else 
                     {
-                        client.textshow.insert("Player : "+ playerServer.getIp() +"\n", 0);
+                        client.textshow.insert("Player : " + playerServer.getIp() + "\n", 0);
+                        System.out.println(playerServer.getIp());
                     }
                 }
+
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             System.out.println(e);
         } 
     }
