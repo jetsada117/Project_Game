@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 class ClientMessage extends JFrame implements ActionListener{
     JTextField ip = new JTextField();
     JTextField textString = new JTextField();
-    // JTextField textSpeed = new JTextField();
     JTextArea textshow = new JTextArea();
     JButton buttonConnect = new JButton("Send Connect");
     JButton buttonObject = new JButton("Ready!");
@@ -46,7 +45,6 @@ class ClientMessage extends JFrame implements ActionListener{
         buttonPanel.add(buttonConnect);
         buttonPanel.add(buttonObject);
         centerPanel.add(textString);
-        // centerPanel.add(textSpeed);
 
         container1.add(centerPanel, BorderLayout.CENTER);
         container1.add(buttonPanel, BorderLayout.SOUTH);
@@ -75,10 +73,6 @@ class ClientMessage extends JFrame implements ActionListener{
             try (Socket socket = new Socket(ip.getText(), 50101)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 player.setName(textString.getText());
-                // if(!textSpeed.getText().equals(""))
-                // {
-                //     player.setX(Integer.parseInt(textSpeed.getText()));
-                // }
                 objectOutput.writeObject(player);
             } catch (IOException e1) {
                 System.out.println(e);

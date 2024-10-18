@@ -99,7 +99,6 @@ class ServerThread extends Thread {
                             if (!players.contains(playerob.getName()) && index < 4) {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(playerob.getName());
-                                server.User[index].setText(playerob.getName());
                                 Serversob[index] = new PlayerServer();
                                 Serversob[index].setIp(clientIP);
 
@@ -178,10 +177,6 @@ class PlayerThread extends Thread {
             } catch (IOException e1) {
                 System.out.println("Error Output : "+ e1);
             }
-            
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {}
 
             if (count<0) {
                 x = Serversob.getX();
@@ -190,6 +185,10 @@ class PlayerThread extends Thread {
                 Serversob.setX(x + 1);
 
                 System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
             }
             else
             {
@@ -197,7 +196,7 @@ class PlayerThread extends Thread {
                 Serversob.setCount(--count);
 
                 try {
-                    Thread.sleep(player * 500);
+                    Thread.sleep(player * 1000);
                 } catch (InterruptedException e) {}
             }
         }
