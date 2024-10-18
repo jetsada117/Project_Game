@@ -96,19 +96,20 @@ class ServerThread extends Thread {
                         if (receivedObject instanceof Player playerob) {
                             System.out.println("Received object: " + playerob.getName());
 
-                            if (!players.contains(playerob.getName()) && index < 4) {
+                            if (!players.contains(clientIP) && index < 4) {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
-                                players.add(playerob.getName());
+                                players.add(clientIP);
                                 Serversob[index] = new PlayerServer();
                                 Serversob[index].setIp(clientIP);
 
                                 index++;
                             }
 
-                            if (players.contains(playerob.getName())) {
-                                int i = players.indexOf(playerob.getName());
+                            if (players.contains(clientIP)) {
+                                int i = players.indexOf(clientIP);
                                 Serversob[i].setName(playerob.getName());
                                 Serversob[i].setReady(playerob.isReady());
+                                System.out.println(playerob.isReady());
 
                                 if(Serversob[i].isReady()) 
                                 {
@@ -118,10 +119,24 @@ class ServerThread extends Thread {
                                 {
                                     server.User[i].setText(Serversob[i].getName() +"(Wait)");
                                 }
-                            }
 
+                                for (int k = 0; k < players.size() ;k++)
+                                {
+                                    String IpAddress = players.get(k);
+
+                                    if(!Serversob[i].isReady()) 
+                                    {
+                                        socket = new Socket(IpAddress, 5);
+                                        ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                                        objectOutput.writeObject(Serversob[k]);
+
+                                        System.out.println("Output : "+ IpAddress);
+                                    }
+                                }
+                            }
                         }
                     }
+
                 } catch (Exception e) {
                     System.out.println("Error Received : "+ e);
                 }
@@ -141,8 +156,9 @@ class ServerThread extends Thread {
                 if (ready == players.size()) {
                     for (int i = 0; i < players.size() ; i++) {
                         String IpAddress = players.get(i);
+                        System.out.println(IpAddress);
                         
-                        PlayerThread thread = new PlayerThread(Serversob[i], i, Serversob[i].getIp(), players.size());
+                        PlayerThread thread = new PlayerThread(Serversob[i], i, IpAddress, players.size());
                         thread.start();
                     }
                 }
@@ -171,13 +187,6 @@ class PlayerThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            try (Socket socket = new Socket(clientIP, 5)) {
-                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                objectOutput.writeObject(Serversob);
-            } catch (IOException e1) {
-                System.out.println("Error Output : "+ e1);
-            }
-
             if (count<0) {
                 x = Serversob.getX();
                 name = Serversob.getName();
@@ -192,12 +201,19 @@ class PlayerThread extends Thread {
             }
             else
             {
+                Serversob.setCount(count--);
                 System.out.println(Serversob.getCount());
-                Serversob.setCount(--count);
 
                 try {
                     Thread.sleep(player * 1000);
                 } catch (InterruptedException e) {}
+            }
+
+            try (Socket socket = new Socket(clientIP, 5)) {
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(Serversob);
+            } catch (IOException e1) {
+                System.out.println("Error Output : "+ e1);
             }
         }
     }

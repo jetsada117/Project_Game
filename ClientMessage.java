@@ -115,12 +115,20 @@ class clientThread extends Thread{
                 Object receivedObject = objectInput.readObject();
             
                 if (receivedObject instanceof PlayerServer playerServer) {
-                    if (playerServer.getCount()>=0) {
-                        client.textshow.insert(playerServer.getCount() +"\n", 0);
+                    
+                    if (playerServer.isReady()) {
+
+                        if (playerServer.getCount() > 0) {
+                            client.textshow.insert(playerServer.getCount() +"\n", 0);
+                        }
+                        else
+                        {
+                            client.textshow.insert(playerServer.getName() +" , Speed : "+ playerServer.getX() +"\n", 0);
+                        }
                     }
                     else
                     {
-                        client.textshow.insert(playerServer.getName() +" , Speed : "+ playerServer.getX() +"\n", 0);
+                        client.textshow.insert("Player : "+ playerServer.getIp() +"\n", 0);
                     }
                 }
             }
