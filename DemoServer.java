@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,9 +63,10 @@ public class DemoServer extends JFrame{
 
 class ServerThread extends Thread {
     DemoServer server;
-    PlayerServer [] playerServers = new PlayerServer[4]; 
-    HashMap <String, Integer> players = new HashMap<>();
+    PlayerServer [] Serversob = new PlayerServer[4]; 
+    ArrayList <String> players = new ArrayList<>();
     int index = 0;
+    int ready = 0;
 
     public ServerThread(DemoServer server) {
         this.server = server;
@@ -95,33 +96,56 @@ class ServerThread extends Thread {
                         if (receivedObject instanceof Player playerob) {
                             System.out.println("Received object: " + playerob.getName());
 
-                            if (!players.containsKey(playerob.getName()) && index < 4) {
+                            if (!players.contains(playerob.getName()) && index < 4) {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
-                                players.put(playerob.getName(), index);
+                                players.add(playerob.getName());
                                 server.User[index].setText(playerob.getName());
-                                playerServers[index] = new PlayerServer();
+                                Serversob[index] = new PlayerServer();
+                                Serversob[index].setIp(clientIP);
 
                                 index++;
                             }
 
-                            if (players.containsKey(playerob.getName())) {
-                                int i = players.get(playerob.getName());
-                                playerServers[i].setName(playerob.getName());
-                                playerServers[i].setX(playerob.getX());
+                            if (players.contains(playerob.getName())) {
+                                int i = players.indexOf(playerob.getName());
+                                Serversob[i].setName(playerob.getName());
+                                Serversob[i].setReady(playerob.isReady());
 
-                                for (int k = 0; k < index; k++) {
-                                    if (k==i) continue;
-                                
-                                    playerServers[k].setX(playerob.getX());
+                                if(Serversob[i].isReady()) 
+                                {
+                                    server.User[i].setText(Serversob[i].getName() +"(Ready)");
                                 }
-
-                                PlayerThread thread = new PlayerThread(playerServers[i], index, clientIP);
-                                thread.start();
+                                else
+                                {
+                                    server.User[i].setText(Serversob[i].getName() +"(Wait)");
+                                }
                             }
+
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println("Error Received : "+ e);
+                }
+
+                for (int i = 0; i < players.size() ; i++) {
+                    if(Serversob[i].isReady())
+                    {
+                        ready++;
+                    }
+                    else 
+                    {
+                        ready = 0;
+                        break;
+                    }
+                }
+
+                if (ready == players.size()) {
+                    for (int i = 0; i < players.size() ; i++) {
+                        String IpAddress = players.get(i);
+                        
+                        PlayerThread thread = new PlayerThread(Serversob[i], i, Serversob[i].getIp(), players.size());
+                        thread.start();
+                    }
                 }
             }
         } catch (Exception e) {}
@@ -129,39 +153,52 @@ class ServerThread extends Thread {
 }
 
 class PlayerThread extends Thread {
-    PlayerServer playerServer;
-    int index;
-    String clientIP;
+    PlayerServer Serversob;
+    int index;    
     int x;
+    int count = 5;
+    int player;
+    String clientIP;
     String name;
 
-    public PlayerThread(PlayerServer playerServer, int index, String clientIP) {
-        this.playerServer = playerServer;
+
+    public PlayerThread(PlayerServer Serversob, int index, String clientIP, int player) {
+        this.Serversob = Serversob;
         this.index = index;
         this.clientIP = clientIP;
+        this.player = player;
     }
 
     @Override
     public void run() {
         while (true) {
-            x = playerServer.getX();
-            name = playerServer.getName();
-
-            playerServer.setX(x + 1);
-
-            System.out.println("Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
-           
             try (Socket socket = new Socket(clientIP, 5)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                objectOutput.writeObject(playerServer);
+                objectOutput.writeObject(Serversob);
             } catch (IOException e1) {
-                System.out.println(e1);
+                System.out.println("Error Output : "+ e1);
             }
             
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e) {}
 
+            if (count<0) {
+                x = Serversob.getX();
+                name = Serversob.getName();
+
+                Serversob.setX(x + 1);
+
+                System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+            }
+            else
+            {
+                System.out.println(Serversob.getCount());
+                Serversob.setCount(--count);
+
+                try {
+                    Thread.sleep(player * 500);
+                } catch (InterruptedException e) {}
             }
         }
     }

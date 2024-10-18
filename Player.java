@@ -3,8 +3,9 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private String name;
     private int x;
+    private boolean Ready = false;
 
-    public Player(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -15,7 +16,16 @@ public class Player implements Serializable {
     public void setX(int x) {
         this.x = x;
     }
+
     public int getX() {
         return x;
+    }
+
+    public void setReady(boolean Ready) {
+        this.Ready = Ready;
+    }
+
+    public boolean isReady() {
+        return Ready;
     }
 } 

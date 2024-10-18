@@ -17,10 +17,11 @@ import javax.swing.JTextField;
 class ClientMessage extends JFrame implements ActionListener{
     JTextField ip = new JTextField();
     JTextField textString = new JTextField();
-    JTextField textSpeed = new JTextField();
+    // JTextField textSpeed = new JTextField();
     JTextArea textshow = new JTextArea();
     JButton buttonConnect = new JButton("Send Connect");
-    JButton buttonObject = new JButton("Send Object");
+    JButton buttonObject = new JButton("Ready!");
+    Player player = new Player();
 
     public ClientMessage() {
         this.setSize(600,100);
@@ -40,12 +41,12 @@ class ClientMessage extends JFrame implements ActionListener{
         centerPanel.setLayout(new GridLayout(1,2));
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1, 2));  // จัดเรียงปุ่มในแถวเดียวกัน
+        buttonPanel.setLayout(new GridLayout(1, 2));
         
         buttonPanel.add(buttonConnect);
         buttonPanel.add(buttonObject);
         centerPanel.add(textString);
-        centerPanel.add(textSpeed);
+        // centerPanel.add(textSpeed);
 
         container1.add(centerPanel, BorderLayout.CENTER);
         container1.add(buttonPanel, BorderLayout.SOUTH);
@@ -73,7 +74,11 @@ class ClientMessage extends JFrame implements ActionListener{
             System.out.println("button object");
             try (Socket socket = new Socket(ip.getText(), 50101)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                Player player = new Player(textString.getText());  // Object ที่ต้องการส่ง
+                player.setName(textString.getText());
+                // if(!textSpeed.getText().equals(""))
+                // {
+                //     player.setX(Integer.parseInt(textSpeed.getText()));
+                // }
                 objectOutput.writeObject(player);
             } catch (IOException e1) {
                 System.out.println(e);
@@ -83,8 +88,7 @@ class ClientMessage extends JFrame implements ActionListener{
         {
             try (Socket socket = new Socket(ip.getText(), 50101)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                Player player = new Player(textString.getText());  // Object ที่ต้องการส่ง
-                player.setX(Integer.parseInt(textSpeed.getText()));
+                player.setReady(true);
                 objectOutput.writeObject(player);
             } catch (IOException e1) {
                 System.out.println(e);
@@ -117,9 +121,14 @@ class clientThread extends Thread{
                 Object receivedObject = objectInput.readObject();
             
                 if (receivedObject instanceof PlayerServer playerServer) {
-                    client.textshow.insert(playerServer.getName() +" , Speed : "+ playerServer.getX() +"\n", 0);
+                    if (playerServer.getCount()>=0) {
+                        client.textshow.insert(playerServer.getCount() +"\n", 0);
+                    }
+                    else
+                    {
+                        client.textshow.insert(playerServer.getName() +" , Speed : "+ playerServer.getX() +"\n", 0);
+                    }
                 }
-
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e);
