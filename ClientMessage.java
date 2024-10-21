@@ -57,7 +57,7 @@ class ClientMessage extends JFrame implements ActionListener{
         buttonConnect.addActionListener(this);
         buttonObject.addActionListener(this);
 
-        ClientThread thread = new ClientThread(this);
+        ClientThread1 thread = new ClientThread1(this);
         thread.start();
     }
 
@@ -104,11 +104,11 @@ class ClientMessage extends JFrame implements ActionListener{
 }
 
 
-class ClientThread extends Thread{
+class ClientThread1 extends Thread{
     ClientMessage client;
     String timeString; 
 
-    public ClientThread(ClientMessage client) {
+    public ClientThread1(ClientMessage client) {
         this.client = client;
     }
 

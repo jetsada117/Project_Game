@@ -4,6 +4,7 @@ public class ServerObject implements Serializable {
     private String playername;
     private String IP;
     private boolean Ready = false;
+    private int index;
     private int x;
     private int player;
     private int count = 5;
@@ -72,6 +73,14 @@ public class ServerObject implements Serializable {
 
     public String getIP() {
         return IP;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
 }

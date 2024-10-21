@@ -56,7 +56,7 @@ public class DemoServer extends JFrame{
 
         try {
             InetAddress ip = InetAddress.getLocalHost();
-            server.address.setText(ip.getHostAddress());
+            server.address.setText("Server IP : " + ip.getHostAddress());
             server.address.setHorizontalAlignment(SwingConstants.CENTER);
         } catch (Exception e) {}
     }
@@ -103,6 +103,7 @@ class ServerThread extends Thread {
                                 players.add(clientIP);
                                 Serversob[index] = new ServerObject();
                                 Serversob[index].setIP(clientIP);
+                                Serversob[index].setIndex(index);
                                 System.out.println(clientIP);
 
                                 index++;
@@ -128,17 +129,19 @@ class ServerThread extends Thread {
                                     for (int k = 0; k < players.size(); k++) {
                                         System.out.println(k);
                                         String IpAddress = players.get(k);
-                                       
+                                        Serversob[k].setPlayer(players.size());
+                                        
                                         for (int j = 0; j < players.size(); j++) {
-                                            // // try (Socket clientSocket = new Socket(IpAddress, 5);
-                                            // // ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                                            // // objectOutput.writeObject(Serversob[j]);
-                                            // // System.out.println("Output : " + IpAddress);
-                                            // // System.out.println(Serversob[j].getIP());
+                                            try (Socket clientSocket = new Socket(IpAddress, 5);
+                                            ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                                            
+                                            objectOutput.writeObject(Serversob[j]);
+                                            System.out.println("Output : " + IpAddress);
+                                            System.out.println(Serversob[j].getIP());
 
-                                            // } catch (IOException e) {
-                                            //     e.printStackTrace();
-                                            // }
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     }
                                 }
@@ -184,7 +187,6 @@ class PlayerThread extends Thread {
     String clientIP;
     String name;
 
-
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
         this.Serversob = Serversob;
         this.index = index;
@@ -211,6 +213,11 @@ class PlayerThread extends Thread {
             {
                 Serversob.setCount(count--);
                 System.out.println(Serversob.getCount());
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
+
             }
 
             try (Socket socket = new Socket(clientIP, 5)) {
