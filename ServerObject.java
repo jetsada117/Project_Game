@@ -2,6 +2,7 @@ import java.io.Serializable;
 
 public class ServerObject implements Serializable {
     private String playername;
+    private String IP;
     private boolean Ready = false;
     private int x;
     private int player;
@@ -63,6 +64,14 @@ public class ServerObject implements Serializable {
 
     public int getPlayer() {
         return player;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+
+    public String getIP() {
+        return IP;
     }
 
 }

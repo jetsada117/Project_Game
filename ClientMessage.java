@@ -145,8 +145,8 @@ class ClientThread extends Thread{
                     else 
                     {
                         // ถ้ายังไม่กดเตรียมพร้อมให้แสดง player ที่เข้ามา
-                        client.textshow.insert("Player : " + playerServer.getIp() + "\n", 0);
-                        System.out.println(playerServer.getIp());
+                        client.textshow.insert("Player : " + playerServer.getIP() + "\n", 0);
+                        System.out.println(playerServer.getIP());
                     }
                 }
 

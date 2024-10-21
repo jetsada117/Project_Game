@@ -102,7 +102,7 @@ class ServerThread extends Thread {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(clientIP);
                                 Serversob[index] = new ServerObject();
-                                Serversob[index].setIp(clientIP);
+                                Serversob[index].setIP(clientIP);
                                 System.out.println(clientIP);
 
                                 index++;
@@ -134,7 +134,7 @@ class ServerThread extends Thread {
                                             ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
                                             objectOutput.writeObject(Serversob[j]);
                                             System.out.println("Output : " + IpAddress);
-                                            System.out.println(Serversob[j].getIp());
+                                            System.out.println(Serversob[j].getIP());
 
                                             } catch (IOException e) {
                                                 e.printStackTrace();
