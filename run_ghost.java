@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 
 
@@ -200,6 +201,7 @@ public class run_ghost extends JFrame {
     }
 
     public static void main(String[] args) {
-        new run_ghost().setVisible(true);
+        //เพื่อให้การทำงานของ Swing GUI เป็นไปอย่างราบรื่น
+        SwingUtilities.invokeLater(() -> new run_ghost().setVisible(true));
     }
 }

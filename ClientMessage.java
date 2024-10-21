@@ -20,7 +20,7 @@ class ClientMessage extends JFrame implements ActionListener{
     JTextArea textshow = new JTextArea();
     JButton buttonConnect = new JButton("Send Connect");
     JButton buttonObject = new JButton("Ready!");
-    Player player = new Player();
+    PlayerObject playerob = new PlayerObject();
 
     public ClientMessage() {
         this.setSize(600,100);
@@ -70,20 +70,31 @@ class ClientMessage extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonConnect) {
             System.out.println("button object");
+
+            // สร้าง socket เพื่อส่งค่า
             try (Socket socket = new Socket(ip.getText(), 50101)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                player.setName(textString.getText());
-                objectOutput.writeObject(player);
+                
+                // set ค่าลง object
+                playerob.setName(textString.getText());
+
+                // ส่งค่า object ออกไป
+                objectOutput.writeObject(playerob);
             } catch (IOException e1) {
                 System.out.println(e);
             }
         }
         else if(e.getSource() == buttonObject)
         {
+            // สร้าง socket เพื่อส่งค่า
             try (Socket socket = new Socket(ip.getText(), 50101)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                player.setReady(true);
-                objectOutput.writeObject(player);
+                
+                // ถ้ากดเตรียมพร้อมให้ set true ลง ready
+                playerob.setReady(true);
+
+                // ส่งค่า object ออกไป
+                objectOutput.writeObject(playerob);
             } catch (IOException e1) {
                 System.out.println(e);
             }
@@ -95,6 +106,7 @@ class ClientMessage extends JFrame implements ActionListener{
 
 class ClientThread extends Thread{
     ClientMessage client;
+    String timeString; 
 
     public ClientThread(ClientMessage client) {
         this.client = client;
@@ -107,14 +119,18 @@ class ClientThread extends Thread{
             serverSock = new ServerSocket(5);
 
             while (true) {
+                // รับค่าผ่าน  socket 
                 try (Socket socket = serverSock.accept();
                     InputStream input = socket.getInputStream();
                     ObjectInputStream objectInput = new ObjectInputStream(input)) {
 
+                    // อ่าน object
                     Object receivedObject = objectInput.readObject();
 
-                if (receivedObject instanceof PlayerServer playerServer) {
+                // เช็คชนิดข้อมูลว่าเป็นชนิดข้อมูล SeverObject หรือไม่
+                if (receivedObject instanceof ServerObject playerServer) {
 
+                    // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
                     if (playerServer.isReady()) {
                         if (playerServer.getCount() > 0) 
                         {
@@ -122,11 +138,13 @@ class ClientThread extends Thread{
                         } 
                         else 
                         {
-                        client.textshow.insert(playerServer.getName() + " , Speed : " + playerServer.getX() + "\n", 0);
+                            timeString = String.format("%02d:%02d", playerServer.getMinutes(), playerServer.getSeconds());
+                            client.textshow.insert(playerServer.getName() + " , Speed : " + playerServer.getX() + " , Time : " + timeString +"\n", 0);
                         }
                     } 
                     else 
                     {
+                        // ถ้ายังไม่กดเตรียมพร้อมให้แสดง player ที่เข้ามา
                         client.textshow.insert("Player : " + playerServer.getIp() + "\n", 0);
                         System.out.println(playerServer.getIp());
                     }

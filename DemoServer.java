@@ -10,6 +10,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,7 +65,7 @@ public class DemoServer extends JFrame{
 
 class ServerThread extends Thread {
     DemoServer server;
-    PlayerServer [] Serversob = new PlayerServer[4]; 
+    ServerObject [] Serversob = new ServerObject[4]; 
     ArrayList <String> players = new ArrayList<>();
     int index = 0;
     int ready = 0;
@@ -93,13 +95,13 @@ class ServerThread extends Thread {
                 try {       
                     if (receivedObject != null) {
                         // ตรวจสอบว่า object ที่รับเข้ามาเป็นประเภทใด เช่น Player
-                        if (receivedObject instanceof Player playerob) {
+                        if (receivedObject instanceof PlayerObject playerob) {
                             System.out.println("Received object: " + playerob.getName());
 
                             if (!players.contains(clientIP) && index < 4) {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(clientIP);
-                                Serversob[index] = new PlayerServer();
+                                Serversob[index] = new ServerObject();
                                 Serversob[index].setIp(clientIP);
                                 System.out.println(clientIP);
 
@@ -175,20 +177,23 @@ class ServerThread extends Thread {
 }
 
 class PlayerThread extends Thread {
-    PlayerServer Serversob;
+    ServerObject Serversob;
     int index;    
     int x;
     int count = 5;
-    int player;
     String clientIP;
     String name;
 
 
-    public PlayerThread(PlayerServer Serversob, int index, String clientIP, int player) {
+    public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
         this.Serversob = Serversob;
         this.index = index;
         this.clientIP = clientIP;
-        this.player = player;
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new Stopwatch(Serversob), 0, 1000);
+
+        Serversob.setPlayer(player);
     }
 
     @Override
@@ -201,19 +206,11 @@ class PlayerThread extends Thread {
                 Serversob.setX(x + 1);
 
                 System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {}
             }
             else
             {
                 Serversob.setCount(count--);
                 System.out.println(Serversob.getCount());
-
-                try {
-                    Thread.sleep(player * 1000);
-                } catch (InterruptedException e) {}
             }
 
             try (Socket socket = new Socket(clientIP, 5)) {
@@ -221,6 +218,36 @@ class PlayerThread extends Thread {
                 objectOutput.writeObject(Serversob);
             } catch (IOException e1) {
                 System.out.println("Error Output : "+ e1);
+            }
+        }
+    }
+}
+
+
+class Stopwatch extends TimerTask {
+    private ServerObject serverob;
+    private int seconds = 0;
+    private int minutes = 5;
+
+    public Stopwatch(ServerObject serverob) {
+        this.serverob = serverob;
+    }
+
+    @Override
+    public void run() {
+        serverob.setMinutes(minutes);
+        serverob.setSeconds(seconds);
+
+        if (seconds > 0) {
+            seconds--; // ลดค่าวินาทีลง
+        } else {
+            if (minutes > 0) {
+                minutes--;  // ลดค่านาทีเมื่อวินาทีเหลือ 0
+                seconds = 59; // รีเซ็ตวินาทีเป็น 59 สำหรับนาทีถัดไป
+            } else {
+                // จัดการเมื่อการนับถอยหลังเสร็จสิ้น (สามารถเพิ่มตรรกะเพิ่มเติมได้)
+                System.out.println("หมดเวลา!");
+                cancel(); // หยุด Timer เมื่อการนับถอยหลังเสร็จสิ้น
             }
         }
     }
