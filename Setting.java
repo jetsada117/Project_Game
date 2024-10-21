@@ -4,7 +4,12 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,20 +18,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-class SettingPanel extends JPanel {
+class SettingPanel extends JPanel implements ActionListener {
     Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "background.png");
     Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "Backdrop.png");
     Image imageArrow = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "Arrow.png");
     Icon imgplay = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "play.png");
     Icon imgback = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "back.png");
+    Icon imgconnect = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "connect.png");
     JPanel containgun = new JPanel();
     Icon [] skin = new Icon[4];
     JButton [] gun = new JButton[4];
+    JButton connect = new JButton();
     JButton next = new JButton();
     JButton back = new JButton(); 
     JTextField inputIP = new JTextField();
     JTextField inputName = new JTextField();
     JLabel textReady = new JLabel("Ready : (3/4)");
+    PlayerObject playerob = new PlayerObject();
 
     public SettingPanel() {
         this.setSize(1200, 800);
@@ -49,6 +57,12 @@ class SettingPanel extends JPanel {
         back.setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
         back.setBorderPainted(false);  // ไม่แสดงขอบของปุ่ม
 
+        connect.setBounds(650, 540, 140, 50);
+        connect.setIcon(imgconnect);
+        connect.setOpaque(false);  // ทำให้ปุ่มโปร่งใส
+        connect.setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
+        connect.setBorderPainted(false);  // ไม่แสดงขอบของปุ่ม
+
         inputIP.setBounds(410, 290, 200, 30);
         inputName.setBounds(410, 370, 200, 30);
 
@@ -63,6 +77,8 @@ class SettingPanel extends JPanel {
             gun[i].setOpaque(false);  // ทำให้ปุ่มโปร่งใส
             gun[i].setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
             containgun.add(gun[i]);
+
+            gun[i].addActionListener(this);
         }
 
         this.add(containgun);
@@ -71,6 +87,11 @@ class SettingPanel extends JPanel {
         this.add(inputIP);
         this.add(inputName);
         this.add(textReady);
+        this.add(connect);
+
+        next.addActionListener(this);
+        back.addActionListener(this);
+        connect.addActionListener(this);
     }
 
     @Override
@@ -91,6 +112,35 @@ class SettingPanel extends JPanel {
         g.drawString("Player Position", 425, 200);
         g.drawString("Enter IP Server", 425, 280);
         g.drawString("Enter Player name", 425, 360);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == back) {
+            System.out.println("back");
+        }
+        else if (e.getSource() == connect) {
+            System.out.println("connect");
+            connect();
+        }
+        else if (e.getSource() == next) {
+            System.out.println("next");
+        }
+    }
+
+    void connect() {
+        // สร้าง socket เพื่อส่งค่า
+        try (Socket socket = new Socket(inputIP.getText(), 50101)) {
+            ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+            
+            // set ค่าลง object
+            playerob.setName(inputName.getText());
+
+            // ส่งค่า object ออกไป
+            objectOutput.writeObject(playerob);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 }
 

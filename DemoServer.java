@@ -130,15 +130,15 @@ class ServerThread extends Thread {
                                         String IpAddress = players.get(k);
                                        
                                         for (int j = 0; j < players.size(); j++) {
-                                            try (Socket clientSocket = new Socket(IpAddress, 5);
-                                            ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                                            objectOutput.writeObject(Serversob[j]);
-                                            System.out.println("Output : " + IpAddress);
-                                            System.out.println(Serversob[j].getIP());
+                                            // // try (Socket clientSocket = new Socket(IpAddress, 5);
+                                            // // ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                                            // // objectOutput.writeObject(Serversob[j]);
+                                            // // System.out.println("Output : " + IpAddress);
+                                            // // System.out.println(Serversob[j].getIP());
 
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                            // } catch (IOException e) {
+                                            //     e.printStackTrace();
+                                            // }
                                         }
                                     }
                                 }
