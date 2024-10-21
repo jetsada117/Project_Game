@@ -19,8 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 class SettingPanel extends JPanel implements ActionListener {
-    Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "Hollows_setting.png");
-    Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "HalloweenCover.png");
+    Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "background.png");
+    Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "bg2.png");
     Image imageArrow = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "Arrow.png");
     Icon imgplay = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "play.png");
     Icon imgback = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "back.png");
@@ -33,6 +33,7 @@ class SettingPanel extends JPanel implements ActionListener {
     JButton back = new JButton(); 
     JTextField inputIP = new JTextField();
     JTextField inputName = new JTextField();
+
     JLabel textReady = new JLabel("Ready : (3/4)");
     PlayerObject playerob = new PlayerObject();
 
@@ -66,6 +67,7 @@ class SettingPanel extends JPanel implements ActionListener {
         inputIP.setBounds(410, 290, 200, 30);
         inputName.setBounds(410, 370, 200, 30);
 
+        textReady.setForeground(Color.ORANGE);
         textReady.setFont(new Font("Tahoma", Font.PLAIN, 15));
         textReady.setBounds(820, 505, 100, 30);
 
@@ -103,9 +105,9 @@ class SettingPanel extends JPanel implements ActionListener {
         g.drawImage(imageArrow, 350, 200, 50, 50, this);
         g.drawImage(imageArrow, 350, 280, 50, 50, this);
         g.drawImage(imageArrow, 350, 360, 50, 50, this);
-
+       
         g.setFont(new Font("Tahoma", Font.BOLD, 40));
-        g.setColor(Color.BLACK);
+        g.setColor(Color.ORANGE);
         g.drawString("SETTING", 500, 150);
 
         g.setFont(new Font("Tahoma", Font.BOLD, 15));
