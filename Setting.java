@@ -43,6 +43,7 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textReady = new JLabel("Ready : (0/0)");
     JLabel textCount = new JLabel();
     PlayerObject playerob = new PlayerObject();
+    boolean isPlay = false;
 
     public SettingPanel() {
         this.setSize(1200, 800);
@@ -187,6 +188,7 @@ class SettingPanel extends JPanel implements ActionListener {
 }
 
 class ClientThread extends Thread {
+    run_ghost playgame = new run_ghost();
     SettingPanel client;
     int index;
     int player;
@@ -223,6 +225,10 @@ class ClientThread extends Thread {
                         } 
                         else 
                         {
+                            if(!playgame.isVisible()) 
+                            {
+                                client.isPlay = true;
+                            }
 
                         }
                     } 
@@ -235,6 +241,12 @@ class ClientThread extends Thread {
                     }
 
                     client.textReady.setText("Ready : (0/" + player +")");
+
+                    if(client.isPlay) 
+                    {
+                        playgame.setVisible(true);
+                        client.isPlay = false;
+                    }
                 }
 
                 } catch (IOException | ClassNotFoundException e) {
