@@ -6,9 +6,6 @@ import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-
 
 public class run_ghost extends JFrame {
     int[] ghostX;  // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
@@ -184,24 +181,20 @@ public class run_ghost extends JFrame {
                     g.setFont(new Font("Arial", Font.BOLD, 25)); 
                     g.drawString(words[i], ghostX[i] + 10, ghostY[i] - 10);
                 }
-                    int minutes = remainingTime / 60;
-                    int seconds = remainingTime % 60;
-                    String timeString = String.format("%02d:%02d", minutes, seconds);
 
-                    // แสดงเวลาที่เหลือ
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font("Arial", Font.BOLD, 25)); 
-                    g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
+                int minutes = remainingTime / 60;
+                int seconds = remainingTime % 60;
+                String timeString = String.format("%02d:%02d", minutes, seconds);
 
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font("Arial", Font.BOLD, 25)); 
-                    g.drawString("ghost1: " + ghost1 + " Count", 800, 80);
+                // แสดงเวลาที่เหลือ
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25)); 
+                g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
+
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25)); 
+                g.drawString("ghost1: " + ghost1 + " Count", 800, 80);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        //เพื่อให้การทำงานของ Swing GUI เป็นไปอย่างราบรื่น
-        SwingUtilities.invokeLater(() -> new run_ghost().setVisible(true));
     }
 }

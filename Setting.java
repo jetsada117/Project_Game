@@ -166,6 +166,8 @@ class SettingPanel extends JPanel implements ActionListener {
 
             // ส่งค่า object ออกไป
             objectOutput.writeObject(playerob);
+
+            connect.setEnabled(false);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -181,6 +183,7 @@ class SettingPanel extends JPanel implements ActionListener {
 
             // ส่งค่า object ออกไป
             objectOutput.writeObject(playerob);
+
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -192,6 +195,7 @@ class ClientThread extends Thread {
     SettingPanel client;
     int index;
     int player;
+    int countReady;
 
     public ClientThread(SettingPanel client) {
         this.client = client;
@@ -218,7 +222,7 @@ class ClientThread extends Thread {
                     player = Serverob.getPlayer();
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
-                    if ( Serverob.isReady()) {
+                    if ( Serverob.isReady(index)) {
                         if ( Serverob.getCount() > 0) 
                         {
                             client.textCount.setText(String.valueOf(Serverob.getCount()));
@@ -234,13 +238,34 @@ class ClientThread extends Thread {
                     } 
                     else 
                     {
-                        if (Serverob.getIndex() == 0) {
-                            System.out.println(player);
-                            client.textNumber.setText("Player : 1st Player");
+                        switch (Serverob.getIndex()) {
+                            case 0:
+                                System.out.println(player);
+                                client.textNumber.setText("Player : 1st Player");
+                                break;
+                            case 1:
+                                System.out.println(player);
+                                client.textNumber.setText("Player : 2nd Player");
+                                break;
+                            case 2:
+                                System.out.println(player);
+                                client.textNumber.setText("Player : 3rd Player");
+                                break;
+                            case 3:
+                                System.out.println(player);
+                                client.textNumber.setText("Player : 4th Player");
+                                break;
+                            default:
+                                break;
                         }
                     }
 
-                    client.textReady.setText("Ready : (0/" + player +")");
+                    countReady = 0;
+                    for (int i = 0; i < player; i++) {
+                        if(Serverob.isReady(i)) countReady++;
+                    }
+
+                    client.textReady.setText("Ready : (" + countReady + "/" + player +")");
 
                     if(client.isPlay) 
                     {

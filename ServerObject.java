@@ -1,38 +1,38 @@
 import java.io.Serializable;
 
 public class ServerObject implements Serializable {
-    private String playername;
-    private String IP;
-    private boolean Ready = false;
+    private final String [] playername = new String[4];
+    private final String [] IP = new String[4];
+    private final boolean [] Ready = new boolean[4];
+    private int [] x = new int[4];
     private int index;
-    private int x;
     private int player;
     private int count = 5;
     private int seconds;
     private int minutes;
 
-    public void setName(String name) {
-        this.playername = name;
+    public void setName(String name, int ind) {
+        this.playername[ind] = name;
     }
     
-    public String getName() {
-        return playername;
+    public String getName(int ind) {
+        return playername[ind];
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setX(int x, int ind) {
+        this.x[ind] = x;
     }
 
-    public int getX() {
-        return x;
+    public int getX(int ind) {
+        return x[ind];
     }
 
-    public void setReady(boolean Ready) {
-        this.Ready = Ready;
+    public void setReady(boolean Ready, int ind) {
+        this.Ready[ind] = Ready;
     }
 
-    public boolean isReady() {
-        return Ready;
+    public boolean isReady(int ind) {
+        return Ready[ind];
     }
 
     public void setCount(int count) {
@@ -67,12 +67,12 @@ public class ServerObject implements Serializable {
         return player;
     }
 
-    public void setIP(String IP) {
-        this.IP = IP;
+    public void setIP(String IP, int ind) {
+        this.IP[ind] = IP;
     }
 
-    public String getIP() {
-        return IP;
+    public String getIP(int ind) {
+        return IP[ind];
     }
 
     public void setIndex(int index) {

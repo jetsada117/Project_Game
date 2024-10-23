@@ -65,7 +65,7 @@ public class DemoServer extends JFrame{
 
 class ServerThread extends Thread {
     DemoServer server;
-    ServerObject [] Serversob = new ServerObject[4]; 
+    ServerObject Serversob = new ServerObject(); 
     ArrayList <String> players = new ArrayList<>();
     int index = 0;
     int ready = 0;
@@ -101,9 +101,8 @@ class ServerThread extends Thread {
                             if (!players.contains(clientIP) && index < 4) {
                                 // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(clientIP);
-                                Serversob[index] = new ServerObject();
-                                Serversob[index].setIP(clientIP);
-                                Serversob[index].setIndex(index);
+                                Serversob.setIP(clientIP, index);
+                                Serversob.setIndex(index);
                                 System.out.println(clientIP);
 
                                 index++;
@@ -111,37 +110,34 @@ class ServerThread extends Thread {
 
                             if (players.contains(clientIP)) {
                                 int i = players.indexOf(clientIP);
-                                Serversob[i].setName(playerob.getName());
-                                Serversob[i].setReady(playerob.isReady());
+                                Serversob.setName(playerob.getName(), i);
+                                Serversob.setReady(playerob.isReady(), i);
                                 System.out.println(playerob.isReady());
 
-                                if(Serversob[i].isReady()) 
+                                if(Serversob.isReady(i)) 
                                 {
-                                    server.User[i].setText(Serversob[i].getName() +"(Ready)");
+                                    server.User[i].setText(Serversob.getName(i) +"(Ready)");
                                 }
                                 else
                                 {
-                                    server.User[i].setText(Serversob[i].getName() +"(Wait)");
+                                    server.User[i].setText(Serversob.getName(i) +"(Wait)");
                                 }
 
-                                if(!Serversob[i].isReady()) 
+                                if(!Serversob.isReady(i)) 
                                 {
                                     for (int k = 0; k < players.size(); k++) {
-                                        System.out.println(k);
                                         String IpAddress = players.get(k);
-                                        Serversob[k].setPlayer(players.size());
+                                        Serversob.setIndex(k);
+                                        Serversob.setPlayer(players.size());
                                         
-                                        for (int j = 0; j < players.size(); j++) {
-                                            try (Socket clientSocket = new Socket(IpAddress, 5);
-                                            ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                                        try (Socket clientSocket = new Socket(IpAddress, 5);
+                                        ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
                                             
-                                            objectOutput.writeObject(Serversob[j]);
-                                            System.out.println("Output : " + IpAddress);
-                                            System.out.println(Serversob[j].getIP());
+                                        objectOutput.writeObject(Serversob);
+                                        System.out.println("Output : " + IpAddress);
 
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                        } catch (IOException e1) {
+                                                e1.printStackTrace();
                                         }
                                     }
                                 }
@@ -154,7 +150,7 @@ class ServerThread extends Thread {
                 }
 
                 for (int i = 0; i < players.size() ; i++) {
-                    if(Serversob[i].isReady())
+                    if(Serversob.isReady(i))
                     {
                         ready++;
                     }
@@ -170,7 +166,7 @@ class ServerThread extends Thread {
                         String IpAddress = players.get(i);
                         System.out.println(IpAddress);
                         
-                        PlayerThread thread = new PlayerThread(Serversob[i], i, IpAddress, players.size());
+                        PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
                         thread.start();
                     }
                 }
@@ -202,23 +198,24 @@ class PlayerThread extends Thread {
     public void run() {
         while (true) {
             if (count<0) {
-                x = Serversob.getX();
-                name = Serversob.getName();
+                x = Serversob.getX(index);
 
-                Serversob.setX(x + 1);
-
-                System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+                for(int i = 0; i < Serversob.getPlayer() ; i++)
+                {
+                    name = Serversob.getName(i);
+                    System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+                }
+                Serversob.setX(x + 1, index);
             }
             else
             {
                 Serversob.setCount(count--);
                 System.out.println(Serversob.getCount());
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {}
-
             }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {}
 
             try (Socket socket = new Socket(clientIP, 5)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
