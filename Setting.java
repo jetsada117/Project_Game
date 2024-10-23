@@ -24,12 +24,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 class SettingPanel extends JPanel implements ActionListener {
-    Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "background.png");
-    Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "bg2.png");
-    Image imageArrow = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "Arrow.png");
-    Icon imgplay = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "play.png");
-    Icon imgback = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "back.png");
-    Icon imgconnect = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + "connect.png");
+    Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "background.png");
+    Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "bg2.png");
+    Image imageArrow = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "Arrow.png");
+    Icon imgplay = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "play.png");
+    Icon imgback = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "back.png");
+    Icon imgconnect = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "connect.png");
     JPanel containgun = new JPanel();
     JPanel textbox = new JPanel();
     Icon [] skin = new Icon[4];
@@ -42,10 +42,14 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textNumber = new JLabel("Player :");
     JLabel textReady = new JLabel("Ready : (0/0)");
     JLabel textCount = new JLabel();
-    PlayerObject playerob = new PlayerObject();
-    boolean isPlay = false;
+    PlayerObject player = new PlayerObject();
+    PlayerAll playerob = new PlayerAll();
+    run_ghost playgame = new run_ghost();
+    Setting setting;
 
-    public SettingPanel() {
+    public SettingPanel(Setting setting) {
+        this.setting = setting; // รับอ้างอิงไปยัง Setting
+
         this.setSize(1200, 800);
         this.setLayout(null);
 
@@ -91,18 +95,6 @@ class SettingPanel extends JPanel implements ActionListener {
         textCount.setFont(new Font("Tahoma", Font.BOLD, 40));
         textCount.setBounds(820, 150, 100, 100);
 
-        for (int i = 0; i < gun.length ; i++) {
-            skin[i] = new ImageIcon(System.getProperty("user.dir") + File.separator + "picture" + File.separator + String.valueOf(i+1) +".png");
-
-            gun[i] = new JButton();
-            gun[i].setIcon(skin[i]);
-            gun[i].setOpaque(false);  // ทำให้ปุ่มโปร่งใส
-            gun[i].setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
-            containgun.add(gun[i]);
-
-            gun[i].addActionListener(this);
-        }
-
         this.add(containgun);
         this.add(next);
         this.add(back);
@@ -113,11 +105,25 @@ class SettingPanel extends JPanel implements ActionListener {
         this.add(textCount);
         this.add(connect);
 
+        for (int i = 0; i < gun.length ; i++) {
+            skin[i] = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + String.valueOf(i+1) +".png");
+
+            gun[i] = new JButton();
+            gun[i].setIcon(skin[i]);
+            gun[i].setOpaque(false);  // ทำให้ปุ่มโปร่งใส
+            gun[i].setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
+            containgun.add(gun[i]);
+
+            gun[i].addActionListener(this);
+        }
+
         next.addActionListener(this);
         back.addActionListener(this);
         connect.addActionListener(this);
 
-        ClientThread thread = new ClientThread(this);
+        this.setting.add(this);
+
+        ClientThread thread = new ClientThread(this, playgame, this.setting, playerob);
         thread.start();
     }
 
@@ -154,6 +160,26 @@ class SettingPanel extends JPanel implements ActionListener {
             System.out.println("next");
             ready();
         }
+        else if (e.getSource() == gun[0])
+        {
+            player.setSkin(5);
+            gun[0].setEnabled(false);
+        }
+        else if (e.getSource() == gun[1])
+        {
+            player.setSkin(6);
+            gun[1].setEnabled(false);
+        }
+        else if (e.getSource() == gun[2])
+        {
+            player.setSkin(7);
+            gun[2].setEnabled(false);
+        }
+        else if (e.getSource() == gun[3])
+        {
+            player.setSkin(8);
+            gun[3].setEnabled(false);
+        }
     }
 
     void connect() {
@@ -162,10 +188,10 @@ class SettingPanel extends JPanel implements ActionListener {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
             
             // set ค่าลง object
-            playerob.setName(inputName.getText());
+            player.setName(inputName.getText());
 
             // ส่งค่า object ออกไป
-            objectOutput.writeObject(playerob);
+            objectOutput.writeObject(player);
 
             connect.setEnabled(false);
         } catch (IOException e) {
@@ -179,26 +205,32 @@ class SettingPanel extends JPanel implements ActionListener {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
             
             // ถ้ากดเตรียมพร้อมให้ set true ลง ready
-            playerob.setReady(true);
+            player.setReady(true);
 
             // ส่งค่า object ออกไป
-            objectOutput.writeObject(playerob);
+            objectOutput.writeObject(player);
 
         } catch (IOException e) {
             System.out.println(e);
         }
+        
     }
 }
 
 class ClientThread extends Thread {
-    run_ghost playgame = new run_ghost();
     SettingPanel client;
+    run_ghost playgame;
+    Setting setting;
+    PlayerAll playerob;
     int index;
     int player;
     int countReady;
 
-    public ClientThread(SettingPanel client) {
+    public ClientThread(SettingPanel client , run_ghost playgame, Setting setting, PlayerAll playerob) {
         this.client = client;
+        this.playgame = playgame;
+        this.setting = setting;
+        this.playerob = playerob;
     }
 
     @Override
@@ -220,21 +252,20 @@ class ClientThread extends Thread {
                 if (receivedObject instanceof ServerObject Serverob) {
                     index = Serverob.getIndex();
                     player = Serverob.getPlayer();
+                    playerob.setPlayer(player);
+                    playerob.setIndex(index);
+
+                    countReady = 0;
+                    for (int i = 0; i < player; i++) {
+                        playerob.setReady(Serverob.isReady(i), i);
+                    }
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
-                    if ( Serverob.isReady(index)) {
-                        if ( Serverob.getCount() > 0) 
+                    if (allPlayersReady()) {
+                        if (Serverob.getCount() > 0) 
                         {
-                            client.textCount.setText(String.valueOf(Serverob.getCount()));
+                            client.textCount.setText("" + String.valueOf(Serverob.getCount()));
                         } 
-                        else 
-                        {
-                            if(!playgame.isVisible()) 
-                            {
-                                client.isPlay = true;
-                            }
-
-                        }
                     } 
                     else 
                     {
@@ -260,17 +291,15 @@ class ClientThread extends Thread {
                         }
                     }
 
-                    countReady = 0;
-                    for (int i = 0; i < player; i++) {
-                        if(Serverob.isReady(i)) countReady++;
-                    }
-
                     client.textReady.setText("Ready : (" + countReady + "/" + player +")");
 
-                    if(client.isPlay) 
+                    if(allPlayersReady() && Serverob.getCount() <= 0) 
                     {
+                        // เปิดเฟรม run_ghost
                         playgame.setVisible(true);
-                        client.isPlay = false;
+                        
+                        // ปิดเฟรม Setting
+                        setting.dispose(); // ปิด Setting frame
                     }
                 }
 
@@ -282,20 +311,32 @@ class ClientThread extends Thread {
             System.out.println(e);
         } 
     }
+
+    boolean allPlayersReady() {
+        // เช็คสถานะ ready ของผู้เล่นทั้งหมด (แก้ไขให้ตรงกับโครงสร้างของคุณ)
+        // นี่เป็นตัวอย่างการเช็คผู้เล่น 4 คนว่าพร้อมหรือไม่
+        int readyPlayers = 0;
+        for (int i = 0; i < 4; i++) {
+            if (playerob.isReady(i)) {
+                readyPlayers++;
+            }
+        }
+    
+        // ถ้าผู้เล่นทั้งหมดพร้อม return true
+        return readyPlayers == player;
+    }
 }
 
 class Setting extends JFrame {
-    SettingPanel panel = new SettingPanel();
-
     public Setting() {
         this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.add(panel);
+        this.add(new SettingPanel(this)); // ส่ง Setting ให้ SettingPanel
+        this.setVisible(true);
     }
 
     public static void main(String[] args) {
         Setting frame = new Setting();
-        frame.setVisible(true);
     }
 }

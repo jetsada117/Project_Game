@@ -112,10 +112,9 @@ class ServerThread extends Thread {
                                 int i = players.indexOf(clientIP);
                                 Serversob.setName(playerob.getName(), i);
                                 Serversob.setReady(playerob.isReady(), i);
-                                // Serversob.setSkin(playerob.getSkin(), i);
 
-                                // System.out.println(playerob.getSkin());
-                                // System.out.println("" + Serversob.getSkin(i));
+                                System.out.println(playerob.getSkin());
+                                System.out.println("Skin : " + Serversob.getSkin(i));
                                 System.out.println(playerob.isReady());
 
                                 if(Serversob.isReady(i)) 
