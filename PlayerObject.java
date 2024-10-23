@@ -1,9 +1,11 @@
+import java.awt.Image;
 import java.io.Serializable;
 
 public class PlayerObject implements Serializable {
     private String name;
     private int x;
     private boolean Ready = false;
+    private Image skin; 
     private int count;
     private int seconds;
     private int minutes;
@@ -54,5 +56,13 @@ public class PlayerObject implements Serializable {
 
     public int getMinutes() {
         return minutes;
+    }
+
+    public void setSkin(Image skin) {
+        this.skin = skin;
+    }
+
+    public Image getSkin() {
+        return skin;
     }
 } 

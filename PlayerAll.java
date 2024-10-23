@@ -1,15 +1,13 @@
-import java.awt.Image;
 import java.io.Serializable;
 
-public class ServerObject implements Serializable {
+public class PlayerAll implements Serializable {
     private final String [] playername = new String[4];
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
     private final int [] x = new int[4];
-    private final Image [] skin = new Image[4];
     private int index;
     private int player;
-    private int count;
+    private int count = 5;
     private int seconds;
     private int minutes;
 
@@ -85,11 +83,5 @@ public class ServerObject implements Serializable {
         return index;
     }
 
-    public void setSkin(Image skin, int ind) {
-        this.skin[ind] = skin;
-    }
-
-    public Image getSkin(int ind) {
-        return skin[ind];
-    }
 }
+

@@ -112,6 +112,10 @@ class ServerThread extends Thread {
                                 int i = players.indexOf(clientIP);
                                 Serversob.setName(playerob.getName(), i);
                                 Serversob.setReady(playerob.isReady(), i);
+                                // Serversob.setSkin(playerob.getSkin(), i);
+
+                                // System.out.println(playerob.getSkin());
+                                // System.out.println("" + Serversob.getSkin(i));
                                 System.out.println(playerob.isReady());
 
                                 if(Serversob.isReady(i)) 
@@ -137,7 +141,7 @@ class ServerThread extends Thread {
                                         System.out.println("Output : " + IpAddress);
 
                                         } catch (IOException e1) {
-                                                e1.printStackTrace();
+                                            System.out.println("Error Output : "+e1);
                                         }
                                     }
                                 }
@@ -171,7 +175,9 @@ class ServerThread extends Thread {
                     }
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("Error Reveiced :"+ e);
+        }
     }   
 }
 

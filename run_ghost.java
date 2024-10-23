@@ -58,7 +58,7 @@ public class run_ghost extends JFrame {
         // โหลดรูปภาพ (เปลี่ยนเส้นทางเป็นที่อยู่จริงของรูปภาพ)
         for (int i = 0; i < maxGhost; i++) {
             try {
-                imagesGhost1[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "4.png"); // ใช้ชื่อไฟล์ที่แตกต่างกันสำหรับแต่ละภาพ
+                imagesGhost1[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "ghost1.png"); // ใช้ชื่อไฟล์ที่แตกต่างกันสำหรับแต่ละภาพ
             } catch (Exception e) {
                 e.printStackTrace();
             }
