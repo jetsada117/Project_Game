@@ -164,21 +164,49 @@ class SettingPanel extends JPanel implements ActionListener {
         {
             player.setSkin(5);
             gun[0].setEnabled(false);
+
+            for (int i = 0; i < gun.length; i++)
+            {
+                if (i == 0) continue;
+
+                gun[i].setEnabled(true);
+            }
         }
         else if (e.getSource() == gun[1])
         {
             player.setSkin(6);
             gun[1].setEnabled(false);
+
+            for (int i = 0; i < gun.length; i++)
+            {
+                if (i == 1) continue;
+
+                gun[i].setEnabled(true);
+            }
         }
         else if (e.getSource() == gun[2])
         {
             player.setSkin(7);
             gun[2].setEnabled(false);
+
+            for (int i = 0; i < gun.length; i++)
+            {
+                if (i == 2) continue;
+
+                gun[i].setEnabled(true);
+            }
         }
         else if (e.getSource() == gun[3])
         {
             player.setSkin(8);
             gun[3].setEnabled(false);
+
+            for (int i = 0; i < gun.length; i++)
+            {
+                if (i == 3) continue;
+
+                gun[i].setEnabled(true);
+            }
         }
     }
 
