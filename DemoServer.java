@@ -186,8 +186,6 @@ class PlayerThread extends Thread {
     int x;
     int count = 5;
     String clientIP;
-    String name;
-    String timeString;
 
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
         this.Serversob = Serversob;
@@ -198,6 +196,7 @@ class PlayerThread extends Thread {
         timer.scheduleAtFixedRate(new Stopwatch(this.Serversob), 10000, 1000);
 
         this.Serversob.setPlayer(player);
+        this.Serversob.setX(1200, this.index);
     }
 
     @Override
@@ -205,24 +204,24 @@ class PlayerThread extends Thread {
         while (true) {
             if (count<0) {
                 x = Serversob.getX(index);
+                Serversob.setX(x - 1, index);
 
-                for(int i = 0; i < Serversob.getPlayer() ; i++)
-                {
-                    name = Serversob.getName(i);
-                    timeString = String.format("%02d:%02d", Serversob.getMinutes() , Serversob.getSeconds()); 
-                    System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x +", Time : "+ timeString);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
                 }
-                Serversob.setX(x + 1, index);
             }
             else
             {
                 Serversob.setCount(count--);
-                System.out.println(Serversob.getCount());
-            }
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {}
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
+            }
 
             try (Socket socket = new Socket(clientIP, 5)) {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
@@ -236,7 +235,7 @@ class PlayerThread extends Thread {
 
 
 class Stopwatch extends TimerTask {
-    private ServerObject serverob;
+    private final ServerObject serverob;
     private int seconds = 0;
     private int minutes = 5;
 

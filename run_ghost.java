@@ -129,15 +129,12 @@ public class run_ghost extends JFrame {
                         System.out.println("Ghost count : "+ ghostCount);
 
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(1200);
                         } catch (InterruptedException e) {
                             System.out.println(e);
                         }
                     }
-
-
                 }                    
-                
                 panel.repaint();
             }
         }
