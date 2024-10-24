@@ -22,7 +22,7 @@ public class run_ghost extends JFrame {
     Image imageBg;
     Image imageCharacter;
     PlayerAll playerob;
-    int minutes = 5;
+    int minutes;
     int seconds;
     int index;
 
@@ -108,12 +108,10 @@ public class run_ghost extends JFrame {
         public void run() {
             while (true) {
                 System.out.println("isStart[run] : "+ playerob.isIsStart());
+                minutes = playerob.getMinutes();
+                seconds = playerob.getSeconds();
 
                 if (playerob.isIsStart()) {
-                    minutes = playerob.getMinutes();
-                    seconds = playerob.getSeconds();
-                    // System.out.println("Minutes : "+ minutes +", Seconds : "+ seconds);
-                    // System.out.println("boolean : "+ (seconds % 10 == 0) +" , boolean : "+ (minutes < 5));
         
                     if ((seconds % 10 == 0) && (minutes < 5)) {
                         System.out.println("Ghost Time!");
@@ -129,16 +127,18 @@ public class run_ghost extends JFrame {
                         ghostCount++;  // เพิ่มจำนวนรูปภาพ
 
                         System.out.println("Ghost count : "+ ghostCount);
+
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            System.out.println(e);
+                        }
                     }
-    
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        System.out.println(e);
-                    }
+
+
+                }                    
                 
-                    panel.repaint();
-                }
+                panel.repaint();
             }
         }
     }

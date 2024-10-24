@@ -44,6 +44,7 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textCount = new JLabel();
     PlayerObject player = new PlayerObject();
     PlayerAll playerob = new PlayerAll();
+    Home home = new Home();
     run_ghost playgame;
     Setting setting;
 
@@ -150,6 +151,8 @@ class SettingPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == back) {
+            home.setVisible(true);
+            setting.setVisible(false);
             System.out.println("back");
         }
         else if (e.getSource() == connect) {
@@ -339,7 +342,7 @@ class ClientThread extends Thread {
                         System.out.println("isStart[setting] : "+ playerob.isIsStart());
                         
                         // ปิดเฟรม Setting
-                        setting.dispose(); // ปิด Setting frame
+                        setting.setVisible(false); // ซ่อน Setting frame
 
                         isPlaying = true;
                     }
@@ -378,9 +381,5 @@ class Setting extends JFrame {
         this.setLocationRelativeTo(null);
         this.add(new SettingPanel(this)); // ส่ง Setting ให้ SettingPanel
         this.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        Setting frame = new Setting();
     }
 }
