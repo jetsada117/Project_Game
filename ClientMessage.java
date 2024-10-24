@@ -131,22 +131,20 @@ class ClientThread1 extends Thread{
                 if (receivedObject instanceof ServerObject playerServer) {
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
-                    if (playerServer.isReady()) {
+                    if (playerServer.isReady(0)) {
                         if (playerServer.getCount() > 0) 
                         {
                             client.textshow.insert(playerServer.getCount() + "\n", 0);
                         } 
                         else 
                         {
-                            timeString = String.format("%02d:%02d", playerServer.getMinutes(), playerServer.getSeconds());
-                            client.textshow.insert(playerServer.getName() + " , Speed : " + playerServer.getX() + " , Time : " + timeString +"\n", 0);
+                            
                         }
                     } 
                     else 
                     {
                         // ถ้ายังไม่กดเตรียมพร้อมให้แสดง player ที่เข้ามา
-                        client.textshow.insert("Player : " + playerServer.getIP() + "\n", 0);
-                        System.out.println(playerServer.getIP());
+
                     }
                 }
 

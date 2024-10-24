@@ -44,7 +44,7 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textCount = new JLabel();
     PlayerObject player = new PlayerObject();
     PlayerAll playerob = new PlayerAll();
-    run_ghost playgame = new run_ghost();
+    run_ghost playgame = new run_ghost(playerob);
     Setting setting;
 
     public SettingPanel(Setting setting) {
@@ -255,17 +255,22 @@ class ClientThread extends Thread {
                     playerob.setPlayer(player);
                     playerob.setIndex(index);
 
-                    countReady = 0;
                     for (int i = 0; i < player; i++) {
                         playerob.setReady(Serverob.isReady(i), i);
                     }
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
                     if (allPlayersReady()) {
+
                         if (Serverob.getCount() > 0) 
                         {
                             client.textCount.setText("" + String.valueOf(Serverob.getCount()));
                         } 
+                        else
+                        {
+                            playerob.setMinutes(Serverob.getMinutes());
+                            playerob.setSeconds(Serverob.getSeconds());
+                        }
                     } 
                     else 
                     {
@@ -296,7 +301,10 @@ class ClientThread extends Thread {
                     if(allPlayersReady() && Serverob.getCount() <= 0) 
                     {
                         // เปิดเฟรม run_ghost
-                        playgame.setVisible(true);
+                        playgame.setVisible(true);                        
+                        playerob.setIsStart(true);
+
+                        System.out.println("isStart[setting] : "+ playerob.isIsStart());
                         
                         // ปิดเฟรม Setting
                         setting.dispose(); // ปิด Setting frame
@@ -304,7 +312,7 @@ class ClientThread extends Thread {
                 }
 
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    System.out.println(e);
                 }
             }
         } catch (IOException e) {
@@ -321,7 +329,9 @@ class ClientThread extends Thread {
                 readyPlayers++;
             }
         }
-    
+        
+        countReady = readyPlayers;
+
         // ถ้าผู้เล่นทั้งหมดพร้อม return true
         return readyPlayers == player;
     }

@@ -6,11 +6,12 @@ public class ServerObject implements Serializable {
     private final boolean [] Ready = new boolean[4];
     private final int [] x = new int[4];
     private final int [] skin = new int[4];
+    private boolean isStart;
     private int index;
     private int player;
     private int count;
-    private int seconds;
-    private int minutes;
+    private int seconds = 0;
+    private int minutes = 5;
 
     public void setName(String name, int ind) {
         this.playername[ind] = name;
@@ -90,5 +91,13 @@ public class ServerObject implements Serializable {
 
     public int getSkin(int ind) {
         return skin[ind];
+    }
+
+    public void setIsStart(boolean isStart) {
+        this.isStart = isStart;
+    }
+
+    public boolean isIsStart() {
+        return isStart;
     }
 }

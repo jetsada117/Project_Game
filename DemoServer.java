@@ -112,9 +112,9 @@ class ServerThread extends Thread {
                                 int i = players.indexOf(clientIP);
                                 Serversob.setName(playerob.getName(), i);
                                 Serversob.setReady(playerob.isReady(), i);
+                                Serversob.setSkin(playerob.getSkin(), i);
 
-                                System.out.println(playerob.getSkin());
-                                System.out.println("Skin : " + Serversob.getSkin(i));
+                                System.out.println("Skin : NO." + Serversob.getSkin(i));
                                 System.out.println(playerob.isReady());
 
                                 if(Serversob.isReady(i)) 
@@ -187,6 +187,7 @@ class PlayerThread extends Thread {
     int count = 5;
     String clientIP;
     String name;
+    String timeString;
 
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
         this.Serversob = Serversob;
@@ -194,9 +195,9 @@ class PlayerThread extends Thread {
         this.clientIP = clientIP;
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new Stopwatch(Serversob), 0, 1000);
+        timer.scheduleAtFixedRate(new Stopwatch(this.Serversob), 10000, 1000);
 
-        Serversob.setPlayer(player);
+        this.Serversob.setPlayer(player);
     }
 
     @Override
@@ -208,7 +209,8 @@ class PlayerThread extends Thread {
                 for(int i = 0; i < Serversob.getPlayer() ; i++)
                 {
                     name = Serversob.getName(i);
-                    System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x);
+                    timeString = String.format("%02d:%02d", Serversob.getMinutes() , Serversob.getSeconds()); 
+                    System.out.println("["+ index +"]Player "+ name +" IP : "+ clientIP +" , Speed : "+ x +", Time : "+ timeString);
                 }
                 Serversob.setX(x + 1, index);
             }

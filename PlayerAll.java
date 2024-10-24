@@ -5,6 +5,7 @@ public class PlayerAll implements Serializable {
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
     private final int [] x = new int[4];
+    private boolean isStart;
     private int index;
     private int player;
     private int count = 5;
@@ -81,6 +82,14 @@ public class PlayerAll implements Serializable {
 
     public int getIndex() {
         return index;
+    }
+
+    public void setIsStart(boolean isStart) {
+        this.isStart = isStart;
+    }
+
+    public boolean isIsStart() {
+        return isStart;
     }
 
 }
