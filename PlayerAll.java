@@ -5,6 +5,7 @@ public class PlayerAll implements Serializable {
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
     private final int [] x = new int[4];
+    private final int [] skin = new int[4];
     private boolean isStart;
     private int index;
     private int player;
@@ -92,5 +93,13 @@ public class PlayerAll implements Serializable {
         return isStart;
     }
 
+
+    public void setSkin(int skin, int ind) {
+        this.skin[ind] = skin;
+    }
+    
+    public int getSkin(int ind) {
+        return skin[ind];
+    }
 }
 

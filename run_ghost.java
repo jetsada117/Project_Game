@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -14,15 +16,15 @@ public class run_ghost extends JFrame {
     int ghost1 = 0;
     int maxGhost = 100;  // จำนวนรูปภาพสูงสุดที่รองรับ
     int[] xSpeed;  // ความเร็วในแนวนอนของแต่ละรูปภาพ
-    boolean running = false;  // ตัวแปรสำหรับควบคุมการทำงานของเธรด
     Image[] imagesGhost1;  // อาเรย์สำหรับเก็บรูปภาพ
     String[] words;  // อาเรย์สำหรับเก็บคำที่ตรงกับรูปภาพ
     String timeString;
-    Image imageGun;
     Image imageBg;
+    Image imageCharacter;
     PlayerAll playerob;
     int minutes = 5;
     int seconds;
+    int index;
 
     String[] shortVocabulary = 
     {   "growth", "market", "energy", "safety", "health", 
@@ -51,8 +53,6 @@ public class run_ghost extends JFrame {
         ghostY = new int[maxGhost];
         xSpeed = new int[maxGhost];  // สร้าง Array เก็บความเร็วแนวนอน
         words = new String[maxGhost];  // สร้างอาเรย์สำหรับเก็บคำ
-        imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "b.png");
-        imageGun = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "6.png");
 
         // สร้างอาเรย์สำหรับเก็บรูปภาพ
         imagesGhost1 = new Image[maxGhost];  // ประกาศอาเรย์สำหรับเก็บรูปภาพ
@@ -62,7 +62,7 @@ public class run_ghost extends JFrame {
             try {
                 imagesGhost1[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "ghost1.png"); // ใช้ชื่อไฟล์ที่แตกต่างกันสำหรับแต่ละภาพ
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e);
             }
         }
 
@@ -75,6 +75,25 @@ public class run_ghost extends JFrame {
 
         // เรียกใช้เธรดสำหรับอัปเดตตำแหน่งรูปภาพ
         new ImageMover(panel).start();
+
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+
+            for (int i = 0; i < this.playerob.getPlayer() ; i++) {
+                if (ip.getHostAddress().equals(this.playerob.getIP(i)))
+                {
+                    index = i;
+                    System.out.println("Index gameplay : "+ index);
+                    break;
+                }
+            }
+        } catch (UnknownHostException e) {
+            System.err.println("UnknowHost: "+ e);
+        }
+
+        System.out.println("skin : "+ this.playerob.getSkin(index));
+        imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "b.png");
+        imageCharacter = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + String.valueOf(playerob.getSkin(index)) +".png");
     }
 
     // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
@@ -93,8 +112,8 @@ public class run_ghost extends JFrame {
                 if (playerob.isIsStart()) {
                     minutes = playerob.getMinutes();
                     seconds = playerob.getSeconds();
-                    System.out.println("Minutes : "+ minutes +", Seconds : "+ seconds);
-                    System.out.println("boolean : "+ (seconds % 10 == 0) +" , boolean : "+ (minutes < 5));
+                    // System.out.println("Minutes : "+ minutes +", Seconds : "+ seconds);
+                    // System.out.println("boolean : "+ (seconds % 10 == 0) +" , boolean : "+ (minutes < 5));
         
                     if ((seconds % 10 == 0) && (minutes < 5)) {
                         System.out.println("Ghost Time!");
@@ -176,7 +195,7 @@ public class run_ghost extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
-            g.drawImage(imageGun, 100, 220, 150, 100, this);
+            g.drawImage(imageCharacter, 100, 220, 150, 100, this);
 
             timeString = String.format("%02d:%02d", minutes , seconds);        
             

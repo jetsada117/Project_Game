@@ -44,7 +44,7 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textCount = new JLabel();
     PlayerObject player = new PlayerObject();
     PlayerAll playerob = new PlayerAll();
-    run_ghost playgame = new run_ghost(playerob);
+    run_ghost playgame;
     Setting setting;
 
     public SettingPanel(Setting setting) {
@@ -222,6 +222,7 @@ class ClientThread extends Thread {
     run_ghost playgame;
     Setting setting;
     PlayerAll playerob;
+    boolean isPlaying = false;
     int index;
     int player;
     int countReady;
@@ -254,6 +255,7 @@ class ClientThread extends Thread {
                     player = Serverob.getPlayer();
                     playerob.setPlayer(player);
                     playerob.setIndex(index);
+                    playerob.setSkin(Serverob.getSkin(index), index);
 
                     for (int i = 0; i < player; i++) {
                         playerob.setReady(Serverob.isReady(i), i);
@@ -298,8 +300,10 @@ class ClientThread extends Thread {
 
                     client.textReady.setText("Ready : (" + countReady + "/" + player +")");
 
-                    if(allPlayersReady() && Serverob.getCount() <= 0) 
+                    if(allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) 
                     {
+                        playgame = new run_ghost(playerob);
+
                         // เปิดเฟรม run_ghost
                         playgame.setVisible(true);                        
                         playerob.setIsStart(true);
@@ -308,6 +312,8 @@ class ClientThread extends Thread {
                         
                         // ปิดเฟรม Setting
                         setting.dispose(); // ปิด Setting frame
+
+                        isPlaying = true;
                     }
                 }
 
