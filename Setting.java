@@ -288,10 +288,10 @@ class ClientThread extends Thread {
                     player = Serverob.getPlayer();
                     playerob.setPlayer(player);
                     playerob.setIndex(index);
-                    playerob.setSkin(Serverob.getSkin(index), index);
 
                     for (int i = 0; i < player; i++) {
                         playerob.setReady(Serverob.isReady(i), i);
+                        playerob.setSkin(Serverob.getSkin(i), i);
                     }
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
