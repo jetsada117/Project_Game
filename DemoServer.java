@@ -200,7 +200,6 @@ class PlayerThread extends Thread {
     public void run() {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
-
                 for (int i = 0; i < Serversob.sizePosition(index); i++) {
                     if (Serversob.getPosition(index, i) != null) {
                         x = Serversob.getPosition(index, i);
@@ -243,8 +242,8 @@ class PlayerThread extends Thread {
 class Stopwatch extends TimerTask {
     private final ServerObject serverob;
     private final int index;
-    private int seconds = 5;
-    private int minutes = 0;
+    private int seconds = 0;
+    private int minutes = 5;
     private String word;
 
     String[] shortVocabulary = { "growth", "market", "energy", "safety", "health",

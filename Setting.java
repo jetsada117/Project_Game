@@ -292,6 +292,7 @@ class ClientThread extends Thread {
                     for (int i = 0; i < player; i++) {
                         playerob.setReady(Serverob.isReady(i), i);
                         playerob.setSkin(Serverob.getSkin(i), i);
+                        playerob.setName(Serverob.getName(i), i);
                     }
 
                     // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
@@ -332,9 +333,6 @@ class ClientThread extends Thread {
                                             playerob.deleteword(i, k);
                                         }
                                     }
-
-                                    // System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));
-                                    
                                 }
                             }
                         }
@@ -365,7 +363,6 @@ class ClientThread extends Thread {
                     {
                         playgame = new run_ghost(playerob);
 
-                        // เปิดเฟรม run_ghost
                         playgame.setVisible(true);                        
                         playerob.setStart(true);
 

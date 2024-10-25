@@ -81,8 +81,7 @@ public class run_ghost extends JFrame implements KeyListener {
             while (true) {
                 try {
                     Thread.sleep(10);
-                } catch (InterruptedException e) {
-                }
+                } catch (InterruptedException e) {}
 
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
@@ -99,14 +98,22 @@ public class run_ghost extends JFrame implements KeyListener {
             setLayout(null);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
             for (int i = 0; i < playerob.getPlayer(); i++) {
-                System.out.println("i = " + i + " , skin : " + playerob.getSkin(i));
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
-                        System.out.println("player : " + i + " , k = " + k);
                         g.drawImage(imageCharacter[k], 100, 220 + (i * 130), 150, 100, this);
                         break;
                     }
                 }
+            }
+
+            for (int i = 0; i < playerob.getPlayer(); i++) 
+            {
+                String name = playerob.getName(i);
+                System.out.println("player ["+ i +"] , name : "+ name);
+
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25));
+                g.drawString(name, 100, playerob.getY(i));
             }
 
             timeString = String.format("%02d:%02d", minutes, seconds);
@@ -135,6 +142,7 @@ public class run_ghost extends JFrame implements KeyListener {
                     }
                 }
             }
+
             if (minutes == 0 && seconds == 0) {
                 JButton Exit = new JButton();
                 Icon imageExit = new ImageIcon(
@@ -168,10 +176,6 @@ public class run_ghost extends JFrame implements KeyListener {
                     }
                 });
             }
-
-            g.setColor(Color.WHITE); // ชื่อคน
-            g.setFont(new Font("Arial", Font.BOLD, 25));
-            g.drawString("ghost1", 100, 220);
         }
     }
 

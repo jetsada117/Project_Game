@@ -13,8 +13,8 @@ public class ServerObject implements Serializable {
     private int index;
     private int player;
     private int count;
-    private int seconds = 3;
-    private int minutes = 0;
+    private int seconds = 0;
+    private int minutes = 5;
 
     public ServerObject() {
         for (int i = 0; i < position.length; i++) {
