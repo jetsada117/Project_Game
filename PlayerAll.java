@@ -116,6 +116,14 @@ public class PlayerAll implements Serializable {
         return position[ind].get(i);
     }
 
+    public int sizePosition(int ind) {
+        return position[ind].size();
+    }
+
+    public int sizePosition() {
+        return position.length;
+    }
+
     public int getY(int ind) {
         return y[ind];
     }

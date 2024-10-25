@@ -312,6 +312,21 @@ class ClientThread extends Thread {
                             {
                                 for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
                                     System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
+
+                                    wordString = Serverob.getWord(i, k);
+                                    
+                                    // ตรวจสอบว่ามีคำหรือไม่
+                                    if (k >= playerob.sizePosition(i)) {
+                                        playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
+                                        playerob.setWord(i, wordString);
+                                    }
+                                    else 
+                                    {
+                                        playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                    }
+
+                                    System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));
+                                    
                                 }
                             }
                         }
