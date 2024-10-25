@@ -139,7 +139,7 @@ class SettingPanel extends JPanel implements ActionListener {
         g.drawImage(imageArrow, 350, 360, 50, 50, this);
        
         g.setFont(new Font("Tahoma", Font.BOLD, 40));
-        g.setColor(Color.ORANGE);
+        g.setColor(Color.GREEN);
         g.drawString("SETTING", 500, 150);
 
         g.setFont(new Font("Tahoma", Font.BOLD, 15));
