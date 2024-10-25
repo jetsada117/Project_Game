@@ -44,12 +44,13 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textCount = new JLabel();
     PlayerObject player = new PlayerObject();
     PlayerAll playerob = new PlayerAll();
-    Home home = new Home();
+    Home home;
     run_ghost playgame;
     Setting setting;
 
-    public SettingPanel(Setting setting) {
+    public SettingPanel(Setting setting, Home home) {
         this.setting = setting; // รับอ้างอิงไปยัง Setting
+        this.home = home;
 
         this.setSize(1200, 800);
         this.setLayout(null);
@@ -137,7 +138,7 @@ class SettingPanel extends JPanel implements ActionListener {
         g.drawImage(imageArrow, 350, 200, 50, 50, this);
         g.drawImage(imageArrow, 350, 280, 50, 50, this);
         g.drawImage(imageArrow, 350, 360, 50, 50, this);
-       
+
         g.setFont(new Font("Tahoma", Font.BOLD, 40));
         g.setColor(Color.ORANGE);
         g.drawString("SETTING", 500, 150);
@@ -254,6 +255,7 @@ class ClientThread extends Thread {
     Setting setting;
     PlayerAll playerob;
     boolean isPlaying = false;
+    String wordString;
     int index;
     int player;
     int countReady;
@@ -304,24 +306,45 @@ class ClientThread extends Thread {
                             playerob.setMinutes(Serverob.getMinutes());
                             playerob.setSeconds(Serverob.getSeconds());
                         }
+
+                        if ((Serverob.getCount() < 0) && Serverob.hasPosition(index)) {
+
+                            for (int i = 0; i < player ; i++) 
+                            {
+                                for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
+                                    System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
+
+                                    wordString = Serverob.getWord(i, k);
+                                    
+                                    // ตรวจสอบว่ามีคำหรือไม่
+                                    if (k >= playerob.sizePosition(i)) {
+                                        playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
+                                        playerob.setWord(i, wordString);
+                                    }
+                                    else 
+                                    {
+                                        playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                    }
+
+                                    System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));
+                                    
+                                }
+                            }
+                        }
                     } 
                     else 
                     {
                         switch (Serverob.getIndex()) {
                             case 0:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 1st Player");
                                 break;
                             case 1:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 2nd Player");
                                 break;
                             case 2:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 3rd Player");
                                 break;
                             case 3:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 4th Player");
                                 break;
                             default:
@@ -337,11 +360,8 @@ class ClientThread extends Thread {
 
                         // เปิดเฟรม run_ghost
                         playgame.setVisible(true);                        
-                        playerob.setIsStart(true);
+                        playerob.setStart(true);
 
-                        System.out.println("isStart[setting] : "+ playerob.isIsStart());
-                        
-                        // ปิดเฟรม Setting
                         setting.setVisible(false); // ซ่อน Setting frame
 
                         isPlaying = true;
@@ -375,11 +395,15 @@ class ClientThread extends Thread {
 }
 
 class Setting extends JFrame {
-    public Setting() {
+    Home home;
+
+    public Setting(Home home) {
+        this.home = home;
+
         this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.add(new SettingPanel(this)); // ส่ง Setting ให้ SettingPanel
+        this.add(new SettingPanel(this, home)); // ส่ง Setting ให้ SettingPanel
         this.setVisible(true);
     }
 }

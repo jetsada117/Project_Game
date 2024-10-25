@@ -5,9 +5,6 @@ public class PlayerObject implements Serializable {
     private int x;
     private boolean Ready = false;
     private int skin; 
-    private int count;
-    private int seconds;
-    private int minutes;
 
     public void setName(String name) {
         this.name = name;
@@ -31,30 +28,6 @@ public class PlayerObject implements Serializable {
 
     public boolean isReady() {
         return Ready;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public int getSeconds() {
-        return seconds;
-    }
-
-    public int getMinutes() {
-        return minutes;
     }
 
     public void setSkin(int skin) {

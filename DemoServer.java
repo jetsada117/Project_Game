@@ -183,8 +183,9 @@ class ServerThread extends Thread {
 class PlayerThread extends Thread {
     ServerObject Serversob;
     int index;    
-    int x;
     int count = 5;
+    int x;
+    int ghost;
     String clientIP;
 
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
@@ -193,21 +194,25 @@ class PlayerThread extends Thread {
         this.clientIP = clientIP;
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new Stopwatch(this.Serversob), 10000, 1000);
+        timer.scheduleAtFixedRate(new Stopwatch(this.Serversob, this.index), 10000, 1000);
 
         this.Serversob.setPlayer(player);
-        this.Serversob.setX(1200, this.index);
     }
 
     @Override
     public void run() {
         while (true) {
-            if (count<0) {
-                x = Serversob.getX(index);
-                Serversob.setX(x - 1, index);
+            if ((count < 0) && Serversob.hasPosition(index)) {
+
+                for (int i = 0; i < Serversob.sizePosition(index); i++) {
+                    x = Serversob.getPosition(index, i);
+                    Serversob.setPosition(index, i, x-1);
+
+                    System.out.println("position["+ i +"] : "+ (x-1) + ", word : "+ Serversob.getWord(index, i));
+                }
 
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
@@ -235,12 +240,29 @@ class PlayerThread extends Thread {
 
 
 class Stopwatch extends TimerTask {
-    private final ServerObject serverob;
+    private final ServerObject serverob;    
+    private final int index;
     private int seconds = 0;
     private int minutes = 5;
+    private String word;
 
-    public Stopwatch(ServerObject serverob) {
+    String[] shortVocabulary = 
+    {   "growth", "market", "energy", "safety", "health", 
+        "impact", "change", "rights", "supply", "demand", 
+        "travel", "export", "import", "survey", "status", 
+        "profit", "credit", "carbon", "crisis", "policy", 
+        "trade", "income", "budget", "people", "global", 
+        "labour", "public", "future", "border", "manage", 
+        "report", "result", "access", "nation", "sector", 
+        "supply", "output", "target", "reform", "survey", 
+        "profit", "export", "import", "credit", "debate", 
+        "review", "access", "policy", "growth", "carbon",
+        "ronnakit", "teeranai", "nattapong", "jetsada", "peerapong"
+    };
+
+    public Stopwatch(ServerObject serverob, int index) {
         this.serverob = serverob;
+        this.index = index;
     }
 
     @Override
@@ -260,5 +282,15 @@ class Stopwatch extends TimerTask {
                 cancel(); // หยุด Timer เมื่อการนับถอยหลังเสร็จสิ้น
             }
         }
+
+        try {
+            if ((seconds % 10 == 0) && (minutes < 5)) {
+                System.out.println("Server Ghost time!");
+    
+                serverob.addPosition(index, 1200, (index * 130) + 220);
+                word = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
+                serverob.setWord(index, word);
+            }
+        } catch (Exception e) {}
     }
 }

@@ -1,10 +1,13 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class PlayerAll implements Serializable {
     private final String [] playername = new String[4];
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
-    private final int [] x = new int[4];
+    private final ArrayList <Integer> [] position = new ArrayList[4];
+    private final ArrayList <String> [] word = new ArrayList[4]; 
+    private final int [] y = new int[4];
     private final int [] skin = new int[4];
     private boolean isStart;
     private int index;
@@ -13,20 +16,19 @@ public class PlayerAll implements Serializable {
     private int seconds;
     private int minutes;
 
+    public PlayerAll() {
+        for (int i = 0; i < position.length; i++) {
+            position[i] = new ArrayList<>();
+            word[i] = new ArrayList<>();
+        }
+    }
+
     public void setName(String name, int ind) {
         this.playername[ind] = name;
     }
     
     public String getName(int ind) {
         return playername[ind];
-    }
-
-    public void setX(int x, int ind) {
-        this.x[ind] = x;
-    }
-
-    public int getX(int ind) {
-        return x[ind];
     }
 
     public void setReady(boolean Ready, int ind) {
@@ -85,14 +87,13 @@ public class PlayerAll implements Serializable {
         return index;
     }
 
-    public void setIsStart(boolean isStart) {
+    public void setStart(boolean isStart) {
         this.isStart = isStart;
     }
 
-    public boolean isIsStart() {
+    public boolean isStart() {
         return isStart;
     }
-
 
     public void setSkin(int skin, int ind) {
         this.skin[ind] = skin;
@@ -100,6 +101,44 @@ public class PlayerAll implements Serializable {
     
     public int getSkin(int ind) {
         return skin[ind];
+    }
+
+    public void setPosition(int ind, int i, int position) {
+        this.position[ind].set(i, position);
+    }
+
+    public void addPosition(int ind, int positionX, int positionY) {
+        this.position[ind].add(positionX);
+        this.y[ind] = positionY;
+    }
+
+    public int getPosition(int ind, int i) {
+        return position[ind].get(i);
+    }
+
+    public int sizePosition(int ind) {
+        return position[ind].size();
+    }
+
+    public int sizePosition() {
+        return position.length;
+    }
+
+    public int getY(int ind) {
+        return y[ind];
+    }
+
+    public void setWord( int ind, String word) {
+        this.word[ind].add(word);
+    }
+
+    public String getWord(int ind, int i) {
+        return word[ind].get(i);
+    }
+
+    public boolean containWord(int ind, String wordString)  
+    {
+        return word[ind].contains(wordString);
     }
 }
 

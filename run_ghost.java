@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+<<<<<<< HEAD
 public class run_ghost extends JFrame implements KeyListener {
     int[] ghostX; // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
     int[] ghostY; // Array สำหรับเก็บตำแหน่ง y ของรูปภาพ
@@ -20,6 +21,24 @@ public class run_ghost extends JFrame implements KeyListener {
     int ghostCount = 0; // นับจำนวนรูปภาพใน Array
     int ghost1 = 0;
     int maxGhost = 100; // จำนวนรูปภาพสูงสุดที่รองรับ
+=======
+public class run_ghost extends JFrame {
+    int[] ghostX;  // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
+    int[] ghostY;  // Array สำหรับเก็บตำแหน่ง y ของรูปภาพ
+    int ghostCount = 0;  // นับจำนวนรูปภาพใน Array
+    int[] xSpeed;  // ความเร็วในแนวนอนของแต่ละรูปภาพ
+    Image[] imagesGhost1;  // อาเรย์สำหรับเก็บรูปภาพ
+    String[] words;  // อาเรย์สำหรับเก็บคำที่ตรงกับรูปภาพ
+    String timeString;
+    Image imageBg;
+    Image imageCharacter;
+    PlayerAll playerob;
+    int ghost1 = 0;
+    int maxGhost = 100;  // จำนวนรูปภาพสูงสุดที่รองรับ
+    int minutes;
+    int seconds;
+    int index;
+>>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
 
     int[] xSpeed; // ความเร็วในแนวนอนของแต่ละรูปภาพ
 
@@ -101,6 +120,7 @@ public class run_ghost extends JFrame implements KeyListener {
 
     // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
     class ImageAdder extends Thread {
+<<<<<<< HEAD
         @Override
         public void run() {
             while (running) {
@@ -112,6 +132,33 @@ public class run_ghost extends JFrame implements KeyListener {
 
                     // เลือกคำแบบสุ่มจาก shortVocabulary และเก็บในอาเรย์ words
                     words[ghostCount] = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
+=======
+        private final CirclePanel panel;
+
+        public ImageAdder(CirclePanel panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                System.out.println("isStarted [playgame ] is "+ playerob.isStart());
+                seconds = playerob.getSeconds();
+                minutes = playerob.getMinutes();
+
+                if (playerob.isStart()) {
+        
+                    if ((seconds % 10 == 0) && (minutes < 5)) {
+                        System.out.println("Ghost Time!");
+    
+                        ghostX[ghostCount] = getWidth();
+                        ghostY[ghostCount] = 220;
+                        xSpeed[ghostCount] = -1;
+                            
+                        words[ghostCount] = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
+                        
+                        ghostCount++;
+>>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
 
                     ghostCount++; // เพิ่มจำนวนรูปภาพ
                 }
@@ -151,7 +198,7 @@ public class run_ghost extends JFrame implements KeyListener {
 
     // สร้างคลาส Thread สำหรับอัปเดตตำแหน่งรูปภาพ
     class ImageMover extends Thread {
-        private CirclePanel panel;
+        private final CirclePanel panel;
 
         public ImageMover(CirclePanel panel) {
             this.panel = panel;
@@ -159,10 +206,17 @@ public class run_ghost extends JFrame implements KeyListener {
 
         @Override
         public void run() {
+<<<<<<< HEAD
             while (running) {
                 // อัปเดตตำแหน่งของรูปภาพทุกลูก
                 for (int i = 0; i < ghostCount; i++) {
                     ghostX[i] += xSpeed[i]; // เคลื่อนที่รูปภาพในแนวนอน
+=======
+            while (true) {
+                if (playerob.isStart()) {
+                    for (int i = 0; i < ghostCount; i++) {
+                        ghostX[i] += xSpeed[i];  // เคลื่อนที่รูปภาพในแนวนอน
+>>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
 
                     // ตรวจสอบว่าชนขอบหน้าต่างด้านซ้ายหรือไม่
                     if (imagesGhost1[i] != null) {
