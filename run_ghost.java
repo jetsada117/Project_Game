@@ -13,8 +13,6 @@ public class run_ghost extends JFrame {
     int[] ghostX;  // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
     int[] ghostY;  // Array สำหรับเก็บตำแหน่ง y ของรูปภาพ
     int ghostCount = 0;  // นับจำนวนรูปภาพใน Array
-    int ghost1 = 0;
-    int maxGhost = 100;  // จำนวนรูปภาพสูงสุดที่รองรับ
     int[] xSpeed;  // ความเร็วในแนวนอนของแต่ละรูปภาพ
     Image[] imagesGhost1;  // อาเรย์สำหรับเก็บรูปภาพ
     String[] words;  // อาเรย์สำหรับเก็บคำที่ตรงกับรูปภาพ
@@ -22,6 +20,8 @@ public class run_ghost extends JFrame {
     Image imageBg;
     Image imageCharacter;
     PlayerAll playerob;
+    int ghost1 = 0;
+    int maxGhost = 100;  // จำนวนรูปภาพสูงสุดที่รองรับ
     int minutes;
     int seconds;
     int index;
@@ -98,7 +98,7 @@ public class run_ghost extends JFrame {
 
     // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
     class ImageAdder extends Thread {
-        private CirclePanel panel;
+        private final CirclePanel panel;
 
         public ImageAdder(CirclePanel panel) {
             this.panel = panel;
@@ -107,11 +107,11 @@ public class run_ghost extends JFrame {
         @Override
         public void run() {
             while (true) {
-                System.out.println("isStart[run] : "+ playerob.isIsStart());
-                minutes = playerob.getMinutes();
+                // System.out.println("isStarted [playgame ] is "+ playerob.isStart());
                 seconds = playerob.getSeconds();
+                minutes = playerob.getMinutes();
 
-                if (playerob.isIsStart()) {
+                if (playerob.isStart()) {
         
                     if ((seconds % 10 == 0) && (minutes < 5)) {
                         System.out.println("Ghost Time!");
@@ -142,7 +142,7 @@ public class run_ghost extends JFrame {
 
     // สร้างคลาส Thread สำหรับอัปเดตตำแหน่งรูปภาพ
     class ImageMover extends Thread {
-        private CirclePanel panel;
+        private final CirclePanel panel;
 
         public ImageMover(CirclePanel panel) {
             this.panel = panel;
@@ -151,7 +151,7 @@ public class run_ghost extends JFrame {
         @Override
         public void run() {
             while (true) {
-                if (playerob.isIsStart()) {
+                if (playerob.isStart()) {
                     for (int i = 0; i < ghostCount; i++) {
                         ghostX[i] += xSpeed[i];  // เคลื่อนที่รูปภาพในแนวนอน
 

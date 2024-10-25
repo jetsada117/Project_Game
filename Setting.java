@@ -254,6 +254,7 @@ class ClientThread extends Thread {
     Setting setting;
     PlayerAll playerob;
     boolean isPlaying = false;
+    String wordString;
     int index;
     int player;
     int countReady;
@@ -304,24 +305,30 @@ class ClientThread extends Thread {
                             playerob.setMinutes(Serverob.getMinutes());
                             playerob.setSeconds(Serverob.getSeconds());
                         }
+
+                        if ((Serverob.getCount() < 0) && Serverob.hasPosition(index)) {
+
+                            for (int i = 0; i < player ; i++) 
+                            {
+                                for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
+                                    System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
+                                }
+                            }
+                        }
                     } 
                     else 
                     {
                         switch (Serverob.getIndex()) {
                             case 0:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 1st Player");
                                 break;
                             case 1:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 2nd Player");
                                 break;
                             case 2:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 3rd Player");
                                 break;
                             case 3:
-                                System.out.println(player);
                                 client.textNumber.setText("Player : 4th Player");
                                 break;
                             default:
@@ -337,11 +344,8 @@ class ClientThread extends Thread {
 
                         // เปิดเฟรม run_ghost
                         playgame.setVisible(true);                        
-                        playerob.setIsStart(true);
+                        playerob.setStart(true);
 
-                        System.out.println("isStart[setting] : "+ playerob.isIsStart());
-                        
-                        // ปิดเฟรม Setting
                         setting.setVisible(false); // ซ่อน Setting frame
 
                         isPlaying = true;
