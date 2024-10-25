@@ -312,7 +312,7 @@ class ClientThread extends Thread {
                             for (int i = 0; i < player ; i++) 
                             {
                                 for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
-                                    System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
+                                    // System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
 
                                     wordString = Serverob.getWord(i, k);
                                     
@@ -333,7 +333,7 @@ class ClientThread extends Thread {
                                         }
                                     }
 
-                                    System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));
+                                    // System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));
                                     
                                 }
                             }

@@ -114,8 +114,12 @@ class ServerThread extends Thread {
                                 Serversob.setReady(playerob.isReady(), i);
                                 Serversob.setSkin(playerob.getSkin(), i);
 
-                                System.out.println("Skin : NO." + Serversob.getSkin(i));
-                                System.out.println(playerob.isReady());
+                                for (int k = 0 ; k < players.size() ; k++)
+                                {
+                                    System.out.println("player["+ k +"] , skin : NO." + Serversob.getSkin(k));
+                                    System.out.println(playerob.isReady());
+                                }
+
 
                                 if (Serversob.isReady(i)) {
                                     server.User[i].setText(Serversob.getName(i) + "(Ready)");
