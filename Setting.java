@@ -322,7 +322,14 @@ class ClientThread extends Thread {
                                     }
                                     else 
                                     {
-                                        playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                        if (Serverob.getPosition(i, k) != null) {
+                                            playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                        }
+                                        else
+                                        {
+                                            playerob.deletePosition(i, k);
+                                            playerob.deleteword(i, k);
+                                        }
                                     }
 
                                     System.out.println(" x : "+ playerob.getPosition(i, k) +" , y : "+ playerob.getY(i) +" , " + playerob.getWord(i, k));

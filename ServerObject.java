@@ -112,7 +112,7 @@ public class ServerObject implements Serializable {
         this.y[ind] = positionY;
     }
 
-    public int getPosition(int ind, int i) {
+    public Integer getPosition(int ind, int i) {
         return position[ind].get(i);
     }
 
@@ -128,6 +128,11 @@ public class ServerObject implements Serializable {
         return position.length;
     }
 
+    public void deletePosition(int ind, int i) 
+    {
+        this.position[ind].set(i, null);
+    }
+
     public int getY(int ind) {
         return y[ind];
     }
@@ -138,6 +143,11 @@ public class ServerObject implements Serializable {
 
     public String getWord(int ind, int i) {
         return word[ind].get(i);
+    }
+
+    public void deleteword(int ind, int i) 
+    {
+        position[ind].set(ind, null);
     }
 
     public boolean containWord(int ind, String wordString)  

@@ -9,6 +9,7 @@ public class PlayerAll implements Serializable {
     private final ArrayList <String> [] word = new ArrayList[4]; 
     private final int [] y = new int[4];
     private final int [] skin = new int[4];
+    private final int [] score = new int[4];
     private boolean isStart;
     private int index;
     private int player;
@@ -112,7 +113,7 @@ public class PlayerAll implements Serializable {
         this.y[ind] = positionY;
     }
 
-    public int getPosition(int ind, int i) {
+    public Integer getPosition(int ind, int i) {
         return position[ind].get(i);
     }
 
@@ -122,6 +123,15 @@ public class PlayerAll implements Serializable {
 
     public int sizePosition() {
         return position.length;
+    }
+
+    public boolean hasPosition(int ind) {
+        return !position[ind].isEmpty();
+    }
+
+    public void deletePosition(int ind, int i) 
+    {
+        this.position[ind].set(i, null);
     }
 
     public int getY(int ind) {
@@ -136,9 +146,13 @@ public class PlayerAll implements Serializable {
         return word[ind].get(i);
     }
 
+    public void deleteword(int ind, int i) 
+    {
+        position[ind].set(ind, null);
+    }
+
     public boolean containWord(int ind, String wordString)  
     {
         return word[ind].contains(wordString);
     }
 }
-

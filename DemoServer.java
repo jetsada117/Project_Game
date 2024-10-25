@@ -205,14 +205,21 @@ class PlayerThread extends Thread {
             if ((count < 0) && Serversob.hasPosition(index)) {
 
                 for (int i = 0; i < Serversob.sizePosition(index); i++) {
-                    x = Serversob.getPosition(index, i);
-                    Serversob.setPosition(index, i, x-1);
+                    if (Serversob.getPosition(index, i) != null) {
+                        x = Serversob.getPosition(index, i);
+                        Serversob.setPosition(index, i, x-1);
+                    }
+
+                    if (x-1 < 250) {
+                        Serversob.deletePosition(index, i);
+                        Serversob.deleteword(index, i);
+                    }
 
                     System.out.println("position["+ i +"] : "+ (x-1) + ", word : "+ Serversob.getWord(index, i));
                 }
 
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
