@@ -107,7 +107,7 @@ public class run_ghost extends JFrame {
         @Override
         public void run() {
             while (true) {
-                // System.out.println("isStarted [playgame ] is "+ playerob.isStart());
+                System.out.println("isStarted [playgame ] is "+ playerob.isStart());
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
@@ -116,15 +116,13 @@ public class run_ghost extends JFrame {
                     if ((seconds % 10 == 0) && (minutes < 5)) {
                         System.out.println("Ghost Time!");
     
-                        // เริ่มจากตำแหน่ง x = getWidth() (ด้านขวา) และตำแหน่ง y แบบสุ่มในหน้าต่าง
-                        ghostX[ghostCount] = getWidth();  // เริ่มจากด้านขวาของหน้าต่าง
+                        ghostX[ghostCount] = getWidth();
                         ghostY[ghostCount] = 220;
-                        xSpeed[ghostCount] = -1;  // กำหนดความเร็วให้เคลื่อนไปทางซ้าย
+                        xSpeed[ghostCount] = -1;
                             
-                        // เลือกคำแบบสุ่มจาก shortVocabulary และเก็บในอาเรย์ words
                         words[ghostCount] = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
                         
-                        ghostCount++;  // เพิ่มจำนวนรูปภาพ
+                        ghostCount++;
 
                         System.out.println("Ghost count : "+ ghostCount);
 
