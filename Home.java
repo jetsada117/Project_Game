@@ -18,31 +18,36 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Home extends JFrame implements ActionListener{
+public class Home extends JFrame implements ActionListener {
     private final JButton btnStart = new JButton();
     private final JButton btnExit = new JButton();
 
-    private Image imageName = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator+ "I_name.png");
-    private Image imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator+ "Screenshot 2024-10-08 211105.png");
+    private Image imageName = Toolkit.getDefaultToolkit()
+            .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "I_name.png");
+    private Image imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
+            + "Image" + File.separator + "Screenshot 2024-10-08 211105.png");
+    private Image image = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
+            + "Image" + File.separator + "XXX.png");
 
-    private final JPanel panel = new JPanel(){
+    private final JPanel panel = new JPanel() {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
-            g.drawImage(imageName, 280, 100, imageName.getWidth(this), imageName.getHeight(this), this);
+            g.drawImage(imageName, 260, 100, imageName.getWidth(this) + 50, imageName.getHeight(this) + 50, this);
+            g.drawImage(image, 630, 350, image.getWidth(this), image.getHeight(this), this);
         }
     };
 
-    public Home(){
-
+    public Home() {
+        setUndecorated(true);
         setSize(1200, 800);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         panel.setSize(1200, 800);
-        panel.setLayout(null); 
-        
+        panel.setLayout(null);
+
         btn();
         playSound sound = new playSound();
         sound.start();
@@ -55,13 +60,15 @@ public class Home extends JFrame implements ActionListener{
         btnStart.addActionListener(this);
         btnExit.addActionListener(this);
     }
-    
-    void btn(){
-        Icon imageStart = new ImageIcon(System.getProperty("user.dir") + File.separator +"Image"+ File.separator+ "I_start.png");
-        Icon imageExit = new ImageIcon(System.getProperty("user.dir") + File.separator +"Image"+ File.separator+ "I_exit.png");
 
-        btnStart.setBounds(425, 300, imageStart.getIconWidth(), imageStart.getIconHeight());
-        btnExit.setBounds(425, 500, imageExit.getIconWidth(), imageExit.getIconHeight());
+    void btn() {
+        Icon imageStart = new ImageIcon(
+                System.getProperty("user.dir") + File.separator + "Image" + File.separator + "I_start.png");
+        Icon imageExit = new ImageIcon(
+                System.getProperty("user.dir") + File.separator + "Image" + File.separator + "I_exit.png");
+
+        btnStart.setBounds(425, 320, imageStart.getIconWidth(), imageStart.getIconHeight());
+        btnExit.setBounds(425, 450, imageExit.getIconWidth(), imageExit.getIconHeight());
 
         btnStart.setIcon(imageStart);
         btnExit.setIcon(imageExit);
@@ -73,7 +80,6 @@ public class Home extends JFrame implements ActionListener{
         btnExit.setFocusPainted(false);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnStart) {
@@ -83,13 +89,11 @@ public class Home extends JFrame implements ActionListener{
             setting.setVisible(true);
 
             this.setVisible(false);
-        }
-        else if (e.getSource() == btnExit) 
-        {
+        } else if (e.getSource() == btnExit) {
             System.exit(0);
         }
     }
-    
+
     public static void main(String[] args) {
         Home home = new Home();
         home.setVisible(true);
@@ -113,7 +117,7 @@ class playSound extends Thread {
             }
 
         } catch (IOException | InterruptedException | LineUnavailableException | UnsupportedAudioFileException e) {
-            System.out.println("sound : " +e);
+            System.out.println("sound : " + e);
         }
     }
 }

@@ -3,17 +3,26 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-public class run_ghost extends JFrame {
+public class run_ghost extends JFrame implements KeyListener{
     Image imagesGhost1;
     String timeString;
     Image imageBg;
-    Image [] imageCharacter;
+    Image[] imageCharacter;
     PlayerAll playerob;
     int minutes;
     int seconds;
@@ -37,25 +46,27 @@ public class run_ghost extends JFrame {
         try {
             InetAddress ip = InetAddress.getLocalHost();
 
-            for (int i = 0; i < this.playerob.getPlayer() ; i++) {
-                if (ip.getHostAddress().equals(this.playerob.getIP(i)))
-                {
+            for (int i = 0; i < this.playerob.getPlayer(); i++) {
+                if (ip.getHostAddress().equals(this.playerob.getIP(i))) {
                     index = i;
-                    System.out.println("Index gameplay : "+ index);
+                    System.out.println("Index gameplay : " + index);
                     break;
                 }
             }
         } catch (UnknownHostException e) {
-            System.err.println("UnknowHost: "+ e);
+            System.err.println("UnknowHost: " + e);
         }
 
-        System.out.println("skin : "+ this.playerob.getSkin(index));
-        imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "b.png");
-        imagesGhost1 = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + "ghost1.png");
+        System.out.println("skin : " + this.playerob.getSkin(index));
+        imageBg = Toolkit.getDefaultToolkit()
+                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
+        imagesGhost1 = Toolkit.getDefaultToolkit()
+                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost1.png");
         imageCharacter = new Image[playerob.getPlayer()];
 
-        for (int i = 0; i < playerob.getPlayer() ; i++) {
-            imageCharacter[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator +"Image"+ File.separator + String.valueOf(playerob.getSkin(i)) +".png");
+        for (int i = 0; i < playerob.getPlayer(); i++) {
+            imageCharacter[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
+                    + "Image" + File.separator + String.valueOf(playerob.getSkin(i)) + ".png");
         }
     }
 
@@ -72,7 +83,8 @@ public class run_ghost extends JFrame {
             while (true) {
                 try {
                     Thread.sleep(10);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
 
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
@@ -87,23 +99,22 @@ public class run_ghost extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
-            for (int i = 0; i < playerob.getPlayer() ; i++) 
-            {
-                g.drawImage(imageCharacter[i], 100, 220 + (i *130), 150, 100, null);
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                g.drawImage(imageCharacter[i], 100, 220 + (i * 130), 150, 100, null);
             }
 
-            timeString = String.format("%02d:%02d", minutes , seconds);        
-            
+            timeString = String.format("%02d:%02d", minutes, seconds);
+
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 25)); 
+            g.setFont(new Font("Arial", Font.BOLD, 25));
             g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
             g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 25)); 
+            g.setFont(new Font("Arial", Font.BOLD, 25));
 
             // วาดรูปภาพทั้งหมดจาก Array
             if (playerob.hasPosition(index)) {
-                for (int i = 0; i < playerob.getPlayer() ; i++) {
+                for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.sizePosition(i); k++) {
 
                         if (null != playerob.getPosition(i, k)) {
@@ -111,12 +122,62 @@ public class run_ghost extends JFrame {
 
                             // วาดคำที่อยู่บนรูปภาพจากอาเรย์ words
                             g.setColor(Color.WHITE);
-                            g.setFont(new Font("Arial", Font.BOLD, 25)); 
-                            g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10, playerob.getY(i) - 10);
+                            g.setFont(new Font("Arial", Font.BOLD, 25));
+                            g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
+                                    playerob.getY(i) - 10);
                         }
                     }
                 }
             }
+            if (minutes == 0 && seconds == 0) {
+                JButton Exit = new JButton();
+                Icon imageExit = new ImageIcon(
+                        System.getProperty("user.dir") + File.separator + "Image" + File.separator + "Exit.png");
+                Exit.setBounds(515, 650, imageExit.getIconWidth(), imageExit.getIconHeight());
+                Exit.setIcon(imageExit);
+                Exit.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit.setContentAreaFilled(false);
+                Exit.setFocusPainted(false);
+                add(Exit);
+                Exit.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(0);
+                    }
+                });
+            } else {
+                JButton Exit0 = new JButton();
+                Icon imageExit0 = new ImageIcon(
+                        System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost.png");
+                Exit0.setBounds(1160, 9, imageExit0.getIconWidth(), imageExit0.getIconHeight());
+                Exit0.setIcon(imageExit0);
+                Exit0.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit0.setContentAreaFilled(false);
+                Exit0.setFocusPainted(false);
+                add(Exit0);
+                Exit0.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(0);
+                    }
+                });
+            }
+
+            g.setColor(Color.WHITE); // ชื่อคน
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+            g.drawString("ghost1", 100, 220);
+
         }
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+       
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }

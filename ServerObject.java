@@ -2,19 +2,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ServerObject implements Serializable {
-    private final String [] playername = new String[4];
-    private final String [] IP = new String[4];
-    private final boolean [] Ready = new boolean[4];
-    private final ArrayList <Integer> [] position = new ArrayList[4];
-    private final ArrayList <String> [] word = new ArrayList[4];    
-    private final int [] y = new int[4];
-    private final int [] skin = new int[4];
+    private final String[] playername = new String[4];
+    private final String[] IP = new String[4];
+    private final boolean[] Ready = new boolean[4];
+    private final ArrayList<Integer>[] position = new ArrayList[4];
+    private final ArrayList<String>[] word = new ArrayList[4];
+    private final int[] y = new int[4];
+    private final int[] skin = new int[4];
     private boolean isStart;
     private int index;
     private int player;
     private int count;
-    private int seconds = 0;
-    private int minutes = 5;
+    private int seconds = 3;
+    private int minutes = 0;
 
     public ServerObject() {
         for (int i = 0; i < position.length; i++) {
@@ -26,7 +26,7 @@ public class ServerObject implements Serializable {
     public void setName(String name, int ind) {
         this.playername[ind] = name;
     }
-    
+
     public String getName(int ind) {
         return playername[ind];
     }
@@ -128,8 +128,7 @@ public class ServerObject implements Serializable {
         return position.length;
     }
 
-    public void deletePosition(int ind, int i) 
-    {
+    public void deletePosition(int ind, int i) {
         this.position[ind].set(i, null);
     }
 
@@ -137,7 +136,7 @@ public class ServerObject implements Serializable {
         return y[ind];
     }
 
-    public void setWord( int ind, String word) {
+    public void setWord(int ind, String word) {
         this.word[ind].add(word);
     }
 
@@ -145,13 +144,11 @@ public class ServerObject implements Serializable {
         return word[ind].get(i);
     }
 
-    public void deleteword(int ind, int i) 
-    {
+    public void deleteword(int ind, int i) {
         position[ind].set(ind, null);
     }
 
-    public boolean containWord(int ind, String wordString)  
-    {
+    public boolean containWord(int ind, String wordString) {
         return word[ind].contains(wordString);
     }
 }

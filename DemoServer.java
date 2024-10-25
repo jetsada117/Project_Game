@@ -17,31 +17,31 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class DemoServer extends JFrame{
+public class DemoServer extends JFrame {
     JLabel address = new JLabel();
     JPanel container = new JPanel();
-    JPanel [] box = new JPanel[4];
-    JLabel [] User = new JLabel[4];
+    JPanel[] box = new JPanel[4];
+    JLabel[] User = new JLabel[4];
 
     public DemoServer() {
-        this.setSize(1000,600);
+        this.setSize(1000, 600);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
 
-        container.setLayout(new GridLayout(2,2,5,5));
+        container.setLayout(new GridLayout(2, 2, 5, 5));
         address.setFont(new Font("Tahoma", Font.BOLD, 20));
 
         add(address, BorderLayout.NORTH);
         add(container, BorderLayout.CENTER);
 
-        for (int i = 0; i < User.length ; i++) {
+        for (int i = 0; i < User.length; i++) {
             box[i] = new JPanel();
             box[i].setBackground(Color.cyan);
             box[i].setLayout(new BorderLayout());
             container.add(box[i]);
 
-            User[i] = new JLabel("Player " + (i+1));
+            User[i] = new JLabel("Player " + (i + 1));
             User[i].setHorizontalAlignment(SwingConstants.CENTER);
             User[i].setFont(new Font("Tahoma", Font.BOLD, 30));
             box[i].add(User[i], BorderLayout.CENTER);
@@ -58,15 +58,15 @@ public class DemoServer extends JFrame{
             InetAddress ip = InetAddress.getLocalHost();
             server.address.setText("Server IP : " + ip.getHostAddress());
             server.address.setHorizontalAlignment(SwingConstants.CENTER);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 }
 
-
 class ServerThread extends Thread {
     DemoServer server;
-    ServerObject Serversob = new ServerObject(); 
-    ArrayList <String> players = new ArrayList<>();
+    ServerObject Serversob = new ServerObject();
+    ArrayList<String> players = new ArrayList<>();
     int index = 0;
     int ready = 0;
 
@@ -89,10 +89,10 @@ class ServerThread extends Thread {
                 // รับค่าแบบเป็น object
                 ObjectInputStream objectInput = new ObjectInputStream(input);
                 Object receivedObject = objectInput.readObject();
-                
+
                 System.out.println("Connected with client IP: " + clientIP);
 
-                try {       
+                try {
                     if (receivedObject != null) {
                         // ตรวจสอบว่า object ที่รับเข้ามาเป็นประเภทใด เช่น Player
                         if (receivedObject instanceof PlayerObject playerob) {
@@ -117,30 +117,27 @@ class ServerThread extends Thread {
                                 System.out.println("Skin : NO." + Serversob.getSkin(i));
                                 System.out.println(playerob.isReady());
 
-                                if(Serversob.isReady(i)) 
-                                {
-                                    server.User[i].setText(Serversob.getName(i) +"(Ready)");
-                                }
-                                else
-                                {
-                                    server.User[i].setText(Serversob.getName(i) +"(Wait)");
+                                if (Serversob.isReady(i)) {
+                                    server.User[i].setText(Serversob.getName(i) + "(Ready)");
+                                } else {
+                                    server.User[i].setText(Serversob.getName(i) + "(Wait)");
                                 }
 
-                                if(!Serversob.isReady(i)) 
-                                {
+                                if (!Serversob.isReady(i)) {
                                     for (int k = 0; k < players.size(); k++) {
                                         String IpAddress = players.get(k);
                                         Serversob.setIndex(k);
                                         Serversob.setPlayer(players.size());
-                                        
+
                                         try (Socket clientSocket = new Socket(IpAddress, 5);
-                                        ObjectOutputStream objectOutput = new ObjectOutputStream(clientSocket.getOutputStream())) {
-                                            
-                                        objectOutput.writeObject(Serversob);
-                                        System.out.println("Output : " + IpAddress);
+                                                ObjectOutputStream objectOutput = new ObjectOutputStream(
+                                                        clientSocket.getOutputStream())) {
+
+                                            objectOutput.writeObject(Serversob);
+                                            System.out.println("Output : " + IpAddress);
 
                                         } catch (IOException e1) {
-                                            System.out.println("Error Output : "+e1);
+                                            System.out.println("Error Output : " + e1);
                                         }
                                     }
                                 }
@@ -149,40 +146,37 @@ class ServerThread extends Thread {
                     }
 
                 } catch (Exception e) {
-                    System.out.println("Error Received : "+ e);
+                    System.out.println("Error Received : " + e);
                 }
 
-                for (int i = 0; i < players.size() ; i++) {
-                    if(Serversob.isReady(i))
-                    {
+                for (int i = 0; i < players.size(); i++) {
+                    if (Serversob.isReady(i)) {
                         ready++;
-                    }
-                    else 
-                    {
+                    } else {
                         ready = 0;
                         break;
                     }
                 }
 
                 if (ready == players.size()) {
-                    for (int i = 0; i < players.size() ; i++) {
+                    for (int i = 0; i < players.size(); i++) {
                         String IpAddress = players.get(i);
                         System.out.println(IpAddress);
-                        
+
                         PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
                         thread.start();
                     }
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error Reveiced :"+ e);
+            System.out.println("Error Reveiced :" + e);
         }
-    }   
+    }
 }
 
 class PlayerThread extends Thread {
     ServerObject Serversob;
-    int index;    
+    int index;
     int count = 5;
     int x;
     String clientIP;
@@ -206,15 +200,15 @@ class PlayerThread extends Thread {
                 for (int i = 0; i < Serversob.sizePosition(index); i++) {
                     if (Serversob.getPosition(index, i) != null) {
                         x = Serversob.getPosition(index, i);
-                        Serversob.setPosition(index, i, x-1);
+                        Serversob.setPosition(index, i, x - 1);
                     }
 
-                    if (x-1 < 250) {
+                    if (x - 1 < 250) {
                         Serversob.deletePosition(index, i);
                         Serversob.deleteword(index, i);
                     }
 
-                    System.out.println("position["+ i +"] : "+ (x-1) + ", word : "+ Serversob.getWord(index, i));
+                    System.out.println("position[" + i + "] : " + (x - 1) + ", word : " + Serversob.getWord(index, i));
                 }
 
                 try {
@@ -222,9 +216,7 @@ class PlayerThread extends Thread {
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
-            }
-            else
-            {
+            } else {
                 Serversob.setCount(count--);
 
                 try {
@@ -238,31 +230,30 @@ class PlayerThread extends Thread {
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
             } catch (IOException e1) {
-                System.out.println("Error Output : "+ e1);
+                System.out.println("Error Output : " + e1);
             }
         }
     }
 }
 
 class Stopwatch extends TimerTask {
-    private final ServerObject serverob;    
+    private final ServerObject serverob;
     private final int index;
-    private int seconds = 0;
-    private int minutes = 5;
+    private int seconds = 5;
+    private int minutes = 0;
     private String word;
 
-    String[] shortVocabulary = 
-    {   "growth", "market", "energy", "safety", "health", 
-        "impact", "change", "rights", "supply", "demand", 
-        "travel", "export", "import", "survey", "status", 
-        "profit", "credit", "carbon", "crisis", "policy", 
-        "trade", "income", "budget", "people", "global", 
-        "labour", "public", "future", "border", "manage", 
-        "report", "result", "access", "nation", "sector", 
-        "supply", "output", "target", "reform", "survey", 
-        "profit", "export", "import", "credit", "debate", 
-        "review", "access", "policy", "growth", "carbon",
-        "ronnakit", "teeranai", "nattapong", "jetsada", "peerapong"
+    String[] shortVocabulary = { "growth", "market", "energy", "safety", "health",
+            "impact", "change", "rights", "supply", "demand",
+            "travel", "export", "import", "survey", "status",
+            "profit", "credit", "carbon", "crisis", "policy",
+            "trade", "income", "budget", "people", "global",
+            "labour", "public", "future", "border", "manage",
+            "report", "result", "access", "nation", "sector",
+            "support", "output", "target", "reform", "survey",
+            "profit", "export", "input", "credit", "debate",
+            "review", "access", "policy", "growth", "carbon",
+            "ronnakit", "teeranai", "nattapong", "jetsada", "peerapong"
     };
 
     public Stopwatch(ServerObject serverob, int index) {
@@ -279,7 +270,7 @@ class Stopwatch extends TimerTask {
             seconds--; // ลดค่าวินาทีลง
         } else {
             if (minutes > 0) {
-                minutes--;  // ลดค่านาทีเมื่อวินาทีเหลือ 0
+                minutes--; // ลดค่านาทีเมื่อวินาทีเหลือ 0
                 seconds = 59; // รีเซ็ตวินาทีเป็น 59 สำหรับนาทีถัดไป
             } else {
                 // จัดการเมื่อการนับถอยหลังเสร็จสิ้น (สามารถเพิ่มตรรกะเพิ่มเติมได้)
@@ -291,11 +282,12 @@ class Stopwatch extends TimerTask {
         try {
             if ((seconds % 10 == 0) && (minutes < 5)) {
                 System.out.println("Server Ghost time!");
-    
+
                 serverob.addPosition(index, 1200, (index * 130) + 220);
                 word = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
                 serverob.setWord(index, word);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 }
