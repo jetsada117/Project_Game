@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class run_ghost extends JFrame implements KeyListener{
+public class run_ghost extends JFrame implements KeyListener {
     Image imagesGhost1;
     String timeString;
     Image imageBg;
@@ -62,9 +62,9 @@ public class run_ghost extends JFrame implements KeyListener{
                 .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost1.png");
         imageCharacter = new Image[4];
 
-        for (int i = 0 ; i < 4 ; i++) {
+        for (int i = 0; i < 4; i++) {
             imageCharacter[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
-                    + "Image" + File.separator + String.valueOf(i+5) + ".png");
+                    + "Image" + File.separator + String.valueOf(i + 5) + ".png");
         }
     }
 
@@ -96,14 +96,13 @@ public class run_ghost extends JFrame implements KeyListener{
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            setLayout(null);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
-            for (int i = 0; i < playerob.getPlayer() ; i++) 
-            {
-                System.out.println("i = " + i +" , skin : " + playerob.getSkin(i));
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                System.out.println("i = " + i + " , skin : " + playerob.getSkin(i));
                 for (int k = 0; k < 4; k++) {
-                    if (playerob.getSkin(i) == (k+5))
-                    {
-                        System.out.println("player : "+ i +" , k = " + k);
+                    if (playerob.getSkin(i) == (k + 5)) {
+                        System.out.println("player : " + i + " , k = " + k);
                         g.drawImage(imageCharacter[k], 100, 220 + (i * 130), 150, 100, this);
                         break;
                     }
@@ -177,13 +176,15 @@ public class run_ghost extends JFrame implements KeyListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-       
+    public void keyTyped(KeyEvent e) {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 }
