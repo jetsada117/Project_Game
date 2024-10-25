@@ -44,12 +44,13 @@ class SettingPanel extends JPanel implements ActionListener {
     JLabel textCount = new JLabel();
     PlayerObject player = new PlayerObject();
     PlayerAll playerob = new PlayerAll();
-    Home home = new Home();
+    Home home;
     run_ghost playgame;
     Setting setting;
 
-    public SettingPanel(Setting setting) {
+    public SettingPanel(Setting setting, Home home) {
         this.setting = setting; // รับอ้างอิงไปยัง Setting
+        this.home = home;
 
         this.setSize(1200, 800);
         this.setLayout(null);
@@ -137,7 +138,7 @@ class SettingPanel extends JPanel implements ActionListener {
         g.drawImage(imageArrow, 350, 200, 50, 50, this);
         g.drawImage(imageArrow, 350, 280, 50, 50, this);
         g.drawImage(imageArrow, 350, 360, 50, 50, this);
-       
+
         g.setFont(new Font("Tahoma", Font.BOLD, 40));
         g.setColor(Color.ORANGE);
         g.drawString("SETTING", 500, 150);
@@ -375,11 +376,15 @@ class ClientThread extends Thread {
 }
 
 class Setting extends JFrame {
-    public Setting() {
+    Home home;
+
+    public Setting(Home home) {
+        this.home = home;
+
         this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.add(new SettingPanel(this)); // ส่ง Setting ให้ SettingPanel
+        this.add(new SettingPanel(this, home)); // ส่ง Setting ให้ SettingPanel
         this.setVisible(true);
     }
 }

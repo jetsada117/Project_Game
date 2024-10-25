@@ -4,6 +4,14 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,6 +45,9 @@ public class Home extends JFrame implements ActionListener{
         
         btn();
 
+        new playSound().start();
+        
+
         panel.add(btnStart);
         panel.add(btnExit);
 
@@ -69,7 +80,7 @@ public class Home extends JFrame implements ActionListener{
         if (e.getSource() == btnStart) {
             System.out.println("Start");
 
-            Setting setting = new Setting();
+            Setting setting = new Setting(this);
             setting.setVisible(true);
 
             this.setVisible(false);
@@ -85,3 +96,27 @@ public class Home extends JFrame implements ActionListener{
         home.setVisible(true);
     }
 }
+
+class playSound extends Thread {
+
+    @Override
+    public void run() {
+        try {
+            File wavFile = new File(System.getProperty("user.dir") + File.separator + "ghost_Audio_2.0.wav");
+            AudioInputStream stream = AudioSystem.getAudioInputStream(wavFile);
+            AudioFormat format = stream.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
+            Clip clip = (Clip) AudioSystem.getLine(info);
+            clip.open(stream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+            while (clip.isActive()) {
+                Thread.sleep(1000);
+            }
+
+        } catch (IOException | InterruptedException | LineUnavailableException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
