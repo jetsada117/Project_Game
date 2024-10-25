@@ -185,7 +185,6 @@ class PlayerThread extends Thread {
     int index;    
     int count = 5;
     int x;
-    int ghost;
     String clientIP;
 
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
@@ -244,7 +243,6 @@ class PlayerThread extends Thread {
         }
     }
 }
-
 
 class Stopwatch extends TimerTask {
     private final ServerObject serverob;    
