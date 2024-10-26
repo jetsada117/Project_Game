@@ -284,13 +284,11 @@ class ClientThread extends Thread {
             while (true) {
                 // รับค่าผ่าน socket
                 try (Socket socket = serverSock.accept();
-                        InputStream input = socket.getInputStream();
-                        ObjectInputStream objectInput = new ObjectInputStream(input)) {
+                    InputStream input = socket.getInputStream();
+                    ObjectInputStream objectInput = new ObjectInputStream(input)) {
 
-                    // อ่าน object
                     Object receivedObject = objectInput.readObject();
 
-                    // เช็คชนิดข้อมูลว่าเป็นชนิดข้อมูล SeverObject หรือไม่
                     if (receivedObject instanceof ServerObject Serverob) {
                         index = Serverob.getIndex();
                         player = Serverob.getPlayer();
@@ -333,9 +331,7 @@ class ClientThread extends Thread {
                                             }
                                         }
                                     }
-                                } catch (Exception e) {
-                                    // TODO: handle exception
-                                }
+                                } catch (Exception e) {}
                             }
                         } else {
                             switch (Serverob.getIndex()) {

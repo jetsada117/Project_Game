@@ -167,8 +167,6 @@ class ServerThread extends Thread {
     }
 
     boolean allPlayersReady() {
-        // เช็คสถานะ ready ของผู้เล่นทั้งหมด (แก้ไขให้ตรงกับโครงสร้างของคุณ)
-        // นี่เป็นตัวอย่างการเช็คผู้เล่น 4 คนว่าพร้อมหรือไม่
         int readyPlayers = 0;
         for (int i = 0; i < 4; i++) {
             if (Serversob.isReady(i)) {
@@ -176,7 +174,6 @@ class ServerThread extends Thread {
             }
         }
 
-        // ถ้าผู้เล่นทั้งหมดพร้อม return true
         return readyPlayers == Serversob.getPlayer();
     }
 }
@@ -231,6 +228,7 @@ class PlayerThread extends Thread {
             }
 
             try (Socket socket = new Socket(clientIP, 5)) {
+                Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
             } catch (IOException e1) {

@@ -68,7 +68,7 @@ public class run_ghost extends JFrame implements KeyListener {
             System.err.println("UnknowHost: " + e);
         }
 
-        // System.out.println("skin : " + this.playerob.getSkin(index));
+        System.out.println("Index : " +index);
         imageBg = Toolkit.getDefaultToolkit()
                 .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
         imagesGhost1 = Toolkit.getDefaultToolkit()
@@ -136,7 +136,7 @@ public class run_ghost extends JFrame implements KeyListener {
 
             g.setColor(Color.GRAY); // ข้อคววามที่พิมพ์
             g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString(data, 180, 250);
+            g.drawString(data, 180, 250 + (index * 130));
 
             if (bang == true && minutes != 0 && seconds != 0) {
                 try {
@@ -155,7 +155,7 @@ public class run_ghost extends JFrame implements KeyListener {
                     Thread.sleep(30);
                     bang = false;
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("bang : " +e);
                 }
             }
 
