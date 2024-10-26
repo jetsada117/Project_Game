@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -32,8 +30,9 @@ public class run_ghost extends JFrame implements KeyListener {
     int J = 0;
     boolean bang = false;
 
-    public run_ghost(PlayerAll playerob) {
+    public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
+        this.index = index;
 
         setTitle("");
         setSize(1200, 800);
@@ -51,24 +50,8 @@ public class run_ghost extends JFrame implements KeyListener {
         panel.setBackground(Color.BLACK);
         add(panel);
 
-        // เรียกใช้เธรดสำหรับเพิ่มรูปภาพ
         new ImageAdder(panel).start();
 
-        try {
-            InetAddress ip = InetAddress.getLocalHost();
-
-            for (int i = 0; i < this.playerob.getPlayer(); i++) {
-                if (ip.getHostAddress().equals(this.playerob.getIP(i))) {
-                    index = i;
-                    System.out.println("Index gameplay : " + index);
-                    break;
-                }
-            }
-        } catch (UnknownHostException e) {
-            System.err.println("UnknowHost: " + e);
-        }
-
-        System.out.println("Index : " +index);
         imageBg = Toolkit.getDefaultToolkit()
                 .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
         imagesGhost1 = Toolkit.getDefaultToolkit()

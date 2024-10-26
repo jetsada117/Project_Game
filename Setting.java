@@ -294,6 +294,7 @@ class ClientThread extends Thread {
                         player = Serverob.getPlayer();
                         playerob.setPlayer(player);
                         playerob.setIndex(index);
+                        System.out.println("Index : "+ index);
 
                         for (int i = 0; i < player; i++) {
                             playerob.setReady(Serverob.isReady(i), i);
@@ -355,7 +356,7 @@ class ClientThread extends Thread {
                         client.textReady.setText("Ready : (" + countReady + "/" + player + ")");
 
                         if (allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) {
-                            playgame = new run_ghost(playerob);
+                            playgame = new run_ghost(playerob, index);
 
                             playgame.setVisible(true);
                             playerob.setStart(true);

@@ -201,7 +201,8 @@ class PlayerThread extends Thread {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
                 for (int i = 0; i < Serversob.sizePosition(index); i++) {
-                    if (Serversob.getPosition(index, i) != null) {
+                    if (Serversob.getPosition(index, i) != null) 
+                    {
                         x = Serversob.getPosition(index, i);
                         Serversob.setPosition(index, i, x - 1);
                     }
