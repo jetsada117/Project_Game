@@ -25,19 +25,25 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 class SettingPanel extends JPanel implements ActionListener {
-    Image background = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "background.png");
-    Image container = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "bg2.png");
-    Image imageArrow = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "Arrow.png");
-    Icon imgplay = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "play.png");
-    Icon imgback = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "back.png");
-    Icon imgconnect = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + "connect.png");
+    Image background = Toolkit.getDefaultToolkit()
+            .getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "background.png");
+    Image container = Toolkit.getDefaultToolkit()
+            .getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "bg2.png");
+    Image imageArrow = Toolkit.getDefaultToolkit()
+            .getImage(System.getProperty("user.dir") + File.separator + "image" + File.separator + "Arrow.png");
+    Icon imgplay = new ImageIcon(
+            System.getProperty("user.dir") + File.separator + "image" + File.separator + "play.png");
+    Icon imgback = new ImageIcon(
+            System.getProperty("user.dir") + File.separator + "image" + File.separator + "back.png");
+    Icon imgconnect = new ImageIcon(
+            System.getProperty("user.dir") + File.separator + "image" + File.separator + "connect.png");
     JPanel containgun = new JPanel();
     JPanel textbox = new JPanel();
-    Icon [] skin = new Icon[4];
-    JButton [] gun = new JButton[4];
+    Icon[] skin = new Icon[4];
+    JButton[] gun = new JButton[4];
     JButton connect = new JButton();
     JButton next = new JButton();
-    JButton back = new JButton(); 
+    JButton back = new JButton();
     JTextField inputIP = new JTextField();
     JTextField inputName = new JTextField();
     JLabel textNumber = new JLabel("Player :");
@@ -59,25 +65,25 @@ class SettingPanel extends JPanel implements ActionListener {
         containgun.setSize(600, 60);
         containgun.setLayout(new GridLayout(1, 4, 10, 0));
         containgun.setLocation(300, 425);
-        containgun.setOpaque(false);  // ทำให้ containgun โปร่งใส
+        containgun.setOpaque(false); // ทำให้ containgun โปร่งใส
 
         next.setBounds(800, 540, 140, 50);
         next.setIcon(imgplay);
-        next.setOpaque(false);  // ทำให้ปุ่มโปร่งใส
-        next.setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
-        next.setBorderPainted(false);  // ไม่แสดงขอบของปุ่ม
+        next.setOpaque(false); // ทำให้ปุ่มโปร่งใส
+        next.setContentAreaFilled(false); // ลบสีพื้นหลังของปุ่ม
+        next.setBorderPainted(false); // ไม่แสดงขอบของปุ่ม
 
         back.setBounds(250, 540, 140, 50);
         back.setIcon(imgback);
-        back.setOpaque(false);  // ทำให้ปุ่มโปร่งใส
-        back.setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
-        back.setBorderPainted(false);  // ไม่แสดงขอบของปุ่ม
+        back.setOpaque(false); // ทำให้ปุ่มโปร่งใส
+        back.setContentAreaFilled(false); // ลบสีพื้นหลังของปุ่ม
+        back.setBorderPainted(false); // ไม่แสดงขอบของปุ่ม
 
         connect.setBounds(650, 540, 140, 50);
         connect.setIcon(imgconnect);
-        connect.setOpaque(false);  // ทำให้ปุ่มโปร่งใส
-        connect.setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
-        connect.setBorderPainted(false);  // ไม่แสดงขอบของปุ่ม
+        connect.setOpaque(false); // ทำให้ปุ่มโปร่งใส
+        connect.setContentAreaFilled(false); // ลบสีพื้นหลังของปุ่ม
+        connect.setBorderPainted(false); // ไม่แสดงขอบของปุ่ม
 
         inputIP.setBounds(410, 290, 200, 30);
         inputName.setBounds(410, 370, 200, 30);
@@ -108,13 +114,14 @@ class SettingPanel extends JPanel implements ActionListener {
         this.add(textCount);
         this.add(connect);
 
-        for (int i = 0; i < gun.length ; i++) {
-            skin[i] = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator + String.valueOf(i+1) +".png");
+        for (int i = 0; i < gun.length; i++) {
+            skin[i] = new ImageIcon(System.getProperty("user.dir") + File.separator + "image" + File.separator
+                    + String.valueOf(i + 1) + ".png");
 
             gun[i] = new JButton();
             gun[i].setIcon(skin[i]);
-            gun[i].setOpaque(false);  // ทำให้ปุ่มโปร่งใส
-            gun[i].setContentAreaFilled(false);  // ลบสีพื้นหลังของปุ่ม
+            gun[i].setOpaque(false); // ทำให้ปุ่มโปร่งใส
+            gun[i].setContentAreaFilled(false); // ลบสีพื้นหลังของปุ่ม
             containgun.add(gun[i]);
 
             gun[i].addActionListener(this);
@@ -139,7 +146,7 @@ class SettingPanel extends JPanel implements ActionListener {
         g.drawImage(imageArrow, 350, 200, 50, 50, this);
         g.drawImage(imageArrow, 350, 280, 50, 50, this);
         g.drawImage(imageArrow, 350, 360, 50, 50, this);
-       
+
         g.setFont(new Font("Tahoma", Font.BOLD, 40));
         g.setColor(Color.GREEN);
         g.drawString("SETTING", 500, 150);
@@ -155,73 +162,60 @@ class SettingPanel extends JPanel implements ActionListener {
         if (e.getSource() == back) {
             home.setVisible(true);
             setting.setVisible(false);
-        }
-        else if (e.getSource() == connect) {
+        } else if (e.getSource() == connect) {
             if (!(inputIP.getText().equals(""))) {
 
                 if (!(inputName.getText().equals(""))) {
                     if (player.getSkin() != 0) {
                         connect();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please select skin", "ALERT", JOptionPane.WARNING_MESSAGE);
                     }
-                    else {
-                        JOptionPane.showMessageDialog(null, "Please select skin","ALERT", JOptionPane.WARNING_MESSAGE);
-                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter Name", "ALERT", JOptionPane.WARNING_MESSAGE);
                 }
-                else {
-                    JOptionPane.showMessageDialog(null, "Please enter Name","ALERT", JOptionPane.WARNING_MESSAGE);
-                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please enter IP Adress", "ALERT", JOptionPane.WARNING_MESSAGE);
             }
-            else {
-                JOptionPane.showMessageDialog(null, "Please enter IP Adress","ALERT", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        else if (e.getSource() == next) {
+        } else if (e.getSource() == next) {
             ready();
-        }
-        else if (e.getSource() == gun[0])
-        {
+        } else if (e.getSource() == gun[0]) {
             player.setSkin(5);
             gun[0].setEnabled(false);
 
-            for (int i = 0; i < gun.length; i++)
-            {
-                if (i == 0) continue;
+            for (int i = 0; i < gun.length; i++) {
+                if (i == 0)
+                    continue;
 
                 gun[i].setEnabled(true);
             }
-        }
-        else if (e.getSource() == gun[1])
-        {
+        } else if (e.getSource() == gun[1]) {
             player.setSkin(6);
             gun[1].setEnabled(false);
 
-            for (int i = 0; i < gun.length; i++)
-            {
-                if (i == 1) continue;
+            for (int i = 0; i < gun.length; i++) {
+                if (i == 1)
+                    continue;
 
                 gun[i].setEnabled(true);
             }
-        }
-        else if (e.getSource() == gun[2])
-        {
+        } else if (e.getSource() == gun[2]) {
             player.setSkin(7);
             gun[2].setEnabled(false);
 
-            for (int i = 0; i < gun.length; i++)
-            {
-                if (i == 2) continue;
+            for (int i = 0; i < gun.length; i++) {
+                if (i == 2)
+                    continue;
 
                 gun[i].setEnabled(true);
             }
-        }
-        else if (e.getSource() == gun[3])
-        {
+        } else if (e.getSource() == gun[3]) {
             player.setSkin(8);
             gun[3].setEnabled(false);
 
-            for (int i = 0; i < gun.length; i++)
-            {
-                if (i == 3) continue;
+            for (int i = 0; i < gun.length; i++) {
+                if (i == 3)
+                    continue;
 
                 gun[i].setEnabled(true);
             }
@@ -232,7 +226,7 @@ class SettingPanel extends JPanel implements ActionListener {
         // สร้าง socket เพื่อส่งค่า
         try (Socket socket = new Socket(inputIP.getText(), 50101)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-            
+
             // set ค่าลง object
             player.setName(inputName.getText());
 
@@ -241,7 +235,7 @@ class SettingPanel extends JPanel implements ActionListener {
 
             connect.setEnabled(false);
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println("send  : " + e);
         }
     }
 
@@ -249,7 +243,7 @@ class SettingPanel extends JPanel implements ActionListener {
         // สร้าง socket เพื่อส่งค่า
         try (Socket socket = new Socket(inputIP.getText(), 50101)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-            
+
             // ถ้ากดเตรียมพร้อมให้ set true ลง ready
             player.setReady(true);
 
@@ -257,9 +251,9 @@ class SettingPanel extends JPanel implements ActionListener {
             objectOutput.writeObject(player);
 
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println("send  : " + e);
         }
-        
+
     }
 }
 
@@ -274,7 +268,7 @@ class ClientThread extends Thread {
     int player;
     int countReady;
 
-    public ClientThread(SettingPanel client , run_ghost playgame, Setting setting, PlayerAll playerob) {
+    public ClientThread(SettingPanel client, run_ghost playgame, Setting setting, PlayerAll playerob) {
         this.client = client;
         this.playgame = playgame;
         this.setting = setting;
@@ -288,108 +282,101 @@ class ClientThread extends Thread {
             serverSock = new ServerSocket(5);
 
             while (true) {
-                // รับค่าผ่าน  socket 
+                // รับค่าผ่าน socket
                 try (Socket socket = serverSock.accept();
-                    InputStream input = socket.getInputStream();
-                    ObjectInputStream objectInput = new ObjectInputStream(input)) {
+                        InputStream input = socket.getInputStream();
+                        ObjectInputStream objectInput = new ObjectInputStream(input)) {
 
                     // อ่าน object
                     Object receivedObject = objectInput.readObject();
 
-                // เช็คชนิดข้อมูลว่าเป็นชนิดข้อมูล SeverObject หรือไม่
-                if (receivedObject instanceof ServerObject Serverob) {
-                    index = Serverob.getIndex();
-                    player = Serverob.getPlayer();
-                    playerob.setPlayer(player);
-                    playerob.setIndex(index);
+                    // เช็คชนิดข้อมูลว่าเป็นชนิดข้อมูล SeverObject หรือไม่
+                    if (receivedObject instanceof ServerObject Serverob) {
+                        index = Serverob.getIndex();
+                        player = Serverob.getPlayer();
+                        playerob.setPlayer(player);
+                        playerob.setIndex(index);
 
-                    for (int i = 0; i < player; i++) {
-                        playerob.setReady(Serverob.isReady(i), i);
-                        playerob.setSkin(Serverob.getSkin(i), i);
-                        playerob.setName(Serverob.getName(i), i);
-                    }
-
-                    if (allPlayersReady()) {
-
-                        if (Serverob.getCount() > 0) 
-                        {
-                            client.textCount.setText("" + String.valueOf(Serverob.getCount()));
-                        } 
-                        else
-                        {
-                            playerob.setMinutes(Serverob.getMinutes());
-                            playerob.setSeconds(Serverob.getSeconds());
+                        for (int i = 0; i < player; i++) {
+                            playerob.setReady(Serverob.isReady(i), i);
+                            playerob.setSkin(Serverob.getSkin(i), i);
+                            playerob.setName(Serverob.getName(i), i);
                         }
 
-                        if ((Serverob.getCount() < 0) && Serverob.hasPosition(index)) {
+                        if (allPlayersReady()) {
 
-                            for (int i = 0; i < player ; i++) 
-                            {
-                                for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
-                                    wordString = Serverob.getWord(i, k);
-                                    
-                                    // ตรวจสอบว่ามีคำหรือไม่
-                                    if (k >= playerob.sizePosition(i)) {
-                                        playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
-                                        playerob.setWord(i, wordString);
-                                    }
-                                    else 
-                                    {
-                                        if (Serverob.getPosition(i, k) != null) {
-                                            playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                            if (Serverob.getCount() > 0) {
+                                client.textCount.setText("" + String.valueOf(Serverob.getCount()));
+                            } else {
+                                playerob.setMinutes(Serverob.getMinutes());
+                                playerob.setSeconds(Serverob.getSeconds());
+                            }
+
+                            if ((Serverob.getCount() < 0) && Serverob.hasPosition(index)) {
+                                try {
+                                    for (int i = 0; i < player; i++) {
+                                        for (int k = 0; k < Serverob.sizePosition(i); k++) {
+                                            wordString = Serverob.getWord(i, k);
+
+                                            // ตรวจสอบว่ามีคำหรือไม่
+                                            if (k >= playerob.sizePosition(i)) {
+                                                playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
+                                                playerob.setWord(i, wordString);
+                                            } else {
+                                                if ((Serverob.getPosition(i, k) != null)
+                                                        && (playerob.getPosition(i, k) != null)) {
+                                                    playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                                } else {
+                                                    playerob.deletePosition(i, k);
+                                                    playerob.deleteword(i, k);
+                                                }
+                                            }
                                         }
-                                        else
-                                        {
-                                            playerob.deletePosition(i, k);
-                                            playerob.deleteword(i, k);
-                                        }
                                     }
+                                } catch (Exception e) {
+                                    // TODO: handle exception
                                 }
                             }
+                        } else {
+                            switch (Serverob.getIndex()) {
+                                case 0:
+                                    client.textNumber.setText("Player : 1st Player");
+                                    break;
+                                case 1:
+                                    client.textNumber.setText("Player : 2nd Player");
+                                    break;
+                                case 2:
+                                    client.textNumber.setText("Player : 3rd Player");
+                                    break;
+                                case 3:
+                                    client.textNumber.setText("Player : 4th Player");
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    } 
-                    else 
-                    {
-                        switch (Serverob.getIndex()) {
-                            case 0:
-                                client.textNumber.setText("Player : 1st Player");
-                                break;
-                            case 1:
-                                client.textNumber.setText("Player : 2nd Player");
-                                break;
-                            case 2:
-                                client.textNumber.setText("Player : 3rd Player");
-                                break;
-                            case 3:
-                                client.textNumber.setText("Player : 4th Player");
-                                break;
-                            default:
-                                break;
+
+                        client.textReady.setText("Ready : (" + countReady + "/" + player + ")");
+
+                        if (allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) {
+                            playgame = new run_ghost(playerob);
+
+                            playgame.setVisible(true);
+                            playerob.setStart(true);
+
+                            setting.setVisible(false);
+
+                            isPlaying = true;
                         }
                     }
-
-                    client.textReady.setText("Ready : (" + countReady + "/" + player +")");
-
-                    if(allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) 
-                    {
-                        playgame = new run_ghost(playerob);
-
-                        playgame.setVisible(true);                        
-                        playerob.setStart(true);
-
-                        setting.setVisible(false);
-
-                        isPlaying = true;
-                    }
-                }
 
                 } catch (IOException | ClassNotFoundException e) {
-                    System.out.println(e);
+                    System.out.println("IO error 1 : " + e);
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
-        } 
+            System.out.println("IO error 2 : " + e);
+        }
     }
 
     boolean allPlayersReady() {
@@ -399,7 +386,7 @@ class ClientThread extends Thread {
                 readyPlayers++;
             }
         }
-        
+
         countReady = readyPlayers;
         return readyPlayers == player;
     }
@@ -415,6 +402,7 @@ class Setting extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.add(new SettingPanel(this, home)); // ส่ง Setting ให้ SettingPanel
+        this.setUndecorated(true);
         this.setVisible(true);
     }
 }
