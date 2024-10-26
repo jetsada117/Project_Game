@@ -128,7 +128,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         g2d.setColor(Color.RED);
                         g2d.setStroke(new BasicStroke(10.0f)); // ความหนา 5 พิกเซล
                         g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 260, playerob.getPosition(index, J), 260);
+                        g2d.drawLine(260, 260 + (index * 130), playerob.getPosition(index, J), 260 + (index * 130));
                     }
                 } catch (Exception e) {
                     System.out.println("Laser" + e);
