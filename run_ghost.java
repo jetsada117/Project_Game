@@ -106,7 +106,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 }
             }
 
-            for (int i = 0; i < playerob.getPlayer(); i++) 
+            for (int i = 0; i < playerob.getPlayer() ; i++) 
             {
                 String name = playerob.getName(i);
                 System.out.println("player ["+ i +"] , name : "+ name);
