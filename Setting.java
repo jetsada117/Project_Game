@@ -309,7 +309,6 @@ class ClientThread extends Thread {
                         playerob.setName(Serverob.getName(i), i);
                     }
 
-                    // ถ้ากดเตรียมพร้อมทุกคนแล้วให้นับเลข แล้วแสดงเวลา
                     if (allPlayersReady()) {
 
                         if (Serverob.getCount() > 0) 
@@ -327,8 +326,6 @@ class ClientThread extends Thread {
                             for (int i = 0; i < player ; i++) 
                             {
                                 for (int k = 0; k < Serverob.sizePosition(i) ; k++) {
-                                    // System.out.println("player[" + i + "] positon["+ k +"]: x = " + Serverob.getPosition(i, k) +" , y = " + Serverob.getY(i) +" , word = " + Serverob.getWord(i, k));
-
                                     wordString = Serverob.getWord(i, k);
                                     
                                     // ตรวจสอบว่ามีคำหรือไม่
@@ -371,7 +368,6 @@ class ClientThread extends Thread {
                         }
                     }
 
-                    allPlayersReady();
                     client.textReady.setText("Ready : (" + countReady + "/" + player +")");
 
                     if(allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) 
@@ -381,7 +377,7 @@ class ClientThread extends Thread {
                         playgame.setVisible(true);                        
                         playerob.setStart(true);
 
-                        setting.setVisible(false); // ซ่อน Setting frame
+                        setting.setVisible(false);
 
                         isPlaying = true;
                     }
@@ -397,8 +393,6 @@ class ClientThread extends Thread {
     }
 
     boolean allPlayersReady() {
-        // เช็คสถานะ ready ของผู้เล่นทั้งหมด (แก้ไขให้ตรงกับโครงสร้างของคุณ)
-        // นี่เป็นตัวอย่างการเช็คผู้เล่น 4 คนว่าพร้อมหรือไม่
         int readyPlayers = 0;
         for (int i = 0; i < 4; i++) {
             if (playerob.isReady(i)) {
@@ -407,8 +401,6 @@ class ClientThread extends Thread {
         }
         
         countReady = readyPlayers;
-
-        // ถ้าผู้เล่นทั้งหมดพร้อม return true
         return readyPlayers == player;
     }
 }
