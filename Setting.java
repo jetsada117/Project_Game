@@ -284,8 +284,8 @@ class ClientThread extends Thread {
             while (true) {
                 // รับค่าผ่าน socket
                 try (Socket socket = serverSock.accept();
-                    InputStream input = socket.getInputStream();
-                    ObjectInputStream objectInput = new ObjectInputStream(input)) {
+                        InputStream input = socket.getInputStream();
+                        ObjectInputStream objectInput = new ObjectInputStream(input)) {
 
                     Object receivedObject = objectInput.readObject();
 
@@ -294,7 +294,6 @@ class ClientThread extends Thread {
                         player = Serverob.getPlayer();
                         playerob.setPlayer(player);
                         playerob.setIndex(index);
-                        System.out.println("Index : "+ index);
 
                         for (int i = 0; i < player; i++) {
                             playerob.setReady(Serverob.isReady(i), i);
@@ -332,7 +331,8 @@ class ClientThread extends Thread {
                                             }
                                         }
                                     }
-                                } catch (Exception e) {}
+                                } catch (Exception e) {
+                                }
                             }
                         } else {
                             switch (Serverob.getIndex()) {

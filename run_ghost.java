@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class run_ghost extends JFrame implements KeyListener {
     Image imagesGhost1;
@@ -25,10 +26,12 @@ public class run_ghost extends JFrame implements KeyListener {
     int minutes;
     int seconds;
     int index;
+    int score = 0;
     JTextField check_text;
     String data = "input text";
-    int J = 0;
+    int ghost_X;
     boolean bang = false;
+    Timer T;
 
     public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
@@ -87,11 +90,13 @@ public class run_ghost extends JFrame implements KeyListener {
 
                             if (playerob.getPosition(index, i) != null) {
                                 if (data.equals(playerob.getWord(index, i))) {
+                                    ghost_X = playerob.getPosition(index, i);
                                     playerob.deletePosition(index, i);
                                     playerob.deleteword(index, i);
                                     data = "";
-                                    J = i + 1;
                                     check_text.setText("");
+                                    bang = true;
+                                    score++;
                                     System.out.println("banggg!!!");
                                 }
                             }
@@ -123,22 +128,24 @@ public class run_ghost extends JFrame implements KeyListener {
 
             if (bang == true && minutes != 0 && seconds != 0) {
                 try {
-                    if (J < playerob.sizePosition(index)) {
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setColor(Color.RED);
-                        g2d.setStroke(new BasicStroke(10.0f)); // ความหนา 5 พิกเซล
-                        g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 260 + (index * 130), playerob.getPosition(index, J), 260 + (index * 130));
-                    }
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.setColor(Color.RED);
+                    g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                    g2d.setColor(Color.RED);
+                    g2d.drawLine(260, 275 + (index * 130), ghost_X, 275 + (index * 130));
                 } catch (Exception e) {
                     System.out.println("Laser" + e);
                 }
-
-                try {
-                    Thread.sleep(30);
+                T = new Timer(200, evt -> {
                     bang = false;
+                    T.stop();
+                });
+
+                T.start();
+                try {
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
-                    System.out.println("bang : " +e);
+                    System.out.println("bang : " + e);
                 }
             }
 
@@ -206,6 +213,19 @@ public class run_ghost extends JFrame implements KeyListener {
                     System.exit(0);
                 });
             }
+
+            if (seconds != 0 && minutes != 0) {
+                for (int i = 0; i < playerob.getPlayer(); i++) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font("Arial", Font.BOLD, 25));
+                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (index * 25) + 80);
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
     }
 
@@ -218,8 +238,6 @@ public class run_ghost extends JFrame implements KeyListener {
         char ch = e.getKeyChar();
         data = check_text.getText();
         data += ch;
-
-        bang = true;
     }
 
     @Override
