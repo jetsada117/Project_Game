@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -154,14 +155,27 @@ class SettingPanel extends JPanel implements ActionListener {
         if (e.getSource() == back) {
             home.setVisible(true);
             setting.setVisible(false);
-            System.out.println("back");
         }
         else if (e.getSource() == connect) {
-            System.out.println("connect");
-            connect();
+            if (!(inputIP.getText().equals(""))) {
+
+                if (!(inputName.getText().equals(""))) {
+                    if (player.getSkin() != 0) {
+                        connect();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Please select skin","ALERT", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Please enter Name","ALERT", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "Please enter IP Adress","ALERT", JOptionPane.WARNING_MESSAGE);
+            }
         }
         else if (e.getSource() == next) {
-            System.out.println("next");
             ready();
         }
         else if (e.getSource() == gun[0])

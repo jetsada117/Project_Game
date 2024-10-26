@@ -210,8 +210,6 @@ class PlayerThread extends Thread {
                         Serversob.deletePosition(index, i);
                         Serversob.deleteword(index, i);
                     }
-
-                    System.out.println("position[" + i + "] : " + (x - 1) + ", word : " + Serversob.getWord(index, i));
                 }
 
                 try {

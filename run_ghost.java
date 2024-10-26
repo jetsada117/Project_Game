@@ -109,11 +109,10 @@ public class run_ghost extends JFrame implements KeyListener {
             for (int i = 0; i < playerob.getPlayer() ; i++) 
             {
                 String name = playerob.getName(i);
-                System.out.println("player ["+ i +"] , name : "+ name);
 
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.BOLD, 25));
-                g.drawString(name, 100, playerob.getY(i));
+                g.drawString("" + name, 110, 210 + (i * 130));
             }
 
             timeString = String.format("%02d:%02d", minutes, seconds);
