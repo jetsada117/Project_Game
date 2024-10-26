@@ -121,7 +121,6 @@ class ServerThread extends Thread {
                                     System.out.println(playerob.isReady());
                                 }
 
-
                                 if (Serversob.isReady(i)) {
                                     server.User[i].setText(Serversob.getName(i) + "(Ready)");
                                 } else {
@@ -273,12 +272,11 @@ class Stopwatch extends TimerTask {
             seconds--; // ลดค่าวินาทีลง
         } else {
             if (minutes > 0) {
-                minutes--; // ลดค่านาทีเมื่อวินาทีเหลือ 0
-                seconds = 59; // รีเซ็ตวินาทีเป็น 59 สำหรับนาทีถัดไป
+                minutes--;
+                seconds = 59;
             } else {
-                // จัดการเมื่อการนับถอยหลังเสร็จสิ้น (สามารถเพิ่มตรรกะเพิ่มเติมได้)
                 System.out.println("หมดเวลา!");
-                cancel(); // หยุด Timer เมื่อการนับถอยหลังเสร็จสิ้น
+                cancel();
             }
         }
 
