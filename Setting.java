@@ -120,8 +120,8 @@ class SettingPanel extends JPanel implements ActionListener {
 
             gun[i] = new JButton();
             gun[i].setIcon(skin[i]);
-            gun[i].setOpaque(false); // ทำให้ปุ่มโปร่งใส
-            gun[i].setContentAreaFilled(false); // ลบสีพื้นหลังของปุ่ม
+            gun[i].setOpaque(false);
+            gun[i].setContentAreaFilled(false);
             containgun.add(gun[i]);
 
             gun[i].addActionListener(this);
@@ -223,14 +223,11 @@ class SettingPanel extends JPanel implements ActionListener {
     }
 
     void connect() {
-        // สร้าง socket เพื่อส่งค่า
         try (Socket socket = new Socket(inputIP.getText(), 50101)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
-            // set ค่าลง object
             player.setName(inputName.getText());
 
-            // ส่งค่า object ออกไป
             objectOutput.writeObject(player);
 
             connect.setEnabled(false);
@@ -240,14 +237,11 @@ class SettingPanel extends JPanel implements ActionListener {
     }
 
     void ready() {
-        // สร้าง socket เพื่อส่งค่า
         try (Socket socket = new Socket(inputIP.getText(), 50101)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
-            // ถ้ากดเตรียมพร้อมให้ set true ลง ready
             player.setReady(true);
 
-            // ส่งค่า object ออกไป
             objectOutput.writeObject(player);
 
         } catch (IOException e) {

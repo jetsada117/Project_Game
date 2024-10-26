@@ -269,7 +269,7 @@ class Stopwatch extends TimerTask {
         serverob.setSeconds(seconds);
 
         if (seconds > 0) {
-            seconds--; // ลดค่าวินาทีลง
+            seconds--;
         } else {
             if (minutes > 0) {
                 minutes--;
