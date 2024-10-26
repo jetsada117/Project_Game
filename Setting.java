@@ -371,6 +371,7 @@ class ClientThread extends Thread {
                         }
                     }
 
+                    allPlayersReady();
                     client.textReady.setText("Ready : (" + countReady + "/" + player +")");
 
                     if(allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) 

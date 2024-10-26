@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,7 +59,7 @@ public class DemoServer extends JFrame {
             InetAddress ip = InetAddress.getLocalHost();
             server.address.setText("Server IP : " + ip.getHostAddress());
             server.address.setHorizontalAlignment(SwingConstants.CENTER);
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
         }
     }
 }
@@ -68,7 +69,6 @@ class ServerThread extends Thread {
     ServerObject Serversob = new ServerObject();
     ArrayList<String> players = new ArrayList<>();
     int index = 0;
-    int ready = 0;
 
     public ServerThread(DemoServer server) {
         this.server = server;
@@ -113,6 +113,7 @@ class ServerThread extends Thread {
                                 Serversob.setName(playerob.getName(), i);
                                 Serversob.setReady(playerob.isReady(), i);
                                 Serversob.setSkin(playerob.getSkin(), i);
+                                Serversob.setPlayer(players.size());
 
                                 for (int k = 0 ; k < players.size() ; k++)
                                 {
@@ -127,22 +128,19 @@ class ServerThread extends Thread {
                                     server.User[i].setText(Serversob.getName(i) + "(Wait)");
                                 }
 
-                                if (!Serversob.isReady(i)) {
-                                    for (int k = 0; k < players.size(); k++) {
-                                        String IpAddress = players.get(k);
-                                        Serversob.setIndex(k);
-                                        Serversob.setPlayer(players.size());
+                                for (int k = 0; k < players.size(); k++) {
+                                    String IpAddress = players.get(k);
+                                    Serversob.setIndex(k);
 
-                                        try (Socket clientSocket = new Socket(IpAddress, 5);
-                                                ObjectOutputStream objectOutput = new ObjectOutputStream(
-                                                        clientSocket.getOutputStream())) {
+                                    try (Socket clientSocket = new Socket(IpAddress, 5);
+                                            ObjectOutputStream objectOutput = new ObjectOutputStream(
+                                                    clientSocket.getOutputStream())) {
 
-                                            objectOutput.writeObject(Serversob);
-                                            System.out.println("Output : " + IpAddress);
+                                        objectOutput.writeObject(Serversob);
+                                        System.out.println("Output : " + IpAddress);
 
-                                        } catch (IOException e1) {
-                                            System.out.println("Error Output : " + e1);
-                                        }
+                                    } catch (IOException e1) {
+                                        System.out.println("Error Output : " + e1);
                                     }
                                 }
                             }
@@ -153,16 +151,7 @@ class ServerThread extends Thread {
                     System.out.println("Error Received : " + e);
                 }
 
-                for (int i = 0; i < players.size(); i++) {
-                    if (Serversob.isReady(i)) {
-                        ready++;
-                    } else {
-                        ready = 0;
-                        break;
-                    }
-                }
-
-                if (ready == players.size()) {
+                if (allPlayersReady()) {
                     for (int i = 0; i < players.size(); i++) {
                         String IpAddress = players.get(i);
                         System.out.println(IpAddress);
@@ -172,9 +161,23 @@ class ServerThread extends Thread {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error Reveiced :" + e);
         }
+    }
+
+    boolean allPlayersReady() {
+        // เช็คสถานะ ready ของผู้เล่นทั้งหมด (แก้ไขให้ตรงกับโครงสร้างของคุณ)
+        // นี่เป็นตัวอย่างการเช็คผู้เล่น 4 คนว่าพร้อมหรือไม่
+        int readyPlayers = 0;
+        for (int i = 0; i < 4; i++) {
+            if (Serversob.isReady(i)) {
+                readyPlayers++;
+            }
+        }
+
+        // ถ้าผู้เล่นทั้งหมดพร้อม return true
+        return readyPlayers == Serversob.getPlayer();
     }
 }
 
@@ -191,7 +194,7 @@ class PlayerThread extends Thread {
         this.clientIP = clientIP;
 
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new Stopwatch(this.Serversob, this.index), 10000, 1000);
+        timer.scheduleAtFixedRate(new Stopwatch(this.Serversob, this.index), 5000, 1000);
 
         this.Serversob.setPlayer(player);
     }

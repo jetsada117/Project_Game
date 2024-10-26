@@ -79,10 +79,6 @@ public class run_ghost extends JFrame implements KeyListener {
         @Override
         public void run() {
             while (true) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {}
-
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
@@ -97,6 +93,13 @@ public class run_ghost extends JFrame implements KeyListener {
             super.paintComponent(g);
             setLayout(null);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
+
+            timeString = String.format("%02d:%02d", minutes, seconds);
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+            g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
+
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
@@ -114,12 +117,6 @@ public class run_ghost extends JFrame implements KeyListener {
                 g.setFont(new Font("Arial", Font.BOLD, 25));
                 g.drawString("" + name, 110, 210 + (i * 130));
             }
-
-            timeString = String.format("%02d:%02d", minutes, seconds);
-
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 25));
-            g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));

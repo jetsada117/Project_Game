@@ -12,7 +12,7 @@ public class ServerObject implements Serializable {
     private boolean isStart;
     private int index;
     private int player;
-    private int count;
+    private int count = 5;
     private int seconds = 0;
     private int minutes = 5;
 
