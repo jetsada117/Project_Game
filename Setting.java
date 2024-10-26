@@ -367,7 +367,7 @@ class ClientThread extends Thread {
                         }
                     }
 
-                } catch (IOException | ClassNotFoundException e) {
+                } catch (Exception e) {
                     System.out.println("IO error 1 : " + e);
                 }
             }
