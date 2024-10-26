@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -188,7 +187,6 @@ public class run_ghost extends JFrame implements KeyListener {
                         if (null != playerob.getPosition(i, k)) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
-                            // วาดคำที่อยู่บนรูปภาพจากอาเรย์ words
                             g.setColor(Color.WHITE);
                             g.setFont(new Font("Arial", Font.BOLD, 25));
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
@@ -208,11 +206,8 @@ public class run_ghost extends JFrame implements KeyListener {
                 Exit.setContentAreaFilled(false);
                 Exit.setFocusPainted(false);
                 add(Exit);
-                Exit.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                    }
+                Exit.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
                 });
             } else {
                 JButton Exit0 = new JButton();
@@ -224,11 +219,8 @@ public class run_ghost extends JFrame implements KeyListener {
                 Exit0.setContentAreaFilled(false);
                 Exit0.setFocusPainted(false);
                 add(Exit0);
-                Exit0.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                    }
+                Exit0.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
                 });
             }
         }
