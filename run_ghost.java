@@ -218,7 +218,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     g.setColor(Color.WHITE);
                     g.setFont(new Font("Arial", Font.BOLD, 25));
-                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (index * 25) + 80);
+                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (i * 30) + 80);
 
                     try {
                         Thread.sleep(1);
