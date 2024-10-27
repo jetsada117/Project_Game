@@ -26,8 +26,8 @@ public class Home extends JFrame implements ActionListener {
             .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "I_name.png");
     private Image imageBg = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
             + "Image" + File.separator + "Screenshot 2024-10-08 211105.png");
-    private Image image = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
-            + "Image" + File.separator + "XXX.png");
+    // private Image image = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
+    //         + "Image" + File.separator + "XXX.png");
 
     private final JPanel panel = new JPanel() {
         @Override
@@ -35,7 +35,7 @@ public class Home extends JFrame implements ActionListener {
             super.paintComponent(g);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
             g.drawImage(imageName, 260, 100, imageName.getWidth(this) + 50, imageName.getHeight(this) + 50, this);
-            g.drawImage(image, 630, 350, image.getWidth(this), image.getHeight(this), this);
+            // g.drawImage(image, 630, 350, image.getWidth(this), image.getHeight(this), this);
         }
     };
 

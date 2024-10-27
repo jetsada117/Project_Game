@@ -1,20 +1,21 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class run_ghost extends JFrame implements KeyListener {
     Image imagesGhost1;
@@ -25,37 +26,35 @@ public class run_ghost extends JFrame implements KeyListener {
     int minutes;
     int seconds;
     int index;
+    int score = 0;
+    JTextField check_text;
+    String data = "input text";
+    int ghost_X;
+    boolean bang = false;
+    Timer T;
 
-    public run_ghost(PlayerAll playerob) {
+    public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
+        this.index = index;
 
         setTitle("");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setUndecorated(true);
+
+        check_text = new JTextField();
+        check_text.setSize(1, 1);
+        check_text.setLocation(0, 0);
+        check_text.addKeyListener(this);
+        add(check_text);
 
         CirclePanel panel = new CirclePanel();
         panel.setBackground(Color.BLACK);
         add(panel);
 
-        // เรียกใช้เธรดสำหรับเพิ่มรูปภาพ
         new ImageAdder(panel).start();
 
-        try {
-            InetAddress ip = InetAddress.getLocalHost();
-
-            for (int i = 0; i < this.playerob.getPlayer(); i++) {
-                if (ip.getHostAddress().equals(this.playerob.getIP(i))) {
-                    index = i;
-                    System.out.println("Index gameplay : " + index);
-                    break;
-                }
-            }
-        } catch (UnknownHostException e) {
-            System.err.println("UnknowHost: " + e);
-        }
-
-        // System.out.println("skin : " + this.playerob.getSkin(index));
         imageBg = Toolkit.getDefaultToolkit()
                 .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
         imagesGhost1 = Toolkit.getDefaultToolkit()
@@ -83,6 +82,29 @@ public class run_ghost extends JFrame implements KeyListener {
                 minutes = playerob.getMinutes();
 
                 panel.repaint();
+
+                try {
+
+                    if (playerob.hasPosition(index)) {
+                        for (int i = 0; i < playerob.sizePosition(index); i++) {
+
+                            if (playerob.getPosition(index, i) != null) {
+                                if (data.equals(playerob.getWord(index, i))) {
+                                    ghost_X = playerob.getPosition(index, i);
+                                    playerob.deletePosition(index, i);
+                                    playerob.deleteword(index, i);
+                                    data = "";
+                                    check_text.setText("");
+                                    bang = true;
+                                    score++;
+                                    System.out.println("banggg!!!");
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                }
+
             }
         }
     }
@@ -100,6 +122,33 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 25));
             g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
+            g.setColor(Color.GRAY); // ข้อคววามที่พิมพ์
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString(data, 180, 250 + (index * 130));
+
+            if (bang == true && minutes != 0 && seconds != 0) {
+                try {
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.setColor(Color.RED);
+                    g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                    g2d.setColor(Color.RED);
+                    g2d.drawLine(260, 275 + (index * 130), ghost_X, 275 + (index * 130));
+                } catch (Exception e) {
+                    System.out.println("Laser" + e);
+                }
+                T = new Timer(200, evt -> {
+                    bang = false;
+                    T.stop();
+                });
+
+                T.start();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    System.out.println("bang : " + e);
+                }
+            }
+
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
@@ -109,8 +158,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 }
             }
 
-            for (int i = 0; i < playerob.getPlayer() ; i++) 
-            {
+            for (int i = 0; i < playerob.getPlayer(); i++) {
                 String name = playerob.getName(i);
 
                 g.setColor(Color.WHITE);
@@ -129,7 +177,6 @@ public class run_ghost extends JFrame implements KeyListener {
                         if (null != playerob.getPosition(i, k)) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
-                            // วาดคำที่อยู่บนรูปภาพจากอาเรย์ words
                             g.setColor(Color.WHITE);
                             g.setFont(new Font("Arial", Font.BOLD, 25));
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
@@ -149,11 +196,8 @@ public class run_ghost extends JFrame implements KeyListener {
                 Exit.setContentAreaFilled(false);
                 Exit.setFocusPainted(false);
                 add(Exit);
-                Exit.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                    }
+                Exit.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
                 });
             } else {
                 JButton Exit0 = new JButton();
@@ -165,12 +209,22 @@ public class run_ghost extends JFrame implements KeyListener {
                 Exit0.setContentAreaFilled(false);
                 Exit0.setFocusPainted(false);
                 add(Exit0);
-                Exit0.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(0);
-                    }
+                Exit0.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
                 });
+            }
+
+            if (seconds != 0 && minutes != 0) {
+                for (int i = 0; i < playerob.getPlayer(); i++) {
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font("Arial", Font.BOLD, 25));
+                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (i * 30) + 80);
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                    }
+                }
             }
         }
     }
@@ -181,7 +235,9 @@ public class run_ghost extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        char ch = e.getKeyChar();
+        data = check_text.getText();
+        data += ch;
     }
 
     @Override

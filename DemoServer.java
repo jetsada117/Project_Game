@@ -121,7 +121,6 @@ class ServerThread extends Thread {
                                     System.out.println(playerob.isReady());
                                 }
 
-
                                 if (Serversob.isReady(i)) {
                                     server.User[i].setText(Serversob.getName(i) + "(Ready)");
                                 } else {
@@ -167,8 +166,6 @@ class ServerThread extends Thread {
     }
 
     boolean allPlayersReady() {
-        // เช็คสถานะ ready ของผู้เล่นทั้งหมด (แก้ไขให้ตรงกับโครงสร้างของคุณ)
-        // นี่เป็นตัวอย่างการเช็คผู้เล่น 4 คนว่าพร้อมหรือไม่
         int readyPlayers = 0;
         for (int i = 0; i < 4; i++) {
             if (Serversob.isReady(i)) {
@@ -176,7 +173,6 @@ class ServerThread extends Thread {
             }
         }
 
-        // ถ้าผู้เล่นทั้งหมดพร้อม return true
         return readyPlayers == Serversob.getPlayer();
     }
 }
@@ -204,7 +200,8 @@ class PlayerThread extends Thread {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
                 for (int i = 0; i < Serversob.sizePosition(index); i++) {
-                    if (Serversob.getPosition(index, i) != null) {
+                    if (Serversob.getPosition(index, i) != null) 
+                    {
                         x = Serversob.getPosition(index, i);
                         Serversob.setPosition(index, i, x - 1);
                     }
@@ -231,6 +228,7 @@ class PlayerThread extends Thread {
             }
 
             try (Socket socket = new Socket(clientIP, 5)) {
+                Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
             } catch (IOException e1) {
@@ -247,7 +245,8 @@ class Stopwatch extends TimerTask {
     private int minutes = 5;
     private String word;
 
-    String[] shortVocabulary = { "growth", "market", "energy", "safety", "health",
+    String[] shortVocabulary = 
+    {       "growth", "market", "energy", "safety", "health",
             "impact", "change", "rights", "supply", "demand",
             "travel", "export", "import", "survey", "status",
             "profit", "credit", "carbon", "crisis", "policy",
@@ -271,15 +270,14 @@ class Stopwatch extends TimerTask {
         serverob.setSeconds(seconds);
 
         if (seconds > 0) {
-            seconds--; // ลดค่าวินาทีลง
+            seconds--;
         } else {
             if (minutes > 0) {
-                minutes--; // ลดค่านาทีเมื่อวินาทีเหลือ 0
-                seconds = 59; // รีเซ็ตวินาทีเป็น 59 สำหรับนาทีถัดไป
+                minutes--;
+                seconds = 59;
             } else {
-                // จัดการเมื่อการนับถอยหลังเสร็จสิ้น (สามารถเพิ่มตรรกะเพิ่มเติมได้)
                 System.out.println("หมดเวลา!");
-                cancel(); // หยุด Timer เมื่อการนับถอยหลังเสร็จสิ้น
+                cancel();
             }
         }
 
