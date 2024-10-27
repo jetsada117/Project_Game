@@ -245,7 +245,8 @@ class Stopwatch extends TimerTask {
     private int minutes = 5;
     private String word;
 
-    String[] shortVocabulary = { "growth", "market", "energy", "safety", "health",
+    String[] shortVocabulary = 
+    {       "growth", "market", "energy", "safety", "health",
             "impact", "change", "rights", "supply", "demand",
             "travel", "export", "import", "survey", "status",
             "profit", "credit", "carbon", "crisis", "policy",
