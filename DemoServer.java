@@ -94,12 +94,10 @@ class ServerThread extends Thread {
 
                 try {
                     if (receivedObject != null) {
-                        // ตรวจสอบว่า object ที่รับเข้ามาเป็นประเภทใด เช่น Player
                         if (receivedObject instanceof PlayerObject playerob) {
                             System.out.println("Received object: " + playerob.getName());
 
                             if (!players.contains(clientIP) && index < 4) {
-                                // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(clientIP);
                                 Serversob.setIP(clientIP, index);
                                 Serversob.setIndex(index);
@@ -231,7 +229,7 @@ class PlayerThread extends Thread {
                 Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 System.out.println("Error Output : " + e1);
             }
         }
