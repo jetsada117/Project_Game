@@ -134,7 +134,7 @@ public class run_ghost extends JFrame implements KeyListener {
             g.drawString(data, 180, 250 + (index * 130));
 
             for (int i = 0; i < playerob.getPlayer() ; i++) {
-                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
+                if (playerob.isLaser(i)) {
                     try {
                         Graphics2D g2d = (Graphics2D) g;
                         g2d.setColor(Color.RED);
@@ -144,12 +144,15 @@ public class run_ghost extends JFrame implements KeyListener {
                     } catch (Exception e) {
                         System.out.println("Laser" + e);
                     }
+                }
+            }
 
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
                     T = new Timer(200, evt -> {
                         for (int k = 0; k < playerob.getPlayer() ; k++) {
                             playerob.setLaser(k, false);
                         }
-                        sendData();
                         T.stop();
                     });
 
@@ -163,7 +166,8 @@ public class run_ghost extends JFrame implements KeyListener {
                 }
             }
 
-
+            sendData();
+            
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
