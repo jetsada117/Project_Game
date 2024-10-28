@@ -87,8 +87,9 @@ public class run_ghost extends JFrame implements KeyListener {
                 try {
 
                     if (playerob.hasPosition(index)) {
+                        System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
                         for (int i = 0; i < playerob.sizePosition(index); i++) {
-
+                            System.out.println("i : "+ i);
                             if (playerob.getPosition(index, i) != null) {
                                 if (data.equals(playerob.getWord(index, i))) {
                                     ghost_X = playerob.getPosition(index, i);
