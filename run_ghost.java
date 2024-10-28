@@ -100,11 +100,11 @@ public class run_ghost extends JFrame implements KeyListener {
                                 data = "";
 
                                 playerob.setLaser(index, true);
-                                System.out.println("Laser : "+ playerob.isLaser(index));
+                                // System.out.println("Laser : "+ playerob.isLaser(index));
                                 score = score + 1;
                                 playerob.setScore(score, index);
-                                System.out.println("Score : "+ playerob.getScore(index));
-                                System.out.println("banggg!!!");
+                                // System.out.println("Score : "+ playerob.getScore(index));
+                                // System.out.println("banggg!!!");
                                 sendData();                                    
                             }
                         }
@@ -263,7 +263,7 @@ public class run_ghost extends JFrame implements KeyListener {
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
             if (socket.isConnected()) {
-                System.out.println("Score output : "+ playerob.getScore(index));
+                // System.out.println("Score output : "+ playerob.getScore(index));
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(playerob);
                 objectOutput.flush();

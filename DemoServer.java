@@ -272,8 +272,8 @@ class ReveicedThread extends Thread {
 
                     for (int i = 0; i < playerAll.getPlayer() ; i++) {
                         serverob.setScore(playerAll.getScore(i), i);
-                        System.out.println("Score client : "+ playerAll.getScore(i));
-                        System.out.println("Score : "+ serverob.getScore(i));
+                        // System.out.println("Score client : "+ playerAll.getScore(i));
+                        // System.out.println("Score : "+ serverob.getScore(i));
 
                         if (playerAll.hasPosition(i)) {
                             for (int j = 0; j < playerAll.sizePosition(i); j++) {
