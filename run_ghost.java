@@ -82,11 +82,7 @@ public class run_ghost extends JFrame implements KeyListener {
             while (true) {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
-
-                panel.repaint();
-
                 try {
-
                     if (playerob.hasPosition(index)) {
                         // System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
                         if (ghost < playerob.sizePosition(index)) {
@@ -116,7 +112,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 } catch (Exception e) {
                     System.out.println("Error : "+ e);
                 }
-
+                panel.repaint();
             }
         }
     }
@@ -267,14 +263,14 @@ public class run_ghost extends JFrame implements KeyListener {
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
             if (socket.isConnected()) {
-                System.out.println("Connected to server: " + playerob.getIPServer());
+                // System.out.println("Connected to server: " + playerob.getIPServer());
 
                 // Prepare to send the object
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(playerob);
                 objectOutput.flush();
                 
-                System.out.println("Data sent successfully.");
+                // System.out.println("Data sent successfully.");
             }
         } catch (IOException e) {
             System.out.println("Failed to connect or send data: " + e.getMessage());
