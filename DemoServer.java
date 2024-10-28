@@ -59,8 +59,7 @@ public class DemoServer extends JFrame {
             InetAddress ip = InetAddress.getLocalHost();
             server.address.setText("Server IP : " + ip.getHostAddress());
             server.address.setHorizontalAlignment(SwingConstants.CENTER);
-        } catch (UnknownHostException e) {
-        }
+        } catch (UnknownHostException e) {}
     }
 }
 
@@ -156,6 +155,12 @@ class ServerThread extends Thread {
                         PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
                         thread.start();
                     }
+
+                    InetAddress ip = InetAddress.getLocalHost();
+                    Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
+
+                    ReveicedThread thread = new ReveicedThread(Serversob);
+                    thread.start();
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -176,7 +181,7 @@ class ServerThread extends Thread {
 }
 
 class PlayerThread extends Thread {
-    ServerObject Serversob;
+    private final ServerObject Serversob;
     int index;
     int count = 5;
     int x;
@@ -197,19 +202,20 @@ class PlayerThread extends Thread {
     public void run() {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
-                for (int i = 0; i < Serversob.sizePosition(index); i++) {
-                    if (Serversob.getPosition(index, i) != null) 
-                    {
-                        x = Serversob.getPosition(index, i);
-                        Serversob.setPosition(index, i, x - 1);
-                    }
+                synchronized (Serversob) {  // ซิงโครไนซ์กับ Serversob เพื่อป้องกัน ConcurrentModificationException
+                    for (int i = 0; i < Serversob.sizePosition(index); i++) {
+                        if (Serversob.getPosition(index, i) != null) {
+                            x = Serversob.getPosition(index, i);
+                            Serversob.setPosition(index, i, x - 1);
 
-                    if (x - 1 < 250) {
-                        Serversob.deletePosition(index, i);
-                        Serversob.deleteword(index, i);
+                            if (x - 1 < 250) {
+                                Serversob.deletePosition(index, i);
+                                Serversob.deleteword(index, i);
+                            }
+                        }
                     }
                 }
-
+            
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -226,14 +232,63 @@ class PlayerThread extends Thread {
             }
 
             try (Socket socket = new Socket(clientIP, 5)) {
-                Serversob.setIndex(index);
-                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                objectOutput.writeObject(Serversob);
+                synchronized (Serversob) {  // ซิงโครไนซ์เมื่อส่งข้อมูลผ่าน Socket เพื่อป้องกันข้อผิดพลาดขณะการเข้าถึงข้อมูล
+                    Serversob.setIndex(index);
+                    ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                    objectOutput.writeObject(Serversob);
+                }
             } catch (Exception e1) {
                 System.out.println("Error Output : " + e1);
             }
         }
     }
+}
+
+class ReveicedThread extends Thread {
+    private final ServerObject serverob;
+
+    public ReveicedThread(ServerObject serverob) {
+        this.serverob = serverob;
+    }
+
+    @Override
+    public void run() {
+        ServerSocket serverSock;
+
+        try {
+            serverSock = new ServerSocket(10);
+
+            while (true) {
+                Socket socket = serverSock.accept();
+                InputStream input = socket.getInputStream();
+
+                ObjectInputStream objectInput = new ObjectInputStream(input);
+                Object receivedObject = objectInput.readObject();
+
+                if (receivedObject instanceof PlayerAll playerAll) {
+                    synchronized (serverob) {
+                        for (int i = 0; i < playerAll.getPlayer() ; i++) {
+
+                            serverob.setScore(playerAll.getScore(i), i);
+                            if (playerAll.hasPosition(i)) {
+                                for (int j = 0; j < playerAll.sizePosition(i); j++) {
+                                    if (playerAll.getPosition(i, j) == null) {
+                                        serverob.deletePosition(i, j);
+                                        serverob.deleteword(i, j);
+                                        serverob.setLaser(playerAll.isLaser(i), i);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Receivedthread " + e);
+        }
+    }
+
 }
 
 class Stopwatch extends TimerTask {
@@ -291,3 +346,15 @@ class Stopwatch extends TimerTask {
         }
     }
 }
+
+/*
+ * หลักการทำงานของ synchronized
+1.การล็อก (Locking): เมื่อมีเธรดหนึ่งเข้าไปในบล็อค synchronized มันจะล็อกทรัพยากรนั้นไว้ ทำให้เธรดอื่น ๆ 
+ไม่สามารถเข้าถึงโค้ดที่ล็อกนี้ได้จนกว่าเธรดแรกจะทำงานเสร็จและปล่อยล็อกออกมา
+
+2.การปลดล็อก (Unlocking): เมื่อเธรดที่เข้าถึง synchronized ทำงานเสร็จ 
+หรือออกจากบล็อคนั้น ระบบจะปลดล็อกเพื่อให้เธรดอื่นเข้ามาทำงานต่อได้
+
+3.ป้องกันการเข้าถึงพร้อมกัน (Mutual Exclusion): การใช้ synchronized จะทำให้เกิด mutual exclusion 
+หรือการจำกัดการเข้าถึงข้อมูลร่วมให้เกิดขึ้นได้ครั้งละหนึ่งเธรด ทำให้มั่นใจได้ว่าไม่มีการแก้ไขข้อมูลพร้อมกันซึ่งอาจก่อให้เกิดปัญหาได้
+ */

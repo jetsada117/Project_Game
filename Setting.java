@@ -276,7 +276,6 @@ class ClientThread extends Thread {
             serverSock = new ServerSocket(5);
 
             while (true) {
-                // รับค่าผ่าน socket
                 try (Socket socket = serverSock.accept();
                         InputStream input = socket.getInputStream();
                         ObjectInputStream objectInput = new ObjectInputStream(input)) {
@@ -288,11 +287,14 @@ class ClientThread extends Thread {
                         player = Serverob.getPlayer();
                         playerob.setPlayer(player);
                         playerob.setIndex(index);
+                        playerob.setIPServer(Serverob.getIPServer());
 
                         for (int i = 0; i < player; i++) {
                             playerob.setReady(Serverob.isReady(i), i);
                             playerob.setSkin(Serverob.getSkin(i), i);
                             playerob.setName(Serverob.getName(i), i);
+                            playerob.setLaser(i, playerob.isLaser(i));
+                            playerob.setScore(Serverob.getScore(i), i);
                         }
 
                         if (allPlayersReady()) {
@@ -310,7 +312,6 @@ class ClientThread extends Thread {
                                         for (int k = 0; k < Serverob.sizePosition(i); k++) {
                                             wordString = Serverob.getWord(i, k);
 
-                                            // ตรวจสอบว่ามีคำหรือไม่
                                             if (k >= playerob.sizePosition(i)) {
                                                 playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
                                                 playerob.setWord(i, wordString);
@@ -392,7 +393,7 @@ class Setting extends JFrame {
         this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.add(new SettingPanel(this, home)); // ส่ง Setting ให้ SettingPanel
+        this.add(new SettingPanel(this, home));
         this.setUndecorated(true);
         this.setVisible(true);
     }

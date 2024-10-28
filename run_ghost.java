@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,7 +33,6 @@ public class run_ghost extends JFrame implements KeyListener {
     JTextField check_text;
     String data = "input text";
     int ghost_X;
-    boolean bang = false;
     Timer T;
 
     public run_ghost(PlayerAll playerob, int index) {
@@ -67,7 +69,6 @@ public class run_ghost extends JFrame implements KeyListener {
         }
     }
 
-    // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
     class ImageAdder extends Thread {
         private final CirclePanel panel;
 
@@ -93,10 +94,14 @@ public class run_ghost extends JFrame implements KeyListener {
                                     ghost_X = playerob.getPosition(index, i);
                                     playerob.deletePosition(index, i);
                                     playerob.deleteword(index, i);
-                                    data = "";
+
                                     check_text.setText("");
-                                    bang = true;
+                                    data = "";
+
+                                    playerob.setLaser(index, true);
                                     score++;
+                                    playerob.setScore(score, index);
+                                    sendData();                                    
                                     System.out.println("banggg!!!");
                                 }
                             }
@@ -126,28 +131,34 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            if (bang == true && minutes != 0 && seconds != 0) {
-                try {
-                    Graphics2D g2d = (Graphics2D) g;
-                    g2d.setColor(Color.RED);
-                    g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                    g2d.setColor(Color.RED);
-                    g2d.drawLine(260, 275 + (index * 130), ghost_X, 275 + (index * 130));
-                } catch (Exception e) {
-                    System.out.println("Laser" + e);
-                }
-                T = new Timer(200, evt -> {
-                    bang = false;
-                    T.stop();
-                });
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
+                    try {
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setColor(Color.RED);
+                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                        g2d.setColor(Color.RED);
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+                    } catch (Exception e) {
+                        System.out.println("Laser" + e);
+                    }
 
-                T.start();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    System.out.println("bang : " + e);
+                    T = new Timer(200, evt -> {
+                        playerob.setLaser(index, false);
+                        T.stop();
+                        sendData();
+                    });
+
+                    T.start();
+
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        System.out.println("bang : " + e);
+                    }
                 }
             }
+
 
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
@@ -169,7 +180,7 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));
 
-            // วาดรูปภาพทั้งหมดจาก Array
+
             if (playerob.hasPosition(index)) {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.sizePosition(i); k++) {
@@ -218,20 +229,18 @@ public class run_ghost extends JFrame implements KeyListener {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     g.setColor(Color.WHITE);
                     g.setFont(new Font("Arial", Font.BOLD, 25));
-                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (i * 30) + 80);
+                    g.drawString(playerob.getName(i) + " : " + playerob.getScore(i) + " Count", 800, (i * 30) + 80);
 
                     try {
                         Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                    }
+                    } catch (InterruptedException e) {}
                 }
             }
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -241,6 +250,15 @@ public class run_ghost extends JFrame implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {}
+
+    void sendData() {
+        try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
+            ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+
+            objectOutput.writeObject(playerob);
+        } catch (IOException e) {
+            System.out.println("send game  : " + e);
+        }
     }
 }

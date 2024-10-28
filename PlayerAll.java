@@ -9,7 +9,9 @@ public class PlayerAll implements Serializable {
     private final ArrayList <String> [] word = new ArrayList[4]; 
     private final int [] y = new int[4];
     private final int [] skin = new int[4];
+    private final boolean [] laser = new boolean[4];
     private final int [] score = new int[4];
+    private String IPServer;
     private boolean isStart;
     private int index;
     private int player;
@@ -154,5 +156,29 @@ public class PlayerAll implements Serializable {
     public boolean containWord(int ind, String wordString)  
     {
         return word[ind].contains(wordString);
+    }
+
+    public void setIPServer(String IPServer) {
+        this.IPServer = IPServer;
+    }
+
+    public String getIPServer() {
+        return IPServer;
+    }
+
+    public void setLaser(int ind, boolean value) {
+        this.laser[ind] = value;
+    }
+
+    public boolean isLaser(int ind) {
+        return laser[ind];
+    }
+
+    public void setScore(int score, int ind) {
+        this.score[ind] = score;
+    }
+
+    public int getScore(int ind) {
+        return score[ind];
     }
 }
