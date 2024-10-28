@@ -80,12 +80,14 @@ public class run_ghost extends JFrame implements KeyListener {
         @Override
         public void run() {
             while (true) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {}
+
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
                 if (playerob.hasPosition(index)) {
-                    System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
-                    System.out.println("ghost" + ghost);
                     if (ghost < playerob.sizePosition(index)) {
                         if (playerob.getPosition(index, ghost) != null) {
                             
@@ -98,13 +100,12 @@ public class run_ghost extends JFrame implements KeyListener {
                                 data = "";
 
                                 playerob.setLaser(index, true);
-                                // playerob.setGhostDead(ghost_X, index);
                                 System.out.println("Laser : "+ playerob.isLaser(index));
-                                score = score +1;
+                                score = score + 1;
                                 playerob.setScore(score, index);
                                 System.out.println("Score : "+ playerob.getScore(index));
-                                sendData();                                    
                                 System.out.println("banggg!!!");
+                                sendData();                                    
                             }
                         }
                         else {
@@ -112,7 +113,6 @@ public class run_ghost extends JFrame implements KeyListener {
                         }
                     }
                 }
-
                 panel.repaint();
             }
         }
@@ -263,6 +263,7 @@ public class run_ghost extends JFrame implements KeyListener {
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
             if (socket.isConnected()) {
+                System.out.println("Score output : "+ playerob.getScore(index));
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(playerob);
                 objectOutput.flush();

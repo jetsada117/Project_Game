@@ -268,20 +268,19 @@ class ReveicedThread extends Thread {
                 Object receivedObject = objectInput.readObject();
 
                 if (receivedObject instanceof PlayerAll playerAll) {
-                    synchronized (serverob) {
-                        serverob.setIPServer(playerAll.getIPServer());
+                    serverob.setIPServer(playerAll.getIPServer());
 
-                        for (int i = 0; i < playerAll.getPlayer() ; i++) {
-                            serverob.setScore(playerAll.getScore(i), i);
+                    for (int i = 0; i < playerAll.getPlayer() ; i++) {
+                        serverob.setScore(playerAll.getScore(i), i);
+                        System.out.println("Score client : "+ playerAll.getScore(i));
+                        System.out.println("Score : "+ serverob.getScore(i));
 
-                            if (playerAll.hasPosition(i)) {
-                                for (int j = 0; j < playerAll.sizePosition(i); j++) {
-                                    if (playerAll.getPosition(i, j) == null) {
-                                        serverob.deletePosition(i, j);
-                                        serverob.deleteword(i, j);
-                                        serverob.setLaser(playerAll.isLaser(i), i);
-                                        serverob.setGhostDead(playerAll.getGhostDead(i), i);
-                                    }
+                        if (playerAll.hasPosition(i)) {
+                            for (int j = 0; j < playerAll.sizePosition(i); j++) {
+                                if (playerAll.getPosition(i, j) == null) {
+                                    serverob.deletePosition(i, j);
+                                    serverob.deleteword(i, j);
+                                    serverob.setLaser(playerAll.isLaser(i), i);
                                 }
                             }
                         }
@@ -324,8 +323,6 @@ class Stopwatch extends TimerTask {
     public void run() {
         serverob.setMinutes(minutes);
         serverob.setSeconds(seconds);
-
-
         try {
             if ((seconds % 10 == 0) && (minutes < 5)) {
                 System.out.println("Server Ghost time!");
@@ -354,15 +351,3 @@ class Stopwatch extends TimerTask {
         }
     }
 }
-
-/*
- * หลักการทำงานของ synchronized
-1.การล็อก (Locking): เมื่อมีเธรดหนึ่งเข้าไปในบล็อค synchronized มันจะล็อกทรัพยากรนั้นไว้ ทำให้เธรดอื่น ๆ 
-ไม่สามารถเข้าถึงโค้ดที่ล็อกนี้ได้จนกว่าเธรดแรกจะทำงานเสร็จและปล่อยล็อกออกมา
-
-2.การปลดล็อก (Unlocking): เมื่อเธรดที่เข้าถึง synchronized ทำงานเสร็จ 
-หรือออกจากบล็อคนั้น ระบบจะปลดล็อกเพื่อให้เธรดอื่นเข้ามาทำงานต่อได้
-
-3.ป้องกันการเข้าถึงพร้อมกัน (Mutual Exclusion): การใช้ synchronized จะทำให้เกิด mutual exclusion 
-หรือการจำกัดการเข้าถึงข้อมูลร่วมให้เกิดขึ้นได้ครั้งละหนึ่งเธรด ทำให้มั่นใจได้ว่าไม่มีการแก้ไขข้อมูลพร้อมกันซึ่งอาจก่อให้เกิดปัญหาได้
- */
