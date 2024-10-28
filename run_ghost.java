@@ -143,6 +143,8 @@ public class run_ghost extends JFrame implements KeyListener {
                         g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
                         g2d.setColor(Color.RED);
                         g2d.drawLine(260, 275 + (i * 130), playerob.getGhostDead(i), 275 + (i * 130));
+                        
+                        System.out.println("Dead : " + playerob.getGhostDead(i));
                     } catch (Exception e) {
                         System.out.println("Laser" + e);
                     }
@@ -151,7 +153,7 @@ public class run_ghost extends JFrame implements KeyListener {
 
             for (int i = 0; i < playerob.getPlayer() ; i++) {
                 if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
-                    T = new Timer(200, evt -> {
+                    T = new Timer(500, evt -> {
                         for (int k = 0; k < playerob.getPlayer() ; k++) {
                             playerob.setLaser(k, false);
                         }

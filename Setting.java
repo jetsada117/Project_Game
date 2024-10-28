@@ -297,6 +297,7 @@ class ClientThread extends Thread {
                                 playerob.setName(Serverob.getName(i), i);
                                 playerob.setLaser(i, playerob.isLaser(i));
                                 playerob.setScore(Serverob.getScore(i), i);
+                                playerob.setGhostDead(Serverob.getGhostDead(i), i);
                             }
 
                             if (allPlayersReady()) {
