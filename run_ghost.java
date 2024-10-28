@@ -260,6 +260,7 @@ public class run_ghost extends JFrame implements KeyListener {
 
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
+            System.out.println(playerob.getIPServer());
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
             objectOutput.writeObject(playerob);

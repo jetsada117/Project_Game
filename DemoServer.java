@@ -267,6 +267,7 @@ class ReveicedThread extends Thread {
 
                 if (receivedObject instanceof PlayerAll playerAll) {
                     synchronized (serverob) {
+                        serverob.setIPServer(playerAll.getIPServer());
                         for (int i = 0; i < playerAll.getPlayer() ; i++) {
                             serverob.setScore(playerAll.getScore(i), i);
                             if (playerAll.hasPosition(i)) {
