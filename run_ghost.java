@@ -110,6 +110,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         }
                     }
                 } catch (Exception e) {
+                    System.out.println("Error : "+ e);
                 }
 
             }

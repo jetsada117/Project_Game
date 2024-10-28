@@ -276,13 +276,10 @@ class ReveicedThread extends Thread {
                                         serverob.deletePosition(i, j);
                                         serverob.deleteword(i, j);
                                         serverob.setLaser(playerAll.isLaser(i), i);
-                                        System.out.println("Server Laser["+ i +"] : "+ serverob.isLaser(i));
-                                        System.out.println("Client Laser["+ i +"] : "+ playerAll.isLaser(i));
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }
