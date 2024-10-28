@@ -82,7 +82,7 @@ public class run_ghost extends JFrame implements KeyListener {
             while (true) {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
-                try {
+                // try {
                     if (playerob.hasPosition(index)) {
                         // System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
                         if (ghost < playerob.sizePosition(index)) {
@@ -109,9 +109,9 @@ public class run_ghost extends JFrame implements KeyListener {
                             }
                         }
                     }
-                } catch (Exception e) {
-                    System.out.println("Error : "+ e);
-                }
+                // } catch (Exception e) {
+                //     System.out.println("Error : "+ e);
+                // }
                 panel.repaint();
             }
         }

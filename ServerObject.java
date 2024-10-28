@@ -148,7 +148,7 @@ public class ServerObject implements Serializable {
     }
 
     public void deleteword(int ind, int i) {
-        position[ind].set(ind, null);
+        position[ind].set(i, null);
     }
 
     public boolean containWord(int ind, String wordString) {
