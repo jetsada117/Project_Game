@@ -30,6 +30,7 @@ public class run_ghost extends JFrame implements KeyListener {
     int seconds;
     int index;
     int score = 0;
+    int ghost = 0;
     JTextField check_text;
     String data = "input text";
     int ghost_X;
@@ -87,26 +88,28 @@ public class run_ghost extends JFrame implements KeyListener {
                 try {
 
                     if (playerob.hasPosition(index)) {
-                        System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
-                        for (int i = 0; i < playerob.sizePosition(index); i++) {
-                            System.out.println("i : "+ i);
-                            if (playerob.getPosition(index, i) != null) {
-                                if (data.equals(playerob.getWord(index, i))) {
-                                    ghost_X = playerob.getPosition(index, i);
-                                    playerob.deletePosition(index, i);
-                                    playerob.deleteword(index, i);
+                        // System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
+                        if (ghost < playerob.sizePosition(index)) {
+                            if (playerob.getPosition(index, ghost) != null) {
+                                if (data.equals(playerob.getWord(index, ghost))) {
+                                    ghost_X = playerob.getPosition(index, ghost);
+                                    playerob.deletePosition(index, ghost);
+                                    playerob.deleteword(index, ghost);
 
                                     check_text.setText("");
                                     data = "";
 
                                     playerob.setLaser(index, true);
                                     System.out.println("Laser : "+ playerob.isLaser(index));
-                                    score++;
+                                    score = score +1;
                                     playerob.setScore(score, index);
                                     System.out.println("Score : "+ playerob.getScore(index));
                                     sendData();                                    
                                     System.out.println("banggg!!!");
                                 }
+                            }
+                            else {
+                                ghost = ghost + 1;
                             }
                         }
                     }
@@ -263,14 +266,18 @@ public class run_ghost extends JFrame implements KeyListener {
 
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
-            System.out.println(playerob.getIPServer());
-            ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+            if (socket.isConnected()) {
+                System.out.println("Connected to server: " + playerob.getIPServer());
 
-            objectOutput.writeObject(playerob);
-            objectOutput.close();
-            socket.close();
+                // Prepare to send the object
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(playerob);
+                objectOutput.flush();
+                
+                System.out.println("Data sent successfully.");
+            }
         } catch (IOException e) {
-            System.out.println("send game  : " + e);
+            System.out.println("Failed to connect or send data: " + e.getMessage());
         }
     }
 }

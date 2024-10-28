@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -231,11 +232,13 @@ class PlayerThread extends Thread {
                 }
             }
 
-            try (Socket socket = new Socket(clientIP, 5)) {
-                synchronized (Serversob) {  // ซิงโครไนซ์เมื่อส่งข้อมูลผ่าน Socket เพื่อป้องกันข้อผิดพลาดขณะการเข้าถึงข้อมูล
+            try (Socket socket = new Socket()) {  
+                socket.connect(new InetSocketAddress(Serversob.getIP(index), 5), 5000); 
+                synchronized (Serversob) { 
                     Serversob.setIndex(index);
                     ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                     objectOutput.writeObject(Serversob);
+                    objectOutput.flush();
                 }
             } catch (Exception e1) {
                 System.out.println("Error Output : " + e1);
@@ -257,7 +260,6 @@ class ReveicedThread extends Thread {
 
         try {
             serverSock = new ServerSocket(10);
-
             while (true) {
                 Socket socket = serverSock.accept();
                 InputStream input = socket.getInputStream();
@@ -268,8 +270,10 @@ class ReveicedThread extends Thread {
                 if (receivedObject instanceof PlayerAll playerAll) {
                     synchronized (serverob) {
                         serverob.setIPServer(playerAll.getIPServer());
+
                         for (int i = 0; i < playerAll.getPlayer() ; i++) {
                             serverob.setScore(playerAll.getScore(i), i);
+
                             if (playerAll.hasPosition(i)) {
                                 for (int j = 0; j < playerAll.sizePosition(i); j++) {
                                     if (playerAll.getPosition(i, j) == null) {
@@ -287,7 +291,6 @@ class ReveicedThread extends Thread {
             System.out.println("Receivedthread " + e);
         }
     }
-
 }
 
 class Stopwatch extends TimerTask {
