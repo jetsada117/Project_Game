@@ -98,7 +98,7 @@ public class run_ghost extends JFrame implements KeyListener {
                                 data = "";
 
                                 playerob.setLaser(index, true);
-                                playerob.setGhostDead(ghost_X, index);
+                                // playerob.setGhostDead(ghost_X, index);
                                 System.out.println("Laser : "+ playerob.isLaser(index));
                                 score = score +1;
                                 playerob.setScore(score, index);
@@ -142,9 +142,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         g2d.setColor(Color.RED);
                         g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
                         g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 275 + (i * 130), playerob.getGhostDead(i), 275 + (i * 130));
-                        
-                        System.out.println("Dead : " + playerob.getGhostDead(i));
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
                     } catch (Exception e) {
                         System.out.println("Laser" + e);
                     }
