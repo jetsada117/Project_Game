@@ -268,7 +268,6 @@ class ReveicedThread extends Thread {
                 if (receivedObject instanceof PlayerAll playerAll) {
                     synchronized (serverob) {
                         for (int i = 0; i < playerAll.getPlayer() ; i++) {
-
                             serverob.setScore(playerAll.getScore(i), i);
                             if (playerAll.hasPosition(i)) {
                                 for (int j = 0; j < playerAll.sizePosition(i); j++) {
@@ -276,6 +275,8 @@ class ReveicedThread extends Thread {
                                         serverob.deletePosition(i, j);
                                         serverob.deleteword(i, j);
                                         serverob.setLaser(playerAll.isLaser(i), i);
+                                        System.out.println("Server Laser["+ i +"] : "+ serverob.isLaser(i));
+                                        System.out.println("Client Laser["+ i +"] : "+ playerAll.isLaser(i));
                                     }
                                 }
                             }

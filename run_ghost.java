@@ -99,8 +99,10 @@ public class run_ghost extends JFrame implements KeyListener {
                                     data = "";
 
                                     playerob.setLaser(index, true);
+                                    System.out.println("Laser : "+ playerob.isLaser(index));
                                     score++;
                                     playerob.setScore(score, index);
+                                    System.out.println("Score : "+ playerob.getScore(index));
                                     sendData();                                    
                                     System.out.println("banggg!!!");
                                 }
@@ -144,9 +146,11 @@ public class run_ghost extends JFrame implements KeyListener {
                     }
 
                     T = new Timer(200, evt -> {
-                        playerob.setLaser(index, false);
-                        T.stop();
+                        for (int k = 0; k < playerob.getPlayer() ; k++) {
+                            playerob.setLaser(k, false);
+                        }
                         sendData();
+                        T.stop();
                     });
 
                     T.start();
