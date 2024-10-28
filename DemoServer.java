@@ -285,10 +285,6 @@ class ReveicedThread extends Thread {
 
                     }
                 }
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {}
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Receivedthread " + e);

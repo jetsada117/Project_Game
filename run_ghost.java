@@ -153,8 +153,8 @@ public class run_ghost extends JFrame implements KeyListener {
                         for (int k = 0; k < playerob.getPlayer() ; k++) {
                             playerob.setLaser(k, false);
                         }
-                        sendData();
                         T.stop();
+                        sendData();
                     });
 
                     T.start();
@@ -166,6 +166,7 @@ public class run_ghost extends JFrame implements KeyListener {
                     }
                 }
             }
+
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
@@ -264,6 +265,8 @@ public class run_ghost extends JFrame implements KeyListener {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
             objectOutput.writeObject(playerob);
+            objectOutput.close();
+            socket.close();
         } catch (IOException e) {
             System.out.println("send game  : " + e);
         }
