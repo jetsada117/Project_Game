@@ -324,17 +324,6 @@ class Stopwatch extends TimerTask {
         serverob.setMinutes(minutes);
         serverob.setSeconds(seconds);
 
-        if (seconds > 0) {
-            seconds--;
-        } else {
-            if (minutes > 0) {
-                minutes--;
-                seconds = 59;
-            } else {
-                System.out.println("หมดเวลา!");
-                cancel();
-            }
-        }
 
         try {
             if ((seconds % 10 == 0) && (minutes < 5)) {
@@ -344,7 +333,23 @@ class Stopwatch extends TimerTask {
                 word = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
                 serverob.setWord(index, word);
             }
-        } catch (Exception e) {
+        } catch (Exception e) {}
+
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                for (int i = 0; i < serverob.getPlayer() ; i++) {
+                    for (int k = 0; k < serverob.sizePosition(i) ; k++) {
+                        serverob.deletePosition(i, k);
+                        serverob.deleteword(i, k);
+                    }
+                }
+                cancel();
+            }
         }
     }
 }

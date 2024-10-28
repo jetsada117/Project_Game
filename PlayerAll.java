@@ -11,6 +11,7 @@ public class PlayerAll implements Serializable {
     private final int [] skin = new int[4];
     private final boolean [] laser = new boolean[4];
     private final int [] score = new int[4];
+    private final int [] ghostDead = new int[4];
     private String IPServer;
     private boolean isStart;
     private int index;
@@ -180,5 +181,13 @@ public class PlayerAll implements Serializable {
 
     public int getScore(int ind) {
         return score[ind];
+    }
+
+    public void setGhostDead(int x, int ind) {
+        this.score[ind] = x;
+    }
+
+    public int getGhostDead(int ind) {
+        return ghostDead[ind];
     }
 }

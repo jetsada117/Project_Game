@@ -82,36 +82,37 @@ public class run_ghost extends JFrame implements KeyListener {
             while (true) {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
-                // try {
-                    if (playerob.hasPosition(index)) {
-                        // System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
-                        if (ghost < playerob.sizePosition(index)) {
-                            if (playerob.getPosition(index, ghost) != null) {
-                                if (data.equals(playerob.getWord(index, ghost))) {
-                                    ghost_X = playerob.getPosition(index, ghost);
-                                    playerob.deletePosition(index, ghost);
-                                    playerob.deleteword(index, ghost);
 
-                                    check_text.setText("");
-                                    data = "";
+                if (playerob.hasPosition(index)) {
+                    System.out.println("playob ["+ index +"] size : "+ playerob.sizePosition(index));
+                    System.out.println("ghost" + ghost);
+                    if (ghost < playerob.sizePosition(index)) {
+                        if (playerob.getPosition(index, ghost) != null) {
+                            
+                            if (data.equals(playerob.getWord(index, ghost))) {
+                                ghost_X = playerob.getPosition(index, ghost);
+                                playerob.deletePosition(index, ghost);
+                                playerob.deleteword(index, ghost);
 
-                                    playerob.setLaser(index, true);
-                                    System.out.println("Laser : "+ playerob.isLaser(index));
-                                    score = score +1;
-                                    playerob.setScore(score, index);
-                                    System.out.println("Score : "+ playerob.getScore(index));
-                                    sendData();                                    
-                                    System.out.println("banggg!!!");
-                                }
-                            }
-                            else {
-                                ghost = ghost + 1;
+                                check_text.setText("");
+                                data = "";
+
+                                playerob.setLaser(index, true);
+                                playerob.setGhostDead(ghost_X, index);
+                                System.out.println("Laser : "+ playerob.isLaser(index));
+                                score = score +1;
+                                playerob.setScore(score, index);
+                                System.out.println("Score : "+ playerob.getScore(index));
+                                sendData();                                    
+                                System.out.println("banggg!!!");
                             }
                         }
+                        else {
+                            ghost = ghost + 1;
+                        }
                     }
-                // } catch (Exception e) {
-                //     System.out.println("Error : "+ e);
-                // }
+                }
+
                 panel.repaint();
             }
         }
@@ -141,7 +142,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         g2d.setColor(Color.RED);
                         g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
                         g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+                        g2d.drawLine(260, 275 + (i * 130), playerob.getGhostDead(i), 275 + (i * 130));
                     } catch (Exception e) {
                         System.out.println("Laser" + e);
                     }
@@ -233,16 +234,15 @@ public class run_ghost extends JFrame implements KeyListener {
                 });
             }
 
-            if (seconds != 0 && minutes != 0) {
-                for (int i = 0; i < playerob.getPlayer(); i++) {
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font("Arial", Font.BOLD, 25));
-                    g.drawString(playerob.getName(i) + " : " + playerob.getScore(i) + " Count", 800, (i * 30) + 80);
 
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {}
-                }
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25));
+                g.drawString(playerob.getName(i) + " : " + playerob.getScore(i) + " Count", 800, (i * 30) + 80);
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {}
             }
         }
     }
@@ -263,14 +263,9 @@ public class run_ghost extends JFrame implements KeyListener {
     void sendData() {
         try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
             if (socket.isConnected()) {
-                // System.out.println("Connected to server: " + playerob.getIPServer());
-
-                // Prepare to send the object
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(playerob);
                 objectOutput.flush();
-                
-                // System.out.println("Data sent successfully.");
             }
         } catch (IOException e) {
             System.out.println("Failed to connect or send data: " + e.getMessage());
