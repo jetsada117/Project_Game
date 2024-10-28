@@ -153,6 +153,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         for (int k = 0; k < playerob.getPlayer() ; k++) {
                             playerob.setLaser(k, false);
                         }
+                        sendData();
                         T.stop();
                     });
 
@@ -165,9 +166,6 @@ public class run_ghost extends JFrame implements KeyListener {
                     }
                 }
             }
-
-            sendData();
-            
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
@@ -193,7 +191,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.sizePosition(i); k++) {
 
-                        if (null != playerob.getPosition(i, k)) {
+                        if (playerob.getPosition(i, k) != null) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
                             g.setColor(Color.WHITE);
@@ -211,7 +209,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         System.getProperty("user.dir") + File.separator + "Image" + File.separator + "Exit.png");
                 Exit.setBounds(515, 650, imageExit.getIconWidth(), imageExit.getIconHeight());
                 Exit.setIcon(imageExit);
-                Exit.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit.setBorderPainted(false);
                 Exit.setContentAreaFilled(false);
                 Exit.setFocusPainted(false);
                 add(Exit);
@@ -224,7 +222,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost.png");
                 Exit0.setBounds(1160, 9, imageExit0.getIconWidth(), imageExit0.getIconHeight());
                 Exit0.setIcon(imageExit0);
-                Exit0.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit0.setBorderPainted(false);
                 Exit0.setContentAreaFilled(false);
                 Exit0.setFocusPainted(false);
                 add(Exit0);

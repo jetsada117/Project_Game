@@ -152,12 +152,12 @@ class ServerThread extends Thread {
                         String IpAddress = players.get(i);
                         System.out.println(IpAddress);
 
+                        InetAddress ip = InetAddress.getLocalHost();
+                        Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
+
                         PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
                         thread.start();
                     }
-
-                    InetAddress ip = InetAddress.getLocalHost();
-                    Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
 
                     ReveicedThread thread = new ReveicedThread(Serversob);
                     thread.start();
