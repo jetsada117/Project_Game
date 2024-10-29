@@ -1,8 +1,6 @@
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -136,19 +134,19 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            for (int i = 0; i < playerob.getPlayer() ; i++) {
-                if (playerob.isLaser(i)) {
-                    try {
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setColor(Color.RED);
-                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                        g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
-                    } catch (Exception e) {
-                        System.out.println("Laser" + e);
-                    }
-                }
-            }
+            // for (int i = 0; i < playerob.getPlayer() ; i++) {
+            //     if (playerob.isLaser(i)) {
+            //         try {
+            //             Graphics2D g2d = (Graphics2D) g;
+            //             g2d.setColor(Color.RED);
+            //             g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+            //             g2d.setColor(Color.RED);
+            //             g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+            //         } catch (Exception e) {
+            //             System.out.println("Laser" + e);
+            //         }
+            //     }
+            // }
 
             for (int i = 0; i < playerob.getPlayer() ; i++) {
                 if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
