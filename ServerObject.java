@@ -5,14 +5,18 @@ public class ServerObject implements Serializable {
     private final String [] playername = new String[4];
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
-    private final ArrayList <Integer> [] position = new ArrayList[4];
-    private final ArrayList <String> [] word = new ArrayList[4];    
+    private final ArrayList<Integer>[] position = new ArrayList[4];
+    private final ArrayList<String>[] word = new ArrayList[4];
     private final int [] y = new int[4];
     private final int [] skin = new int[4];
+    private final boolean [] laser = new boolean[4];
+    private final int [] score = new int[4];
+    private final int [] ghostDead = new int[4];
+    private String IPServer;
     private boolean isStart;
     private int index;
     private int player;
-    private int count;
+    private int count = 5;
     private int seconds = 0;
     private int minutes = 5;
 
@@ -26,7 +30,7 @@ public class ServerObject implements Serializable {
     public void setName(String name, int ind) {
         this.playername[ind] = name;
     }
-    
+
     public String getName(int ind) {
         return playername[ind];
     }
@@ -112,7 +116,7 @@ public class ServerObject implements Serializable {
         this.y[ind] = positionY;
     }
 
-    public int getPosition(int ind, int i) {
+    public Integer getPosition(int ind, int i) {
         return position[ind].get(i);
     }
 
@@ -128,11 +132,15 @@ public class ServerObject implements Serializable {
         return position.length;
     }
 
+    public void deletePosition(int ind, int i) {
+        this.position[ind].set(i, null);
+    }
+
     public int getY(int ind) {
         return y[ind];
     }
 
-    public void setWord( int ind, String word) {
+    public void setWord(int ind, String word) {
         this.word[ind].add(word);
     }
 
@@ -140,8 +148,43 @@ public class ServerObject implements Serializable {
         return word[ind].get(i);
     }
 
-    public boolean containWord(int ind, String wordString)  
-    {
+    public void deleteword(int ind, int i) {
+        position[ind].set(i, null);
+    }
+
+    public boolean containWord(int ind, String wordString) {
         return word[ind].contains(wordString);
+    }
+
+    public void setIPServer(String IPServer) {
+        this.IPServer = IPServer;
+    }
+
+    public String getIPServer() {
+        return IPServer;
+    }
+
+    public void setLaser(boolean laser, int ind) {
+        this.laser[ind] = laser;
+    }
+
+    public boolean isLaser(int ind) {
+        return laser[ind];
+    }
+
+    public void setScore(int score, int ind) {
+        this.score[ind] = score;
+    }
+
+    public int getScore(int ind) {
+        return score[ind];
+    }
+
+    public void setGhostDead(int x, int ind) {
+        this.score[ind] = x;
+    }
+
+    public int getGhostDead(int ind) {
+        return ghostDead[ind];
     }
 }

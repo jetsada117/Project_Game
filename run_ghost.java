@@ -5,134 +5,73 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
-<<<<<<< HEAD
 public class run_ghost extends JFrame implements KeyListener {
-    int[] ghostX; // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
-    int[] ghostY; // Array สำหรับเก็บตำแหน่ง y ของรูปภาพ
-
-    int ghostCount = 0; // นับจำนวนรูปภาพใน Array
-    int ghost1 = 0;
-    int maxGhost = 100; // จำนวนรูปภาพสูงสุดที่รองรับ
-=======
-public class run_ghost extends JFrame {
-    int[] ghostX;  // Array สำหรับเก็บตำแหน่ง x ของรูปภาพ
-    int[] ghostY;  // Array สำหรับเก็บตำแหน่ง y ของรูปภาพ
-    int ghostCount = 0;  // นับจำนวนรูปภาพใน Array
-    int[] xSpeed;  // ความเร็วในแนวนอนของแต่ละรูปภาพ
-    Image[] imagesGhost1;  // อาเรย์สำหรับเก็บรูปภาพ
-    String[] words;  // อาเรย์สำหรับเก็บคำที่ตรงกับรูปภาพ
+    Image imagesGhost1;
     String timeString;
     Image imageBg;
-    Image imageCharacter;
+    Image[] imageCharacter;
     PlayerAll playerob;
-    int ghost1 = 0;
-    int maxGhost = 100;  // จำนวนรูปภาพสูงสุดที่รองรับ
+    Socket socket;
     int minutes;
     int seconds;
     int index;
->>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
-
-    int[] xSpeed; // ความเร็วในแนวนอนของแต่ละรูปภาพ
-
-    boolean running = true; // ตัวแปรสำหรับควบคุมการทำงานของเธรด
-    Image[] imagesGhost1; // อาเรย์สำหรับเก็บรูปภาพ
-    String[] words; // อาเรย์สำหรับเก็บคำที่ตรงกับรูปภาพ
-    int remainingTime = 1000;
-    Image imageGun;
-    Image imageBg;
-    Image imageChaerecter;
+    int score = 0;
+    int ghost = 0;
     JTextField check_text;
-    String data = "";
-    boolean bang = false;
-    int J;
+    String data = "input text";
+    int ghost_X;
+    Timer T;
 
-    String[] shortVocabulary = { "growth", "market", "energy", "safety", "health",
-            "impact", "change", "rights", "supply", "demand",
-            "travel", "export", "import", "survey", "status",
-            "profit", "credit", "carbon", "crisis", "policy",
-            "trade", "income", "budget", "people", "global",
-            "labour", "public", "future", "border", "manage",
-            "report", "result", "access", "nation", "sector",
-            "support", "output", "target", "reform", "survey",
-            "profit", "export", "import", "credit", "debate",
-            "review", "access", "policy", "growth", "carbon",
-            "ronnakit", "teeranai", "nattapong", "jetsada", "peerapong"
-    };
+    public run_ghost(PlayerAll playerob, int index) {
+        this.playerob = playerob;
+        this.index = index;
 
-    public run_ghost() {
         setTitle("");
-        setSize(1200, 800); // กำหนดขนาดหน้าต่าง
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setUndecorated(true);
 
         check_text = new JTextField();
         check_text.setSize(1, 1);
         check_text.setLocation(0, 0);
         check_text.addKeyListener(this);
-
-        // สร้าง Array ขนาดคงที่สำหรับตำแหน่ง x และ y
-        ghostX = new int[maxGhost];
-        ghostY = new int[maxGhost];
-        xSpeed = new int[maxGhost]; // สร้าง Array เก็บความเร็วแนวนอน
-        words = new String[maxGhost]; // สร้างอาเรย์สำหรับเก็บคำ
-        imageBg = Toolkit.getDefaultToolkit()
-                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
-        imageGun = Toolkit.getDefaultToolkit()
-                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "6.png");
-
-        // สร้างอาเรย์สำหรับเก็บรูปภาพ
-        imagesGhost1 = new Image[maxGhost]; // ประกาศอาเรย์สำหรับเก็บรูปภาพ
-
-        // โหลดรูปภาพ (เปลี่ยนเส้นทางเป็นที่อยู่จริงของรูปภาพ)
-        for (int i = 0; i < maxGhost; i++) {
-            try {
-                imagesGhost1[i] = Toolkit.getDefaultToolkit()
-                        .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator
-                                + "ghost1.png"); // ใช้ชื่อไฟล์ที่แตกต่างกันสำหรับแต่ละภาพ
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        add(check_text);
 
         CirclePanel panel = new CirclePanel();
         panel.setBackground(Color.BLACK);
-        add(check_text);
         add(panel);
 
-        // เรียกใช้เธรดสำหรับเพิ่มรูปภาพ
-        new ImageAdder().start();
+        new ImageAdder(panel).start();
 
-        // เรียกใช้เธรดสำหรับอัปเดตตำแหน่งรูปภาพ
-        new ImageMover(panel).start();
+        imageBg = Toolkit.getDefaultToolkit()
+                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
+        imagesGhost1 = Toolkit.getDefaultToolkit()
+                .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost1.png");
+        imageCharacter = new Image[4];
 
-        // เรียกใช้เธรดสำหรับจับเวลานับถอยหลัง
-        new TimerThread().start();
-
+        for (int i = 0; i < 4; i++) {
+            imageCharacter[i] = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + File.separator
+                    + "Image" + File.separator + String.valueOf(i + 5) + ".png");
+        }
     }
 
-    // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
     class ImageAdder extends Thread {
-<<<<<<< HEAD
-        @Override
-        public void run() {
-            while (running) {
-                if (ghostCount < maxGhost) {
-                    // เริ่มจากตำแหน่ง x = getWidth() (ด้านขวา) และตำแหน่ง y แบบสุ่มในหน้าต่าง
-                    ghostX[ghostCount] = getWidth(); // เริ่มจากด้านขวาของหน้าต่าง
-                    ghostY[ghostCount] = 220;
-                    xSpeed[ghostCount] = -1; // กำหนดความเร็วให้เคลื่อนไปทางซ้าย
-
-                    // เลือกคำแบบสุ่มจาก shortVocabulary และเก็บในอาเรย์ words
-                    words[ghostCount] = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
-=======
         private final CirclePanel panel;
 
         public ImageAdder(CirclePanel panel) {
@@ -142,185 +81,196 @@ public class run_ghost extends JFrame {
         @Override
         public void run() {
             while (true) {
-                System.out.println("isStarted [playgame ] is "+ playerob.isStart());
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {}
+
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
-                if (playerob.isStart()) {
-        
-                    if ((seconds % 10 == 0) && (minutes < 5)) {
-                        System.out.println("Ghost Time!");
-    
-                        ghostX[ghostCount] = getWidth();
-                        ghostY[ghostCount] = 220;
-                        xSpeed[ghostCount] = -1;
+                if (playerob.hasPosition(index)) {
+                    if (ghost < playerob.sizePosition(index)) {
+                        if (playerob.getPosition(index, ghost) != null) {
                             
-                        words[ghostCount] = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
-                        
-                        ghostCount++;
->>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
+                            if (data.equals(playerob.getWord(index, ghost))) {
+                                ghost_X = playerob.getPosition(index, ghost);
+                                playerob.deletePosition(index, ghost);
+                                playerob.deleteword(index, ghost);
 
-                    ghostCount++; // เพิ่มจำนวนรูปภาพ
-                }
+                                check_text.setText("");
+                                data = "";
 
-                try {
-                    Thread.sleep(10000); // รอ 10 วินาที
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    // สร้างคลาส Thread สำหรับจับเวลานับถอยหลัง
-    class TimerThread extends Thread {
-        @Override
-        public void run() {
-            while (remainingTime > 0 && running) {
-                try {
-                    Thread.sleep(1000); // รอ 1 วินาที
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                remainingTime--; // ลดเวลาที่เหลือ
-            }
-
-            if (remainingTime == 0) {
-                for (int i = 0; i < ghostCount; i++) {
-                    imagesGhost1[i] = null;
-                    words[i] = null;
-                }
-            }
-            running = false; // หยุดการทำงานของโปรแกรมเมื่อเวลาหมด
-            repaint();
-        }
-    }
-
-    // สร้างคลาส Thread สำหรับอัปเดตตำแหน่งรูปภาพ
-    class ImageMover extends Thread {
-        private final CirclePanel panel;
-
-        public ImageMover(CirclePanel panel) {
-            this.panel = panel;
-        }
-
-        @Override
-        public void run() {
-<<<<<<< HEAD
-            while (running) {
-                // อัปเดตตำแหน่งของรูปภาพทุกลูก
-                for (int i = 0; i < ghostCount; i++) {
-                    ghostX[i] += xSpeed[i]; // เคลื่อนที่รูปภาพในแนวนอน
-=======
-            while (true) {
-                if (playerob.isStart()) {
-                    for (int i = 0; i < ghostCount; i++) {
-                        ghostX[i] += xSpeed[i];  // เคลื่อนที่รูปภาพในแนวนอน
->>>>>>> d060316881b0f6d0d75c38e7d6ff70b08685fe88
-
-                    // ตรวจสอบว่าชนขอบหน้าต่างด้านซ้ายหรือไม่
-                    if (imagesGhost1[i] != null) {
-                        if (ghostX[i] < 250) {
-                            imagesGhost1[i] = null;
-                            words[i] = null;
-                            ghost1--;
+                                playerob.setLaser(index, true);
+                                // System.out.println("Laser : "+ playerob.isLaser(index));
+                                score = score + 1;
+                                playerob.setScore(score, index);
+                                // System.out.println("Score : "+ playerob.getScore(index));
+                                // System.out.println("banggg!!!");
+                                sendData();                                    
+                            }
                         }
-                    }
-
-                    if (imagesGhost1[i] != null) { // การยิง
-                        if (data.equals(words[i])) {
-                            imagesGhost1[i] = null;
-                            words[i] = null;
-                            data = "";
-                            J = i + 1;
-                            check_text.setText("");
-                            ghost1++;
-                            System.out.println("banggg!!!");
+                        else {
+                            ghost = ghost + 1;
                         }
                     }
                 }
-                panel.repaint(); // วาดรูปภาพใหม่
-
-                // รอ 30 มิลลิวินาทีก่อนที่จะอัปเดตตำแหน่งอีกครั้ง
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                panel.repaint();
             }
         }
     }
 
-    // สร้าง JPanel สำหรับการวาดรูปภาพ
     class CirclePanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            setLayout(null);
             g.drawImage(imageBg, 0, 0, getWidth(), getHeight(), this);
-            g.drawImage(imageGun, 100, 220, 150, 100, this);
-            // วาดรูปภาพทั้งหมดจาก Array
-            for (int i = 0; i < ghostCount; i++) {
-                g.drawImage(imagesGhost1[i], ghostX[i], ghostY[i], 85, 85, null);
 
-                // วาดคำที่อยู่บนรูปภาพจากอาเรย์ words
-                if (words[i] != null) {
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font("Arial", Font.BOLD, 25));
-                    g.drawString(words[i], ghostX[i] + 10, ghostY[i] - 10);
-                }
-                int minutes = remainingTime / 60;
-                int seconds = remainingTime % 60;
-                String timeString = String.format("%02d:%02d", minutes, seconds);
+            timeString = String.format("%02d:%02d", minutes, seconds);
 
-                // แสดงเวลาที่เหลือ
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.BOLD, 25));
-                g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+            g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.BOLD, 25));
-                g.drawString("ghost1: " + ghost1 + " Count", 800, 80);
+            g.setColor(Color.GRAY);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString(data, 180, 250 + (index * 130));
 
-                if (bang == true) {
-                    Graphics2D g2d = (Graphics2D) g;
-                    g2d.setColor(Color.RED);
-                    g2d.setStroke(new BasicStroke(10.0f)); // ความหนา 5 พิกเซล
-                    g2d.setColor(Color.RED);
-                    g2d.drawLine(260, 260, ghostX[J], 260);
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i)) {
                     try {
-                        Thread.sleep(30);
-                        bang = false;
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setColor(Color.RED);
+                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                        g2d.setColor(Color.RED);
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+                    } catch (Exception e) {
+                        System.out.println("Laser" + e);
                     }
                 }
+            }
+
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
+                    T = new Timer(500, evt -> {
+                        for (int k = 0; k < playerob.getPlayer() ; k++) {
+                            playerob.setLaser(k, false);
+                        }
+                        T.stop();
+                        sendData();
+                    });
+
+                    T.start();
+
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        System.out.println("bang : " + e);
+                    }
+                }
+            }
+
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                for (int k = 0; k < 4; k++) {
+                    if (playerob.getSkin(i) == (k + 5)) {
+                        g.drawImage(imageCharacter[k], 100, 220 + (i * 130), 150, 100, this);
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                String name = playerob.getName(i);
 
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.BOLD, 25));
-                g.drawString(data, 110, 210);
+                g.drawString("" + name, 110, 210 + (i * 130));
+            }
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+
+
+            if (playerob.hasPosition(index)) {
+                for (int i = 0; i < playerob.getPlayer(); i++) {
+                    for (int k = 0; k < playerob.sizePosition(i); k++) {
+
+                        if (playerob.getPosition(i, k) != null) {
+                            g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
+
+                            g.setColor(Color.WHITE);
+                            g.setFont(new Font("Arial", Font.BOLD, 25));
+                            g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
+                                    playerob.getY(i) - 10);
+                        }
+                    }
+                }
+            }
+
+            if (minutes == 0 && seconds == 0) {
+                JButton Exit = new JButton();
+                Icon imageExit = new ImageIcon(
+                        System.getProperty("user.dir") + File.separator + "Image" + File.separator + "Exit.png");
+                Exit.setBounds(515, 650, imageExit.getIconWidth(), imageExit.getIconHeight());
+                Exit.setIcon(imageExit);
+                Exit.setBorderPainted(false);
+                Exit.setContentAreaFilled(false);
+                Exit.setFocusPainted(false);
+                add(Exit);
+                Exit.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
+                });
+            } else {
+                JButton Exit0 = new JButton();
+                Icon imageExit0 = new ImageIcon(
+                        System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost.png");
+                Exit0.setBounds(1160, 9, imageExit0.getIconWidth(), imageExit0.getIconHeight());
+                Exit0.setIcon(imageExit0);
+                Exit0.setBorderPainted(false);
+                Exit0.setContentAreaFilled(false);
+                Exit0.setFocusPainted(false);
+                add(Exit0);
+                Exit0.addActionListener((ActionEvent e) -> {
+                    System.exit(0);
+                });
+            }
+
+
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25));
+                g.drawString(playerob.getName(i) + " : " + playerob.getScore(i) + " Count", 800, (i * 30) + 80);
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {}
             }
         }
     }
 
-    public static void main(String[] args) {
-        // เพื่อให้การทำงานของ Swing GUI เป็นไปอย่างราบรื่น
-        SwingUtilities.invokeLater(() -> new run_ghost().setVisible(true));
-    }
-
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
         char ch = e.getKeyChar();
         data = check_text.getText();
         data += ch;
-
-        bang = true;
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {}
+
+    void sendData() {
+        try{
+            socket = new Socket(playerob.getIPServer(), 50070);
+            if (socket.isConnected()) {
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(playerob);
+                objectOutput.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to connect or send data: " + e.getMessage());
+        }
     }
 }
