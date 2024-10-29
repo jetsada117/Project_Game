@@ -125,6 +125,7 @@ class ServerThread extends Thread {
                                 for (int k = 0; k < players.size(); k++) {
                                     String IpAddress = players.get(k);
                                     Serversob.setIndex(k);
+                                    System.out.println("IpAddress: " + IpAddress);
 
                                     try (Socket clientSocket = new Socket(IpAddress, 50065);
                                             ObjectOutputStream objectOutput = new ObjectOutputStream(
@@ -201,11 +202,12 @@ class PlayerThread extends Thread {
     public void run() {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
-                synchronized (Serversob) {  // ซิงโครไนซ์กับ Serversob เพื่อป้องกัน ConcurrentModificationException
+                synchronized (Serversob) { 
                     for (int i = 0; i < Serversob.sizePosition(index); i++) {
                         if (Serversob.getPosition(index, i) != null) {
                             x = Serversob.getPosition(index, i);
                             Serversob.setPosition(index, i, x - 1);
+                            System.out.println("player ["+index+"], x :["+ i +"] "+ x);
 
                             if (x - 1 < 250) {
                                 Serversob.deletePosition(index, i);
@@ -213,6 +215,12 @@ class PlayerThread extends Thread {
                             }
                         }
                     }
+                }
+
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
                 }
             } else {
                 Serversob.setCount(count--);
@@ -233,12 +241,6 @@ class PlayerThread extends Thread {
                 objectOutput.flush();
             } catch (IOException e) {
                 System.out.println("Error PlayerThread : "+ e);
-            }
-
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                System.out.println(e);
             }
         }
     }
