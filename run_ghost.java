@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,14 +26,15 @@ public class run_ghost extends JFrame implements KeyListener {
     Image imageBg;
     Image[] imageCharacter;
     PlayerAll playerob;
+    Socket socket;
     int minutes;
     int seconds;
     int index;
     int score = 0;
+    int ghost = 0;
     JTextField check_text;
     String data = "input text";
     int ghost_X;
-    boolean bang = false;
     Timer T;
 
     public run_ghost(PlayerAll playerob, int index) {
@@ -67,7 +71,6 @@ public class run_ghost extends JFrame implements KeyListener {
         }
     }
 
-    // สร้างคลาส Thread สำหรับเพิ่มรูปภาพ
     class ImageAdder extends Thread {
         private final CirclePanel panel;
 
@@ -78,33 +81,40 @@ public class run_ghost extends JFrame implements KeyListener {
         @Override
         public void run() {
             while (true) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {}
+
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
-                panel.repaint();
+                if (playerob.hasPosition(index)) {
+                    if (ghost < playerob.sizePosition(index)) {
+                        if (playerob.getPosition(index, ghost) != null) {
+                            
+                            if (data.equals(playerob.getWord(index, ghost))) {
+                                ghost_X = playerob.getPosition(index, ghost);
+                                playerob.deletePosition(index, ghost);
+                                playerob.deleteword(index, ghost);
 
-                try {
+                                check_text.setText("");
+                                data = "";
 
-                    if (playerob.hasPosition(index)) {
-                        for (int i = 0; i < playerob.sizePosition(index); i++) {
-
-                            if (playerob.getPosition(index, i) != null) {
-                                if (data.equals(playerob.getWord(index, i))) {
-                                    ghost_X = playerob.getPosition(index, i);
-                                    playerob.deletePosition(index, i);
-                                    playerob.deleteword(index, i);
-                                    data = "";
-                                    check_text.setText("");
-                                    bang = true;
-                                    score++;
-                                    System.out.println("banggg!!!");
-                                }
+                                playerob.setLaser(index, true);
+                                // System.out.println("Laser : "+ playerob.isLaser(index));
+                                score = score + 1;
+                                playerob.setScore(score, index);
+                                // System.out.println("Score : "+ playerob.getScore(index));
+                                // System.out.println("banggg!!!");
+                                sendData();                                    
                             }
                         }
+                        else {
+                            ghost = ghost + 1;
+                        }
                     }
-                } catch (Exception e) {
                 }
-
+                panel.repaint();
             }
         }
     }
@@ -122,30 +132,41 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 25));
             g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
-            g.setColor(Color.GRAY); // ข้อคววามที่พิมพ์
+            g.setColor(Color.GRAY);
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            if (bang == true && minutes != 0 && seconds != 0) {
-                try {
-                    Graphics2D g2d = (Graphics2D) g;
-                    g2d.setColor(Color.RED);
-                    g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                    g2d.setColor(Color.RED);
-                    g2d.drawLine(260, 275 + (index * 130), ghost_X, 275 + (index * 130));
-                } catch (Exception e) {
-                    System.out.println("Laser" + e);
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i)) {
+                    try {
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setColor(Color.RED);
+                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                        g2d.setColor(Color.RED);
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+                    } catch (Exception e) {
+                        System.out.println("Laser" + e);
+                    }
                 }
-                T = new Timer(200, evt -> {
-                    bang = false;
-                    T.stop();
-                });
+            }
 
-                T.start();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    System.out.println("bang : " + e);
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
+                    T = new Timer(500, evt -> {
+                        for (int k = 0; k < playerob.getPlayer() ; k++) {
+                            playerob.setLaser(k, false);
+                        }
+                        T.stop();
+                        sendData();
+                    });
+
+                    T.start();
+
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        System.out.println("bang : " + e);
+                    }
                 }
             }
 
@@ -169,12 +190,12 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));
 
-            // วาดรูปภาพทั้งหมดจาก Array
+
             if (playerob.hasPosition(index)) {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.sizePosition(i); k++) {
 
-                        if (null != playerob.getPosition(i, k)) {
+                        if (playerob.getPosition(i, k) != null) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
                             g.setColor(Color.WHITE);
@@ -192,7 +213,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         System.getProperty("user.dir") + File.separator + "Image" + File.separator + "Exit.png");
                 Exit.setBounds(515, 650, imageExit.getIconWidth(), imageExit.getIconHeight());
                 Exit.setIcon(imageExit);
-                Exit.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit.setBorderPainted(false);
                 Exit.setContentAreaFilled(false);
                 Exit.setFocusPainted(false);
                 add(Exit);
@@ -205,7 +226,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         System.getProperty("user.dir") + File.separator + "Image" + File.separator + "ghost.png");
                 Exit0.setBounds(1160, 9, imageExit0.getIconWidth(), imageExit0.getIconHeight());
                 Exit0.setIcon(imageExit0);
-                Exit0.setBorderPainted(false);// ตั้งค่าไม่ให้แสดงพื้นหลัง
+                Exit0.setBorderPainted(false);
                 Exit0.setContentAreaFilled(false);
                 Exit0.setFocusPainted(false);
                 add(Exit0);
@@ -214,24 +235,21 @@ public class run_ghost extends JFrame implements KeyListener {
                 });
             }
 
-            if (seconds != 0 && minutes != 0) {
-                for (int i = 0; i < playerob.getPlayer(); i++) {
-                    g.setColor(Color.WHITE);
-                    g.setFont(new Font("Arial", Font.BOLD, 25));
-                    g.drawString(playerob.getName(i) + " : " + score + " Count", 800, (i * 30) + 80);
 
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                    }
-                }
+            for (int i = 0; i < playerob.getPlayer(); i++) {
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 25));
+                g.drawString(playerob.getName(i) + " : " + playerob.getScore(i) + " Count", 800, (i * 30) + 80);
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {}
             }
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -241,6 +259,18 @@ public class run_ghost extends JFrame implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {}
+
+    void sendData() {
+        try{
+            socket = new Socket(playerob.getIPServer(), 50070);
+            if (socket.isConnected()) {
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(playerob);
+                objectOutput.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to connect or send data: " + e.getMessage());
+        }
     }
 }

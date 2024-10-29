@@ -59,13 +59,13 @@ public class DemoServer extends JFrame {
             InetAddress ip = InetAddress.getLocalHost();
             server.address.setText("Server IP : " + ip.getHostAddress());
             server.address.setHorizontalAlignment(SwingConstants.CENTER);
-        } catch (UnknownHostException e) {
-        }
+        } catch (UnknownHostException e) {}
     }
 }
 
 class ServerThread extends Thread {
     DemoServer server;
+    Socket socket;
     ServerObject Serversob = new ServerObject();
     ArrayList<String> players = new ArrayList<>();
     int index = 0;
@@ -77,16 +77,13 @@ class ServerThread extends Thread {
     @Override
     public void run() {
         ServerSocket serverSock;
-
         try {
-            serverSock = new ServerSocket(50101);
-
+            serverSock = new ServerSocket(50060);
             while (true) {
-                Socket socket = serverSock.accept();
+                socket = serverSock.accept();
                 String clientIP = socket.getInetAddress().getHostAddress();
                 InputStream input = socket.getInputStream();
 
-                // รับค่าแบบเป็น object
                 ObjectInputStream objectInput = new ObjectInputStream(input);
                 Object receivedObject = objectInput.readObject();
 
@@ -94,12 +91,10 @@ class ServerThread extends Thread {
 
                 try {
                     if (receivedObject != null) {
-                        // ตรวจสอบว่า object ที่รับเข้ามาเป็นประเภทใด เช่น Player
                         if (receivedObject instanceof PlayerObject playerob) {
                             System.out.println("Received object: " + playerob.getName());
 
                             if (!players.contains(clientIP) && index < 4) {
-                                // ตอน test เก็บค่าชื่อก่อน ตอนทำงานจริงค่อยเปลี่ยนเป็น ip
                                 players.add(clientIP);
                                 Serversob.setIP(clientIP, index);
                                 Serversob.setIndex(index);
@@ -130,13 +125,13 @@ class ServerThread extends Thread {
                                 for (int k = 0; k < players.size(); k++) {
                                     String IpAddress = players.get(k);
                                     Serversob.setIndex(k);
+                                    System.out.println("IpAddress: " + IpAddress);
 
-                                    try (Socket clientSocket = new Socket(IpAddress, 5);
+                                    try (Socket clientSocket = new Socket(IpAddress, 50065);
                                             ObjectOutputStream objectOutput = new ObjectOutputStream(
                                                     clientSocket.getOutputStream())) {
 
                                         objectOutput.writeObject(Serversob);
-                                        System.out.println("Output : " + IpAddress);
 
                                     } catch (IOException e1) {
                                         System.out.println("Error Output : " + e1);
@@ -155,9 +150,15 @@ class ServerThread extends Thread {
                         String IpAddress = players.get(i);
                         System.out.println(IpAddress);
 
-                        PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
+                        InetAddress ip = InetAddress.getLocalHost();
+                        Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
+
+                        PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size(), socket);
                         thread.start();
                     }
+
+                    ReveicedThread thread = new ReveicedThread(Serversob);
+                    thread.start();
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -178,16 +179,18 @@ class ServerThread extends Thread {
 }
 
 class PlayerThread extends Thread {
-    ServerObject Serversob;
+    private final ServerObject Serversob;
+    Socket socket;
     int index;
     int count = 5;
     int x;
     String clientIP;
 
-    public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
+    public PlayerThread(ServerObject Serversob, int index, String clientIP, int player, Socket socket) {
         this.Serversob = Serversob;
         this.index = index;
         this.clientIP = clientIP;
+        this.socket = socket;
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new Stopwatch(this.Serversob, this.index), 5000, 1000);
@@ -199,21 +202,23 @@ class PlayerThread extends Thread {
     public void run() {
         while (true) {
             if ((count < 0) && Serversob.hasPosition(index)) {
-                for (int i = 0; i < Serversob.sizePosition(index); i++) {
-                    if (Serversob.getPosition(index, i) != null) 
-                    {
-                        x = Serversob.getPosition(index, i);
-                        Serversob.setPosition(index, i, x - 1);
-                    }
+                synchronized (Serversob) { 
+                    for (int i = 0; i < Serversob.sizePosition(index); i++) {
+                        if (Serversob.getPosition(index, i) != null) {
+                            x = Serversob.getPosition(index, i);
+                            Serversob.setPosition(index, i, x - 1);
+                            System.out.println("player ["+index+"], x :["+ i +"] "+ x);
 
-                    if (x - 1 < 250) {
-                        Serversob.deletePosition(index, i);
-                        Serversob.deleteword(index, i);
+                            if (x - 1 < 250) {
+                                Serversob.deletePosition(index, i);
+                                Serversob.deleteword(index, i);
+                            }
+                        }
                     }
                 }
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
@@ -227,13 +232,60 @@ class PlayerThread extends Thread {
                 }
             }
 
-            try (Socket socket = new Socket(clientIP, 5)) {
+            try {
+                socket = new Socket(Serversob.getIP(index), 50065);
+
                 Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
-            } catch (IOException e1) {
-                System.out.println("Error Output : " + e1);
+                objectOutput.flush();
+            } catch (IOException e) {
+                System.out.println("Error PlayerThread : "+ e);
             }
+        }
+    }
+}
+
+class ReveicedThread extends Thread {
+    private final ServerObject serverob;
+
+    public ReveicedThread(ServerObject serverob) {
+        this.serverob = serverob;
+    }
+
+    @Override
+    public void run() {
+        ServerSocket serverSock;
+
+        try {
+            serverSock = new ServerSocket(50070);
+            while (true) {
+                Socket socket = serverSock.accept();
+                InputStream input = socket.getInputStream();
+
+                ObjectInputStream objectInput = new ObjectInputStream(input);
+                Object receivedObject = objectInput.readObject();
+
+                if (receivedObject instanceof PlayerAll playerAll) {
+                    serverob.setIPServer(playerAll.getIPServer());
+
+                    for (int i = 0; i < playerAll.getPlayer() ; i++) {
+                        serverob.setScore(playerAll.getScore(i), i);
+
+                        if (playerAll.hasPosition(i)) {
+                            for (int j = 0; j < playerAll.sizePosition(i); j++) {
+                                if (playerAll.getPosition(i, j) == null) {
+                                    serverob.deletePosition(i, j);
+                                    serverob.deleteword(i, j);
+                                    serverob.setLaser(playerAll.isLaser(i), i);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Receivedthread " + e);
         }
     }
 }
@@ -268,19 +320,6 @@ class Stopwatch extends TimerTask {
     public void run() {
         serverob.setMinutes(minutes);
         serverob.setSeconds(seconds);
-
-        if (seconds > 0) {
-            seconds--;
-        } else {
-            if (minutes > 0) {
-                minutes--;
-                seconds = 59;
-            } else {
-                System.out.println("หมดเวลา!");
-                cancel();
-            }
-        }
-
         try {
             if ((seconds % 10 == 0) && (minutes < 5)) {
                 System.out.println("Server Ghost time!");
@@ -289,7 +328,23 @@ class Stopwatch extends TimerTask {
                 word = shortVocabulary[(int) (Math.random() * shortVocabulary.length)];
                 serverob.setWord(index, word);
             }
-        } catch (Exception e) {
+        } catch (Exception e) {}
+
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                for (int i = 0; i < serverob.getPlayer() ; i++) {
+                    for (int k = 0; k < serverob.sizePosition(i) ; k++) {
+                        serverob.deletePosition(i, k);
+                        serverob.deleteword(i, k);
+                    }
+                }
+                cancel();
+            }
         }
     }
 }
