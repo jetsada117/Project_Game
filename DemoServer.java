@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -66,6 +65,7 @@ public class DemoServer extends JFrame {
 
 class ServerThread extends Thread {
     DemoServer server;
+    Socket socket;
     ServerObject Serversob = new ServerObject();
     ArrayList<String> players = new ArrayList<>();
     int index = 0;
@@ -77,16 +77,13 @@ class ServerThread extends Thread {
     @Override
     public void run() {
         ServerSocket serverSock;
-
         try {
-            serverSock = new ServerSocket(50101);
-
+            serverSock = new ServerSocket(50060);
             while (true) {
-                Socket socket = serverSock.accept();
+                socket = serverSock.accept();
                 String clientIP = socket.getInetAddress().getHostAddress();
                 InputStream input = socket.getInputStream();
 
-                // รับค่าแบบเป็น object
                 ObjectInputStream objectInput = new ObjectInputStream(input);
                 Object receivedObject = objectInput.readObject();
 
@@ -129,12 +126,11 @@ class ServerThread extends Thread {
                                     String IpAddress = players.get(k);
                                     Serversob.setIndex(k);
 
-                                    try (Socket clientSocket = new Socket(IpAddress, 5);
+                                    try (Socket clientSocket = new Socket(IpAddress, 50065);
                                             ObjectOutputStream objectOutput = new ObjectOutputStream(
                                                     clientSocket.getOutputStream())) {
 
                                         objectOutput.writeObject(Serversob);
-                                        System.out.println("Output : " + IpAddress);
 
                                     } catch (IOException e1) {
                                         System.out.println("Error Output : " + e1);
@@ -156,7 +152,7 @@ class ServerThread extends Thread {
                         InetAddress ip = InetAddress.getLocalHost();
                         Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
 
-                        PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size());
+                        PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size(), socket);
                         thread.start();
                     }
 
@@ -183,15 +179,17 @@ class ServerThread extends Thread {
 
 class PlayerThread extends Thread {
     private final ServerObject Serversob;
+    Socket socket;
     int index;
     int count = 5;
     int x;
     String clientIP;
 
-    public PlayerThread(ServerObject Serversob, int index, String clientIP, int player) {
+    public PlayerThread(ServerObject Serversob, int index, String clientIP, int player, Socket socket) {
         this.Serversob = Serversob;
         this.index = index;
         this.clientIP = clientIP;
+        this.socket = socket;
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new Stopwatch(this.Serversob, this.index), 5000, 1000);
@@ -216,12 +214,6 @@ class PlayerThread extends Thread {
                         }
                     }
                 }
-            
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
             } else {
                 Serversob.setCount(count--);
 
@@ -232,16 +224,21 @@ class PlayerThread extends Thread {
                 }
             }
 
-            try (Socket socket = new Socket()) {  
-                socket.connect(new InetSocketAddress(Serversob.getIP(index), 5), 5000); 
-                synchronized (Serversob) { 
-                    Serversob.setIndex(index);
-                    ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                    objectOutput.writeObject(Serversob);
-                    objectOutput.flush();
-                }
-            } catch (Exception e1) {
-                System.out.println("Error Output : " + e1);
+            try {
+                socket = new Socket(Serversob.getIP(index), 50065);
+
+                Serversob.setIndex(index);
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(Serversob);
+                objectOutput.flush();
+            } catch (IOException e) {
+                System.out.println("Error PlayerThread : "+ e);
+            }
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                System.out.println(e);
             }
         }
     }
@@ -259,7 +256,7 @@ class ReveicedThread extends Thread {
         ServerSocket serverSock;
 
         try {
-            serverSock = new ServerSocket(10);
+            serverSock = new ServerSocket(50070);
             while (true) {
                 Socket socket = serverSock.accept();
                 InputStream input = socket.getInputStream();
@@ -272,8 +269,6 @@ class ReveicedThread extends Thread {
 
                     for (int i = 0; i < playerAll.getPlayer() ; i++) {
                         serverob.setScore(playerAll.getScore(i), i);
-                        // System.out.println("Score client : "+ playerAll.getScore(i));
-                        // System.out.println("Score : "+ serverob.getScore(i));
 
                         if (playerAll.hasPosition(i)) {
                             for (int j = 0; j < playerAll.sizePosition(i); j++) {

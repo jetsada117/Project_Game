@@ -223,7 +223,7 @@ class SettingPanel extends JPanel implements ActionListener {
     }
 
     void connect() {
-        try (Socket socket = new Socket(inputIP.getText(), 50101)) {
+        try (Socket socket = new Socket(inputIP.getText(), 50060)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
             player.setName(inputName.getText());
@@ -237,7 +237,7 @@ class SettingPanel extends JPanel implements ActionListener {
     }
 
     void ready() {
-        try (Socket socket = new Socket(inputIP.getText(), 50101)) {
+        try (Socket socket = new Socket(inputIP.getText(), 50060)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
 
             player.setReady(true);
@@ -273,7 +273,7 @@ class ClientThread extends Thread {
     public void run() {
         ServerSocket serverSock;
         try {
-            serverSock = new ServerSocket(5);
+            serverSock = new ServerSocket(50065);
 
             while (true) {
                 try (Socket socket = serverSock.accept();

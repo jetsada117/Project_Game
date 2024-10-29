@@ -26,6 +26,7 @@ public class run_ghost extends JFrame implements KeyListener {
     Image imageBg;
     Image[] imageCharacter;
     PlayerAll playerob;
+    Socket socket;
     int minutes;
     int seconds;
     int index;
@@ -131,7 +132,7 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 25));
             g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
-            g.setColor(Color.GRAY); // ข้อคววามที่พิมพ์
+            g.setColor(Color.GRAY);
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
@@ -261,9 +262,9 @@ public class run_ghost extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent e) {}
 
     void sendData() {
-        try (Socket socket = new Socket(playerob.getIPServer(), 10)) {
+        try{
+            socket = new Socket(playerob.getIPServer(), 50070);
             if (socket.isConnected()) {
-                // System.out.println("Score output : "+ playerob.getScore(index));
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(playerob);
                 objectOutput.flush();
