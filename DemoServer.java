@@ -149,6 +149,7 @@ class ServerThread extends Thread {
         
                                 PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size(), socket);
                                 thread.start();
+                                System.out.println("xxxxxxxxxxx");
                             }
         
                             ReveicedThread thread = new ReveicedThread(Serversob);
@@ -198,8 +199,7 @@ class PlayerThread extends Thread {
 
     @Override
     public void run() {
-        try {
-            socket = new Socket(Serversob.getIP(index), 50065);
+        // try {
             while (true) {
                 if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
                     for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
@@ -230,16 +230,19 @@ class PlayerThread extends Thread {
                 }
                 
                 try {
+                    socket = new Socket(Serversob.getIP(index), 50065);
+                    
                     Serversob.setIndex(index);
                     ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                     objectOutput.writeObject(Serversob);
                     objectOutput.flush();
                 } catch (IOException e) {
-                    System.out.println("Error PlayerThread : "+ e);
+                    System.out.println("Error PlayerThread 1 : "+ e);
                 }
             }
-        } catch (IOException ex) {
-        }
+        // } catch (IOException ex) {
+        //     System.out.println("Error PlayerThread 2 : "+ ex);
+        // }
     }
 }
 

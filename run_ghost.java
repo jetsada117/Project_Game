@@ -88,27 +88,27 @@ public class run_ghost extends JFrame implements KeyListener {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
-                if (playerob.getGhostDead(index) != 0) {
-                    if (ghost < playerob.getsizePosition(index)) {
-                        if (playerob.getPosition(index, ghost) != null) {
-                            if (data.equals(playerob.getWord(index, ghost))) {
-                                ghost_X = playerob.getPosition(index, ghost);
-                                playerob.deletePosition(index, ghost);
-                                playerob.deleteword(index, ghost);
+                System.out.println("ghost : "+ ghost +" size : "+ playerob.getsizePosition(index));
+                if (ghost < playerob.getsizePosition(index)) {
+                    if (playerob.getPosition(index, ghost) != null) {
+                        if (data.equals(playerob.getWord(index, ghost))) {
+                            ghost_X = playerob.getPosition(index, ghost);
+                            playerob.deletePosition(index, ghost);
+                            playerob.deleteword(index, ghost);
 
-                                check_text.setText("");
-                                data = "";
+                            check_text.setText("");
+                            data = "";
 
-                                playerob.setLaser(true, index);
-                                
-                                score = score + 1;
-                                playerob.setScore(score, index);
-                                sendData();                                    
-                            }
+                            playerob.setLaser(true, index);
+                            
+                            score = score + 1;
+                            playerob.setScore(score, index);
+                            sendData();  
+                            panel.repaint();                                  
                         }
-                        else {
-                            ghost = ghost + 1;
-                        }
+                    }
+                    else {
+                        ghost = ghost + 1;
                     }
                 }
                 panel.repaint();
@@ -155,6 +155,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         }
                         T.stop();
                         sendData();
+                        System.out.println("ward");
                     });
 
                     T.start();
@@ -198,8 +199,6 @@ public class run_ghost extends JFrame implements KeyListener {
                             g.setFont(new Font("Arial", Font.BOLD, 25));
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
                                     playerob.getY(i) - 10);
-
-                            System.out.println("ghost");
                         }
                     }
                 }
