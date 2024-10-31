@@ -199,50 +199,46 @@ class PlayerThread extends Thread {
 
     @Override
     public void run() {
-        // try {
             while (true) {
-                if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
-                    for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
-                        if (Serversob.getPosition(index, i) != null) {
-                            x = Serversob.getPosition(index, i);
-                            Serversob.setPosition(index, i, x - 1);
-                            
-                            if (x - 1 < 250) {
-                                Serversob.deletePosition(index, i);
-                                Serversob.deleteword(index, i);
-                            }
+            if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
+                for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
+                    if (Serversob.getPosition(index, i) != null) {
+                        x = Serversob.getPosition(index, i);
+                        Serversob.setPosition(index, i, x - 1);
+                        
+                        if (x - 1 < 250) {
+                            Serversob.deletePosition(index, i);
+                            Serversob.deleteword(index, i);
                         }
-                    }
-                    
-                    try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException e) {
-                        System.out.println(e);
-                    }
-                } else {
-                    Serversob.setCount(count--);
-                    
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        System.out.println(e);
                     }
                 }
                 
                 try {
-                    socket = new Socket(Serversob.getIP(index), 50065);
-                    
-                    Serversob.setIndex(index);
-                    ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                    objectOutput.writeObject(Serversob);
-                    objectOutput.flush();
-                } catch (IOException e) {
-                    System.out.println("Error PlayerThread 1 : "+ e);
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
+            } else {
+                Serversob.setCount(count--);
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
                 }
             }
-        // } catch (IOException ex) {
-        //     System.out.println("Error PlayerThread 2 : "+ ex);
-        // }
+            
+            try {
+                socket = new Socket(Serversob.getIP(index), 50065);
+                
+                Serversob.setIndex(index);
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                objectOutput.writeObject(Serversob);
+                objectOutput.flush();
+            } catch (IOException e) {
+                System.out.println("Error PlayerThread 1 : "+ e);
+            }
+        }
     }
 }
 
@@ -295,6 +291,7 @@ class Stopwatch extends TimerTask {
     private int minutes = 5;
     private int count = 0;
     private String word;
+    private int countdown;
 
     String[] shortVocabulary = 
     {       "growth", "market", "energy", "safety", "health",
@@ -319,8 +316,11 @@ class Stopwatch extends TimerTask {
     public void run() {
         serverob.setMinutes(minutes);
         serverob.setSeconds(seconds);
+
+        countdown = serverob.getScore(index);
+        if (countdown > 21) countdown = 21;
         try {
-            if ((seconds % 10 == 0) && (minutes < 5)) {
+            if ((seconds % ((countdown / 3) - 10) == 0) && (minutes < 5)) {
                 System.out.println("Server Ghost time!");
 
                 serverob.setSizePosition(index, count + 1);

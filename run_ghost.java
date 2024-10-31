@@ -196,11 +196,13 @@ public class run_ghost extends JFrame implements KeyListener {
                         }
 
                         if (check) {
-                            Graphics2D g2d = (Graphics2D) g;
-                            g2d.setColor(Color.RED);
-                            g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                            g2d.setColor(Color.RED);
-                            g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
+                            if (playerob.getghostDate(i) > 260) {
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.setColor(Color.RED);
+                                g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                                g2d.setColor(Color.RED);
+                                g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
+                            }
                         }
                     }
                 }
