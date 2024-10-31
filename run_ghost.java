@@ -92,25 +92,20 @@ public class run_ghost extends JFrame implements KeyListener {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
-                //System.out.println("ghost : "+ ghost +" size : "+ playerob.getsizePosition(index));
                 if (ghost < playerob.getsizePosition(index)) {
                     if (playerob.getPosition(index, ghost) != null) {
                         if (data.equals(playerob.getWord(index, ghost))) {
                             playerob.setpositiondate(index, ghost);
-                            ghost_X = playerob.getPosition(index, ghost);
-                            playerob.setghostDate(index,playerob.getPosition(index, ghost));
+                            playerob.setghostDate(index, playerob.getPosition(index, ghost));
                             playerob.deletePosition(index, ghost);
                             playerob.deleteword(index, ghost);
 
                             check_text.setText("");
                             data = "";
-
-                            playerob.setLaser(true, index);
                             
                             score = score + 1;
                             playerob.setScore(score, index);
-                            sendData();  
-                            panel.repaint();                                  
+                            sendData();                                 
                         }
                     }
                     else {
@@ -159,46 +154,48 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));
 
-            if (playerob.getsizePosition(index) > 0) {
-                for (int i = 0; i < playerob.getPlayer(); i++) {
-                    for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
-                        
-                        if (playerob.getPosition(i, k) != null) {
-                            g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
+            if (minutes != 0 && seconds != 0) {
+                if (playerob.getsizePosition(index) > 0) {
+                    for (int i = 0; i < playerob.getPlayer(); i++) {
+                        for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
+                            
+                            if (playerob.getPosition(i, k) != null) {
+                                g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
-                            g.setColor(Color.WHITE);
-                            g.setFont(new Font("Arial", Font.BOLD, 25));
-                            g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
-                                    playerob.getY(i) - 10);
-                        } 
+                                g.setColor(Color.WHITE);
+                                g.setFont(new Font("Arial", Font.BOLD, 25));
+                                g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
+                                        playerob.getY(i) - 10);
+                            } 
 
-                        if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {
-                            T1 = new Timer(100, evt1 -> {
-                                check = true;
-                            });
+                            if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {
+                                T1 = new Timer(100, evt1 -> {
+                                    check = true;
+                                });
 
-                            T1.setRepeats(false);
-                            T1.start();
+                                T1.setRepeats(false);
+                                T1.start();
 
-                            T2 = new Timer(300, evt2 -> {
-                                check = false;
-                                T1.stop();
-                                T2.stop();
-                            });
+                                T2 = new Timer(300, evt2 -> {
+                                    check = false;
+                                    T1.stop();
+                                    T2.stop();
+                                });
 
-                            T2.setRepeats(false);
-                            T2.start();
+                                T2.setRepeats(false);
+                                T2.start();
 
-                            playerob.setpositiondate(i, -1);
-                        }
+                                playerob.setpositiondate(i, -1);
+                            }
 
-                        if (check) {
-                            if (playerob.getghostDate(i) > 260) {
-                                Graphics2D g2d = (Graphics2D) g;
-                                g2d.setColor(Color.RED);
-                                g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                                g2d.setColor(Color.RED);
-                                g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
+                            if (check) {
+                                if (playerob.getghostDate(i) > 260) {
+                                    Graphics2D g2d = (Graphics2D) g;
+                                    g2d.setColor(Color.RED);
+                                    g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                                    g2d.setColor(Color.RED);
+                                    g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
+                                }
                             }
                         }
                     }
