@@ -155,6 +155,7 @@ public class run_ghost extends JFrame implements KeyListener {
                         }
                         T.stop();
                         sendData();
+                        repaint();
                         System.out.println("ward");
                     });
 
@@ -192,6 +193,7 @@ public class run_ghost extends JFrame implements KeyListener {
             if (playerob.getsizePosition(index) > 0) {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
+                        int Positionbangg = playerob.getPosition(i, k);
                         if (playerob.getPosition(i, k) != null) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
@@ -199,6 +201,16 @@ public class run_ghost extends JFrame implements KeyListener {
                             g.setFont(new Font("Arial", Font.BOLD, 25));
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
                                     playerob.getY(i) - 10);
+                        }else{
+                            try {
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.setColor(Color.RED);
+                                g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                                g2d.setColor(Color.RED);
+                                g2d.drawLine(260, 275 + (i * 130), Positionbangg, 275 + (i * 130));
+                            } catch (Exception e) {
+                                System.out.println("Laser" + e);
+                            }
                         }
                     }
                 }
