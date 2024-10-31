@@ -314,8 +314,6 @@ class ClientThread extends Thread {
                                         playerob.setY(i, Serverob.getY(i));
                                         playerob.setWord(i, k, wordString);
                                         playerob.setghostDate(i, Serverob.getghostDate(i));
-
-                                        // System.out.println("x : "+ playerob.getPosition(i, k) +" y : "+ playerob.getY(i) +" word : "+ playerob.getWord(i, k));
                                     }
                                 }
                             }

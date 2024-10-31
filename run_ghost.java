@@ -172,11 +172,9 @@ public class run_ghost extends JFrame implements KeyListener {
                                     playerob.getY(i) - 10);
                         } 
 
-                        System.out.println(" dead : "+ playerob.getpositiondate(i) + " , k : " + k);
                         if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {
                             T1 = new Timer(100, evt1 -> {
                                 check = true;
-                                System.out.println("check 2 : "+ check);
                             });
 
                             T1.setRepeats(false);
@@ -184,7 +182,6 @@ public class run_ghost extends JFrame implements KeyListener {
 
                             T2 = new Timer(300, evt2 -> {
                                 check = false;
-                                System.out.println("check 1 : "+ check);
                                 T1.stop();
                                 T2.stop();
                             });

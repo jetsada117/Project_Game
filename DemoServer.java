@@ -209,6 +209,8 @@ class PlayerThread extends Thread {
                         if (x - 1 < 250) {
                             Serversob.deletePosition(index, i);
                             Serversob.deleteword(index, i);
+                            int score = Serversob.getScore(index);
+                            Serversob.setScore(score, index);
                         }
                     }
                 }
