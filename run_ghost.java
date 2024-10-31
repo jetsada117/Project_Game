@@ -35,8 +35,8 @@ public class run_ghost extends JFrame implements KeyListener {
     JTextField check_text;
     String data = "input text";
     int ghost_X;
-    Timer T;
-    Timer TT;
+    Timer T1;
+    Timer T2;
     boolean check = false;
 
     public run_ghost(PlayerAll playerob, int index) {
@@ -94,7 +94,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 if (ghost < playerob.getsizePosition(index)) {
                     if (playerob.getPosition(index, ghost) != null) {
                         if (data.equals(playerob.getWord(index, ghost))) {
-                            playerob.setpositiondate(index,ghost);
+                            playerob.setpositiondate(index, ghost);
                             ghost_X = playerob.getPosition(index, ghost);
                             playerob.setghostDate(index,playerob.getPosition(index, ghost));
                             playerob.deletePosition(index, ghost);
@@ -137,42 +137,6 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            for (int i = 0; i < playerob.getPlayer() ; i++) {
-                if (playerob.isLaser(i)) {
-                    try {
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setColor(Color.RED);
-                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                        g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
-                    } catch (Exception e) {
-                        System.out.println("Laser" + e);
-                    }
-                }
-            }
-
-            for (int i = 0; i < playerob.getPlayer() ; i++) {
-                if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
-                    T = new Timer(500, evt -> {
-                        for (int k = 0; k < playerob.getPlayer() ; k++) {
-                            playerob.setLaser(false, k);
-                        }
-                        T.stop();
-                        sendData();
-                        repaint();
-                        System.out.println("ward");
-                    });
-
-                    T.start();
-
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        System.out.println("bang : " + e);
-                    }
-                }
-            }
-
             for (int i = 0; i < playerob.getPlayer(); i++) {
                 for (int k = 0; k < 4; k++) {
                     if (playerob.getSkin(i) == (k + 5)) {
@@ -193,7 +157,6 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));
 
-
             if (playerob.getsizePosition(index) > 0) {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
@@ -206,31 +169,33 @@ public class run_ghost extends JFrame implements KeyListener {
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
                                     playerob.getY(i) - 10);
                         } 
-                        if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {{
-                            try {
-                                check = false; 
-                                repaint();
-                                System.out.println("true66666666");
-                            } catch (Exception e) {
-                                System.out.println("Laser" + e);
-                            }
-                            TT = new Timer(3000, evt -> {
+
+                        System.out.println(" dead : "+ playerob.getpositiondate(i) + " , k : " + k);
+                        if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {
+                            T1 = new Timer(250, evt1 -> {
                                 check = true;
-                                repaint();
-                                TT.stop();
-                                System.out.println("5555555555555555555555555555555555555555555555555555");
-                                check = false;  
+                                repaint();  
+                                System.out.println("check 2 : "+ check);
                             });
-                            TT.start();
-                            
-    
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException e) {
-                                System.out.println("bang : " + e);
-                            }
-                        }}
-                        if(check == true){
+
+                            T1.setRepeats(false);
+                            T1.start();
+
+                            T2 = new Timer(500, evt2 -> {
+                                check = false;
+                                repaint();
+                                System.out.println("check 1 : "+ check);
+                                T1.stop();
+                                T2.stop();
+                            });
+
+                            T2.setRepeats(false);
+                            T2.start();
+
+                            playerob.setpositiondate(i, -1);
+                        }
+
+                        if (check) {
                             Graphics2D g2d = (Graphics2D) g;
                             g2d.setColor(Color.RED);
                             g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
@@ -254,6 +219,7 @@ public class run_ghost extends JFrame implements KeyListener {
                 Exit.addActionListener((ActionEvent e) -> {
                     System.exit(0);
                 });
+
             } else {
                 JButton Exit0 = new JButton();
                 Icon imageExit0 = new ImageIcon(

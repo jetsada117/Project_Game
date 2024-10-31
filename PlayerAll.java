@@ -186,7 +186,7 @@ public class PlayerAll implements Serializable {
         return ghostDate[ind];
     }
     
-    public void setpositiondate(int ind, Integer position){
+    public void setpositiondate(int ind, int position){
         this.positiondate[ind] = position;
     } 
 
