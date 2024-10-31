@@ -36,6 +36,8 @@ public class run_ghost extends JFrame implements KeyListener {
     String data = "input text";
     int ghost_X;
     Timer T;
+    Timer TT;
+    boolean check = false;
 
     public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
@@ -88,12 +90,13 @@ public class run_ghost extends JFrame implements KeyListener {
                 seconds = playerob.getSeconds();
                 minutes = playerob.getMinutes();
 
-                System.out.println("ghost : "+ ghost +" size : "+ playerob.getsizePosition(index));
+                //System.out.println("ghost : "+ ghost +" size : "+ playerob.getsizePosition(index));
                 if (ghost < playerob.getsizePosition(index)) {
                     if (playerob.getPosition(index, ghost) != null) {
                         if (data.equals(playerob.getWord(index, ghost))) {
+                            playerob.setpositiondate(index,ghost);
                             ghost_X = playerob.getPosition(index, ghost);
-                            playerob.setghostDate(index, playerob.getPosition(index, ghost));
+                            playerob.setghostDate(index,playerob.getPosition(index, ghost));
                             playerob.deletePosition(index, ghost);
                             playerob.deleteword(index, ghost);
 
@@ -134,19 +137,19 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            // for (int i = 0; i < playerob.getPlayer() ; i++) {
-            //     if (playerob.isLaser(i)) {
-            //         try {
-            //             Graphics2D g2d = (Graphics2D) g;
-            //             g2d.setColor(Color.RED);
-            //             g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-            //             g2d.setColor(Color.RED);
-            //             g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
-            //         } catch (Exception e) {
-            //             System.out.println("Laser" + e);
-            //         }
-            //     }
-            // }
+            for (int i = 0; i < playerob.getPlayer() ; i++) {
+                if (playerob.isLaser(i)) {
+                    try {
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setColor(Color.RED);
+                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                        g2d.setColor(Color.RED);
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+                    } catch (Exception e) {
+                        System.out.println("Laser" + e);
+                    }
+                }
+            }
 
             for (int i = 0; i < playerob.getPlayer() ; i++) {
                 if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
@@ -202,16 +205,37 @@ public class run_ghost extends JFrame implements KeyListener {
                             g.setFont(new Font("Arial", Font.BOLD, 25));
                             g.drawString(playerob.getWord(i, k), playerob.getPosition(i, k) + 10,
                                     playerob.getY(i) - 10);
-                        }else{
+                        } 
+                        if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {{
                             try {
-                                Graphics2D g2d = (Graphics2D) g;
-                                g2d.setColor(Color.RED);
-                                g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                                g2d.setColor(Color.RED);
-                                g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
+                                check = false; 
+                                repaint();
+                                System.out.println("true66666666");
                             } catch (Exception e) {
                                 System.out.println("Laser" + e);
                             }
+                            TT = new Timer(3000, evt -> {
+                                check = true;
+                                repaint();
+                                TT.stop();
+                                System.out.println("5555555555555555555555555555555555555555555555555555");
+                                check = false;  
+                            });
+                            TT.start();
+                            
+    
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                System.out.println("bang : " + e);
+                            }
+                        }}
+                        if(check == true){
+                            Graphics2D g2d = (Graphics2D) g;
+                            g2d.setColor(Color.RED);
+                            g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+                            g2d.setColor(Color.RED);
+                            g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
                         }
                     }
                 }

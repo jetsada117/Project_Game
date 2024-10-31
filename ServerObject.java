@@ -13,6 +13,7 @@ public class ServerObject implements Serializable {
     private final boolean [] laser = new boolean[4];
     private final int [] score = new int[4];
     private final int [] ghostDead = new int[4];
+    private final int []positiondate  = new int[4];
     private String IPServer;
     private boolean isStart;
     private int index;
@@ -183,5 +184,13 @@ public class ServerObject implements Serializable {
 
     public int getghostDate(int ind){
         return ghostDate[ind];
+    }
+
+    public void setpositiondate(int ind, Integer position){
+        this.positiondate[ind] = position;
     } 
+
+    public int getpositiondate(int ind){
+        return positiondate[ind];
+    }
 }

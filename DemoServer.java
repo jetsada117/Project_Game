@@ -272,6 +272,7 @@ class ReveicedThread extends Thread {
                         serverob.setScore(playerAll.getScore(i), i);
                         for (int j = 0; j < playerAll.getsizePosition(i) ; j++) {
                             if (playerAll.getPosition(i, j) == null) {
+                                serverob.setpositiondate(i, playerAll.getpositiondate(i));
                                 serverob.deletePosition(i, j);
                                 serverob.deleteword(i, j);
                                 serverob.setLaser(playerAll.isLaser(i), i);

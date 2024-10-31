@@ -289,6 +289,7 @@ class ClientThread extends Thread {
                         playerob.setIPServer(Serverob.getIPServer());
 
                         for (int i = 0; i < player; i++) {
+                            playerob.setpositiondate(i, Serverob.getpositiondate(i));
                             playerob.setReady(Serverob.isReady(i), i);
                             playerob.setSkin(Serverob.getSkin(i), i);
                             playerob.setName(Serverob.getName(i), i);
