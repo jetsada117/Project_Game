@@ -6,6 +6,7 @@ public class PlayerAll implements Serializable {
     private final boolean [] Ready = new boolean[4];
     private final Integer [][] position = new Integer[4][100];
     private final String [][] word = new String[4][100];
+    private final int [] ghostDate = new int[4];
     private final int [] GhostCount = new int[4];
     private final int [] y = new int[4];
     private final int [] skin = new int[4];
@@ -175,4 +176,12 @@ public class PlayerAll implements Serializable {
     public Integer getsizePosition(int ind) {
         return GhostCount[ind];
     }
+
+    public void setghostDate(int ind, Integer position){
+        this.ghostDate[ind] = position;
+    } 
+
+    public int getghostDate(int ind){
+        return ghostDate[ind];
+    } 
 }

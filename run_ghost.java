@@ -36,7 +36,6 @@ public class run_ghost extends JFrame implements KeyListener {
     String data = "input text";
     int ghost_X;
     Timer T;
-    int Positionbangg ;
 
     public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
@@ -94,7 +93,7 @@ public class run_ghost extends JFrame implements KeyListener {
                     if (playerob.getPosition(index, ghost) != null) {
                         if (data.equals(playerob.getWord(index, ghost))) {
                             ghost_X = playerob.getPosition(index, ghost);
-                            Positionbangg = playerob.getPosition(index, ghost);
+                            playerob.setghostDate(index, playerob.getPosition(index, ghost));
                             playerob.deletePosition(index, ghost);
                             playerob.deleteword(index, ghost);
 
@@ -135,19 +134,19 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString(data, 180, 250 + (index * 130));
 
-            for (int i = 0; i < playerob.getPlayer() ; i++) {
-                if (playerob.isLaser(i)) {
-                    try {
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setColor(Color.RED);
-                        g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-                        g2d.setColor(Color.RED);
-                        g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
-                    } catch (Exception e) {
-                        System.out.println("Laser" + e);
-                    }
-                }
-            }
+            // for (int i = 0; i < playerob.getPlayer() ; i++) {
+            //     if (playerob.isLaser(i)) {
+            //         try {
+            //             Graphics2D g2d = (Graphics2D) g;
+            //             g2d.setColor(Color.RED);
+            //             g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
+            //             g2d.setColor(Color.RED);
+            //             g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
+            //         } catch (Exception e) {
+            //             System.out.println("Laser" + e);
+            //         }
+            //     }
+            // }
 
             for (int i = 0; i < playerob.getPlayer() ; i++) {
                 if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
@@ -209,7 +208,7 @@ public class run_ghost extends JFrame implements KeyListener {
                                 g2d.setColor(Color.RED);
                                 g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
                                 g2d.setColor(Color.RED);
-                                g2d.drawLine(260, 275 + (i * 130), Positionbangg, 275 + (i * 130));
+                                g2d.drawLine(260, 275 + (i * 130), playerob.getghostDate(i), 275 + (i * 130));
                             } catch (Exception e) {
                                 System.out.println("Laser" + e);
                             }

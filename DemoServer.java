@@ -275,6 +275,7 @@ class ReveicedThread extends Thread {
                                 serverob.deletePosition(i, j);
                                 serverob.deleteword(i, j);
                                 serverob.setLaser(playerAll.isLaser(i), i);
+                                serverob.setghostDate(i, playerAll.getghostDate(i));
                             }
                         }
                     }
