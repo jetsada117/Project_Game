@@ -318,7 +318,7 @@ class Stopwatch extends TimerTask {
         serverob.setSeconds(seconds);
 
         countdown = serverob.getScore(index);
-        if (countdown > 21) countdown = 21;
+        if (countdown > 18) countdown = 18;
         try {
             if ((seconds % ((countdown / 3) - 10) == 0) && (minutes < 5)) {
                 System.out.println("Server Ghost time!");

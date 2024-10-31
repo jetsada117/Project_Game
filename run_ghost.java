@@ -24,6 +24,7 @@ public class run_ghost extends JFrame implements KeyListener {
     Image imagesGhost1;
     String timeString;
     Image imageBg;
+    ImageAdder ThreadMove;
     Image[] imageCharacter;
     PlayerAll playerob;
     Socket socket;
@@ -59,7 +60,8 @@ public class run_ghost extends JFrame implements KeyListener {
         panel.setBackground(Color.BLACK);
         add(panel);
 
-        new ImageAdder(panel).start();
+        ThreadMove = new ImageAdder(panel);
+        ThreadMove.start();
 
         imageBg = Toolkit.getDefaultToolkit()
                 .getImage(System.getProperty("user.dir") + File.separator + "Image" + File.separator + "b.png");
@@ -172,18 +174,16 @@ public class run_ghost extends JFrame implements KeyListener {
 
                         System.out.println(" dead : "+ playerob.getpositiondate(i) + " , k : " + k);
                         if ((playerob.getpositiondate(i) == k ) && (playerob.getPosition(i, k) == null))  {
-                            T1 = new Timer(250, evt1 -> {
+                            T1 = new Timer(100, evt1 -> {
                                 check = true;
-                                repaint();  
                                 System.out.println("check 2 : "+ check);
                             });
 
                             T1.setRepeats(false);
                             T1.start();
 
-                            T2 = new Timer(500, evt2 -> {
+                            T2 = new Timer(300, evt2 -> {
                                 check = false;
-                                repaint();
                                 System.out.println("check 1 : "+ check);
                                 T1.stop();
                                 T2.stop();
