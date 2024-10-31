@@ -308,13 +308,12 @@ class ClientThread extends Thread {
                             if ((Serverob.getCount() <= 0) && (playerob.getsizePosition(index) > 0)) {
                                 for (int i = 0; i < player ; i++) {
                                     for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
-                                        // System.out.println("size : "+ playerob.getsizePosition(i) +"k : "+ k);
                                         wordString = Serverob.getWord(i, k);
                                         playerob.setPosition(i, k, Serverob.getPosition(i, k));
                                         playerob.setY(i, Serverob.getY(i));
                                         playerob.setWord(i, k, wordString);
 
-                                        System.out.println("x : "+ playerob.getPosition(i, k) +" y : "+ playerob.getY(i) +" word : "+ playerob.getWord(i, k));
+                                        // System.out.println("x : "+ playerob.getPosition(i, k) +" y : "+ playerob.getY(i) +" word : "+ playerob.getWord(i, k));
                                     }
                                 }
                             }

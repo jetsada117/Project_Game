@@ -91,7 +91,6 @@ public class run_ghost extends JFrame implements KeyListener {
                 if (playerob.getGhostDead(index) != 0) {
                     if (ghost < playerob.getsizePosition(index)) {
                         if (playerob.getPosition(index, ghost) != null) {
-                            
                             if (data.equals(playerob.getWord(index, ghost))) {
                                 ghost_X = playerob.getPosition(index, ghost);
                                 playerob.deletePosition(index, ghost);

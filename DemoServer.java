@@ -198,51 +198,54 @@ class PlayerThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
-            if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
-                for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
-                    if (Serversob.getPosition(index, i) != null) {
-                        x = Serversob.getPosition(index, i);
-                        Serversob.setPosition(index, i, x - 1);
-                        
-                        if (x - 1 < 250) {
-                            Serversob.deletePosition(index, i);
-                            Serversob.deleteword(index, i);
+        try {
+            socket = new Socket(Serversob.getIP(index), 50065);
+            while (true) {
+                if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
+                    for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
+                        if (Serversob.getPosition(index, i) != null) {
+                            x = Serversob.getPosition(index, i);
+                            Serversob.setPosition(index, i, x - 1);
+                            
+                            if (x - 1 < 250) {
+                                Serversob.deletePosition(index, i);
+                                Serversob.deleteword(index, i);
+                            }
                         }
+                    }
+                    
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        System.out.println(e);
+                    }
+                } else {
+                    Serversob.setCount(count--);
+                    
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        System.out.println(e);
                     }
                 }
                 
                 try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
-            } else {
-                Serversob.setCount(count--);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    System.out.println(e);
+                    Serversob.setIndex(index);
+                    ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+                    objectOutput.writeObject(Serversob);
+                    objectOutput.flush();
+                } catch (IOException e) {
+                    System.out.println("Error PlayerThread : "+ e);
                 }
             }
-
-            try {
-                socket = new Socket(Serversob.getIP(index), 50065);
-
-                Serversob.setIndex(index);
-                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                objectOutput.writeObject(Serversob);
-                objectOutput.flush();
-            } catch (IOException e) {
-                System.out.println("Error PlayerThread : "+ e);
-            }
+        } catch (IOException ex) {
         }
     }
 }
 
 class ReveicedThread extends Thread {
     private final ServerObject serverob;
+    Socket socket;
 
     public ReveicedThread(ServerObject serverob) {
         this.serverob = serverob;
@@ -251,11 +254,10 @@ class ReveicedThread extends Thread {
     @Override
     public void run() {
         ServerSocket serverSock;
-
         try {
             serverSock = new ServerSocket(50070);
             while (true) {
-                Socket socket = serverSock.accept();
+                socket = serverSock.accept();
                 InputStream input = socket.getInputStream();
 
                 ObjectInputStream objectInput = new ObjectInputStream(input);
@@ -263,10 +265,8 @@ class ReveicedThread extends Thread {
 
                 if (receivedObject instanceof PlayerAll playerAll) {
                     serverob.setIPServer(playerAll.getIPServer());
-
                     for (int i = 0; i < playerAll.getPlayer() ; i++) {
                         serverob.setScore(playerAll.getScore(i), i);
-
                         for (int j = 0; j < playerAll.getsizePosition(i) ; j++) {
                             if (playerAll.getPosition(i, j) == null) {
                                 serverob.deletePosition(i, j);
