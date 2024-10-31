@@ -179,11 +179,12 @@ class ServerThread extends Thread {
 
 class PlayerThread extends Thread {
     private final ServerObject Serversob;
-    Socket socket;
-    int index;
-    int count = 5;
-    int x;
-    String clientIP;
+    private Socket socket;
+    private int index;
+    private int count = 5;
+    private int x;
+    private String clientIP;
+    private boolean running = true; // เพิ่มตัวแปรเพื่อควบคุมการทำงานของ Thread
 
     public PlayerThread(ServerObject Serversob, int index, String clientIP, int player, Socket socket) {
         this.Serversob = Serversob;
@@ -199,13 +200,13 @@ class PlayerThread extends Thread {
 
     @Override
     public void run() {
-            while (true) {
+        while (running) { // ทำงานเฉพาะเมื่อ running เป็น true
             if ((count < 0) && (Serversob.getsizePosition(index) != null)) {
-                for (int i = 0; i < Serversob.getsizePosition(index) ; i++) {
+                for (int i = 0; i < Serversob.getsizePosition(index); i++) {
                     if (Serversob.getPosition(index, i) != null) {
                         x = Serversob.getPosition(index, i);
                         Serversob.setPosition(index, i, x - 1);
-                        
+
                         if (x - 1 < 250) {
                             Serversob.deletePosition(index, i);
                             Serversob.deleteword(index, i);
@@ -217,7 +218,7 @@ class PlayerThread extends Thread {
                         }
                     }
                 }
-                
+
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
@@ -225,23 +226,27 @@ class PlayerThread extends Thread {
                 }
             } else {
                 Serversob.setCount(count--);
-                
+
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
             }
-            
+
             try {
                 socket = new Socket(Serversob.getIP(index), 50065);
-                
+
                 Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
                 objectOutput.flush();
             } catch (IOException e) {
-                System.out.println("Error PlayerThread 1 : "+ e);
+                System.out.println("Error PlayerThread 1 : " + e);
+            }
+
+            if (Serversob.getMinutes() == 0 && Serversob.getSeconds() == 0) {
+                running = false;
             }
         }
     }
