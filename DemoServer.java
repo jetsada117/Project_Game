@@ -204,7 +204,7 @@ class PlayerThread extends Thread {
                     if (Serversob.getPosition(index, i) != null) {
                         x = Serversob.getPosition(index, i);
                         Serversob.setPosition(index, i, x - 1);
-                        // System.out.println("player ["+index+"], x :["+ i +"] "+ x);
+                        
                         if (x - 1 < 250) {
                             Serversob.deletePosition(index, i);
                             Serversob.deleteword(index, i);

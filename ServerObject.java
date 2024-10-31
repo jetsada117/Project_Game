@@ -100,7 +100,7 @@ public class ServerObject implements Serializable {
         return isStart;
     }
 
-    public void setPosition(int ind, int i, int position) {
+    public void setPosition(int ind, int i, Integer position) {
         this.position[ind][i] = position;
     }
 
