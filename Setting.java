@@ -274,7 +274,6 @@ class ClientThread extends Thread {
         ServerSocket serverSock;
         try {
             serverSock = new ServerSocket(50065);
-
             while (true) {
                 try (Socket socket = serverSock.accept();
                         InputStream input = socket.getInputStream();
@@ -283,89 +282,73 @@ class ClientThread extends Thread {
                     Object receivedObject = objectInput.readObject();
 
                     if (receivedObject instanceof ServerObject Serverob) {
+                        index = Serverob.getIndex();
+                        player = Serverob.getPlayer();
+                        playerob.setPlayer(player);
+                        playerob.setIndex(index);
+                        playerob.setIPServer(Serverob.getIPServer());
 
-                        synchronized (playerob) {
-                            index = Serverob.getIndex();
-                            player = Serverob.getPlayer();
-                            playerob.setPlayer(player);
-                            playerob.setIndex(index);
-                            playerob.setIPServer(Serverob.getIPServer());
+                        for (int i = 0; i < player; i++) {
+                            playerob.setReady(Serverob.isReady(i), i);
+                            playerob.setSkin(Serverob.getSkin(i), i);
+                            playerob.setName(Serverob.getName(i), i);
+                            playerob.setLaser(playerob.isLaser(i), i);
+                            playerob.setScore(Serverob.getScore(i), i);
+                            playerob.setSizePosition(i, Serverob.getsizePosition(i));
+                        }
 
-                            for (int i = 0; i < player; i++) {
-                                playerob.setReady(Serverob.isReady(i), i);
-                                playerob.setSkin(Serverob.getSkin(i), i);
-                                playerob.setName(Serverob.getName(i), i);
-                                playerob.setLaser(i, playerob.isLaser(i));
-                                playerob.setScore(Serverob.getScore(i), i);
+                        if (allPlayersReady()) {
+                            if (Serverob.getCount() > 0) {
+                                client.textCount.setText("" + String.valueOf(Serverob.getCount()));
+                            } else {
+                                playerob.setMinutes(Serverob.getMinutes());
+                                playerob.setSeconds(Serverob.getSeconds());
                             }
 
-                            if (allPlayersReady()) {
+                            if ((Serverob.getCount() <= 0) && (playerob.getsizePosition(index) > 0)) {
+                                for (int i = 0; i < player ; i++) {
+                                    for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
+                                        // System.out.println("size : "+ playerob.getsizePosition(i) +"k : "+ k);
+                                        wordString = Serverob.getWord(i, k);
+                                        playerob.setPosition(i, k, Serverob.getPosition(i, k));
+                                        playerob.setY(i, Serverob.getY(i));
+                                        playerob.setWord(i, k, wordString);
 
-                                if (Serverob.getCount() > 0) {
-                                    client.textCount.setText("" + String.valueOf(Serverob.getCount()));
-                                } else {
-                                    playerob.setMinutes(Serverob.getMinutes());
-                                    playerob.setSeconds(Serverob.getSeconds());
-                                }
-
-                                if ((Serverob.getCount() < 0) && Serverob.hasPosition(index)) {
-                                    try {
-                                        for (int i = 0; i < player; i++) {
-                                            for (int k = 0; k < Serverob.sizePosition(i); k++) {
-                                                wordString = Serverob.getWord(i, k);
-
-                                                if (k >= playerob.sizePosition(i)) {
-                                                    playerob.addPosition(i, Serverob.getPosition(i, k), Serverob.getY(i));
-                                                    playerob.setWord(i, wordString);
-                                                } else {
-                                                    if ((Serverob.getPosition(i, k) != null)
-                                                            && (playerob.getPosition(i, k) != null)) {
-                                                        playerob.setPosition(i, k, Serverob.getPosition(i, k));
-                                                    } else {
-                                                        playerob.deletePosition(i, k);
-                                                        playerob.deleteword(i, k);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception e) {
+                                        System.out.println("x : "+ playerob.getPosition(i, k) +" y : "+ playerob.getY(i) +" word : "+ playerob.getWord(i, k));
                                     }
                                 }
-                            } else {
-                                switch (Serverob.getIndex()) {
-                                    case 0:
-                                        client.textNumber.setText("Player : 1st Player");
-                                        break;
-                                    case 1:
-                                        client.textNumber.setText("Player : 2nd Player");
-                                        break;
-                                    case 2:
-                                        client.textNumber.setText("Player : 3rd Player");
-                                        break;
-                                    case 3:
-                                        client.textNumber.setText("Player : 4th Player");
-                                        break;
-                                    default:
-                                        break;
-                                }
                             }
-
-                            client.textReady.setText("Ready : (" + countReady + "/" + player + ")");
-
-                            if (allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) {
-                                playgame = new run_ghost(playerob, index);
-
-                                playgame.setVisible(true);
-                                playerob.setStart(true);
-
-                                setting.setVisible(false);
-
-                                isPlaying = true;
+                        } else {
+                            switch (Serverob.getIndex()) {
+                                case 0:
+                                    client.textNumber.setText("Player : 1st Player");
+                                    break;
+                                case 1:
+                                    client.textNumber.setText("Player : 2nd Player");
+                                    break;
+                                case 2:
+                                    client.textNumber.setText("Player : 3rd Player");
+                                    break;
+                                case 3:
+                                    client.textNumber.setText("Player : 4th Player");
+                                    break;
+                                default:
+                                    break;
                             }
                         }
-                    }
-                        
 
+                        client.textReady.setText("Ready : (" + countReady + "/" + player + ")");
+
+                        if (allPlayersReady() && !isPlaying && Serverob.getCount() <= 0) {
+                            playgame = new run_ghost(playerob, index);
+
+                            playgame.setVisible(true);
+
+                            setting.setVisible(false);
+
+                            isPlaying = true;
+                        }
+                    }
                 } catch (Exception e) {
                     System.out.println("IO error 1 : " + e);
                 }
