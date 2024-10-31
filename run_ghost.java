@@ -154,7 +154,7 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", Font.BOLD, 25));
 
-            if (minutes != 0 && seconds != 0) {
+            if (minutes != 0 || seconds != 0) {
                 if (playerob.getsizePosition(index) > 0) {
                     for (int i = 0; i < playerob.getPlayer(); i++) {
                         for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
