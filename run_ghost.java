@@ -36,6 +36,7 @@ public class run_ghost extends JFrame implements KeyListener {
     String data = "input text";
     int ghost_X;
     Timer T;
+    int Positionbangg ;
 
     public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
@@ -93,6 +94,7 @@ public class run_ghost extends JFrame implements KeyListener {
                     if (playerob.getPosition(index, ghost) != null) {
                         if (data.equals(playerob.getWord(index, ghost))) {
                             ghost_X = playerob.getPosition(index, ghost);
+                            Positionbangg = playerob.getPosition(index, ghost);
                             playerob.deletePosition(index, ghost);
                             playerob.deleteword(index, ghost);
 
@@ -193,7 +195,7 @@ public class run_ghost extends JFrame implements KeyListener {
             if (playerob.getsizePosition(index) > 0) {
                 for (int i = 0; i < playerob.getPlayer(); i++) {
                     for (int k = 0; k < playerob.getsizePosition(i) ; k++) {
-                        int Positionbangg = playerob.getPosition(i, k);
+                        
                         if (playerob.getPosition(i, k) != null) {
                             g.drawImage(imagesGhost1, playerob.getPosition(i, k), playerob.getY(i), 85, 85, this);
 
