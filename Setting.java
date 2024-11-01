@@ -225,14 +225,11 @@ class SettingPanel extends JPanel implements ActionListener {
     void connect() {
         try (Socket socket = new Socket(inputIP.getText(), 50060)) {
             ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-
             player.setName(inputName.getText());
-
             objectOutput.writeObject(player);
-
             connect.setEnabled(false);
         } catch (IOException e) {
-            System.out.println("send  : " + e);
+            JOptionPane.showMessageDialog(null, "Invalid IP Address", "ALERT", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -245,6 +242,7 @@ class SettingPanel extends JPanel implements ActionListener {
             objectOutput.writeObject(player);
 
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Invalid IP Address", "ALERT", JOptionPane.WARNING_MESSAGE);
             System.out.println("send  : " + e);
         }
 

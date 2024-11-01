@@ -137,26 +137,26 @@ class ServerThread extends Thread {
                                     }
                                 }
                             }
-                        }
 
-                        if (allPlayersReady()) {
-                            for (int i = 0; i < players.size(); i++) {
-                                String IpAddress = players.get(i);
-                                System.out.println(IpAddress);
-        
-                                InetAddress ip = InetAddress.getLocalHost();
-                                Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
-        
-                                PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size(), socket);
+                            if (allPlayersReady()) {
+                                for (int i = 0; i < players.size(); i++) {
+                                    String IpAddress = players.get(i);
+                                    System.out.println(IpAddress);
+            
+                                    InetAddress ip = InetAddress.getLocalHost();
+                                    Serversob.setIPServer(String.valueOf(ip.getHostAddress()));
+            
+                                    PlayerThread thread = new PlayerThread(Serversob, i, IpAddress, players.size(), socket);
+                                    thread.start();
+                                    System.out.println("xxxxxxxxxxx");
+                                }
+            
+                                ReveicedThread thread = new ReveicedThread(Serversob);
                                 thread.start();
-                                System.out.println("xxxxxxxxxxx");
                             }
-        
-                            ReveicedThread thread = new ReveicedThread(Serversob);
-                            thread.start();
                         }
                     }
-                } catch (Exception e) {
+                } catch (UnknownHostException e) {
                     System.out.println("Error Received : " + e);
                 }
             }
@@ -236,7 +236,6 @@ class PlayerThread extends Thread {
 
             try {
                 socket = new Socket(Serversob.getIP(index), 50065);
-
                 Serversob.setIndex(index);
                 ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
                 objectOutput.writeObject(Serversob);
@@ -340,7 +339,7 @@ class Stopwatch extends TimerTask {
                 serverob.setWord(index, count, word);
                 count++;
 
-                System.out.println("x : "+ serverob.getPosition(index, count) +" y : "+ serverob.getY(index) +" count : "+ serverob.getsizePosition(index));
+                // System.out.println("x : "+ serverob.getPosition(index, count) +" y : "+ serverob.getY(index) +" count : "+ serverob.getsizePosition(index));
             }
         } catch (Exception e) {}
 

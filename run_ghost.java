@@ -260,11 +260,9 @@ public class run_ghost extends JFrame implements KeyListener {
     void sendData() {
         try{
             socket = new Socket(playerob.getIPServer(), 50070);
-            if (socket.isConnected()) {
-                ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
-                objectOutput.writeObject(playerob);
-                objectOutput.flush();
-            }
+            ObjectOutputStream objectOutput = new ObjectOutputStream(socket.getOutputStream());
+            objectOutput.writeObject(playerob);
+            objectOutput.flush();
         } catch (IOException e) {
             System.out.println("Failed to connect or send data: " + e.getMessage());
         }

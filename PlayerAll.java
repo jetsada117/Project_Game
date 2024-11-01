@@ -4,8 +4,8 @@ public class PlayerAll implements Serializable {
     private final String [] playername = new String[4];
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
-    private final Integer [][] position = new Integer[4][100];
-    private final String [][] word = new String[4][100];
+    private final Integer [][] position = new Integer[4][150];
+    private final String [][] word = new String[4][150];
     private final int [] ghostDate = new int[4];
     private final int [] GhostCount = new int[4];
     private final int [] y = new int[4];
