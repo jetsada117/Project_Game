@@ -1,12 +1,13 @@
+package Server;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerAll implements Serializable {
+public class ServerObject implements Serializable {
     private final String [] playername = new String[4];
     private final String [] IP = new String[4];
     private final boolean [] Ready = new boolean[4];
-    private final ArrayList <Integer> [] position = new ArrayList[4];
-    private final ArrayList <String> [] word = new ArrayList[4]; 
+    private final ArrayList<Integer>[] position = new ArrayList[4];
+    private final ArrayList<String>[] word = new ArrayList[4];
     private final int [] y = new int[4];
     private final int [] skin = new int[4];
     private final boolean [] laser = new boolean[4];
@@ -17,10 +18,10 @@ public class PlayerAll implements Serializable {
     private int index;
     private int player;
     private int count = 5;
-    private int seconds;
-    private int minutes;
+    private int seconds = 0;
+    private int minutes = 5;
 
-    public PlayerAll() {
+    public ServerObject() {
         for (int i = 0; i < position.length; i++) {
             position[i] = new ArrayList<>();
             word[i] = new ArrayList<>();
@@ -30,7 +31,7 @@ public class PlayerAll implements Serializable {
     public void setName(String name, int ind) {
         this.playername[ind] = name;
     }
-    
+
     public String getName(int ind) {
         return playername[ind];
     }
@@ -91,20 +92,20 @@ public class PlayerAll implements Serializable {
         return index;
     }
 
-    public void setStart(boolean isStart) {
-        this.isStart = isStart;
-    }
-
-    public boolean isStart() {
-        return isStart;
-    }
-
     public void setSkin(int skin, int ind) {
         this.skin[ind] = skin;
     }
-    
+
     public int getSkin(int ind) {
         return skin[ind];
+    }
+
+    public void setIsStart(boolean isStart) {
+        this.isStart = isStart;
+    }
+
+    public boolean isIsStart() {
+        return isStart;
     }
 
     public void setPosition(int ind, int i, int position) {
@@ -120,6 +121,10 @@ public class PlayerAll implements Serializable {
         return position[ind].get(i);
     }
 
+    public boolean hasPosition(int ind) {
+        return !position[ind].isEmpty();
+    }
+
     public int sizePosition(int ind) {
         return position[ind].size();
     }
@@ -128,12 +133,7 @@ public class PlayerAll implements Serializable {
         return position.length;
     }
 
-    public boolean hasPosition(int ind) {
-        return !position[ind].isEmpty();
-    }
-
-    public void deletePosition(int ind, int i) 
-    {
+    public void deletePosition(int ind, int i) {
         this.position[ind].set(i, null);
     }
 
@@ -141,7 +141,7 @@ public class PlayerAll implements Serializable {
         return y[ind];
     }
 
-    public void setWord( int ind, String word) {
+    public void setWord(int ind, String word) {
         this.word[ind].add(word);
     }
 
@@ -149,13 +149,11 @@ public class PlayerAll implements Serializable {
         return word[ind].get(i);
     }
 
-    public void deleteword(int ind, int i) 
-    {
+    public void deleteword(int ind, int i) {
         position[ind].set(i, null);
     }
 
-    public boolean containWord(int ind, String wordString)  
-    {
+    public boolean containWord(int ind, String wordString) {
         return word[ind].contains(wordString);
     }
 
@@ -167,8 +165,8 @@ public class PlayerAll implements Serializable {
         return IPServer;
     }
 
-    public void setLaser(int ind, boolean value) {
-        this.laser[ind] = value;
+    public void setLaser(boolean laser, int ind) {
+        this.laser[ind] = laser;
     }
 
     public boolean isLaser(int ind) {

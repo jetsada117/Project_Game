@@ -1,3 +1,4 @@
+package Player;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -101,7 +102,7 @@ class playSound extends Thread {
     @Override
     public void run() {
         try {
-            File wavFile = new File(System.getProperty("user.dir") + File.separator + "ghost_Audio_2.0.wav");
+            File wavFile = new File(System.getProperty("user.dir") + File.separator + "sound" + File.separator + "ghost_Audio_2.0.wav");
             AudioInputStream stream = AudioSystem.getAudioInputStream(wavFile);
             AudioFormat format = stream.getFormat();
             DataLine.Info info = new DataLine.Info(Clip.class, format);

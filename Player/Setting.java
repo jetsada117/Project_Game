@@ -1,3 +1,4 @@
+package Player;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -23,6 +24,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import Server.ServerObject;
 
 class SettingPanel extends JPanel implements ActionListener {
     Image background = Toolkit.getDefaultToolkit()
@@ -295,7 +298,7 @@ class ClientThread extends Thread {
                                 playerob.setReady(Serverob.isReady(i), i);
                                 playerob.setSkin(Serverob.getSkin(i), i);
                                 playerob.setName(Serverob.getName(i), i);
-                                playerob.setLaser(i, playerob.isLaser(i));
+                                playerob.setLaser(i, Serverob.isLaser(i));
                                 playerob.setScore(Serverob.getScore(i), i);
                             }
 

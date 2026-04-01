@@ -1,5 +1,7 @@
+package Player;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -31,9 +33,11 @@ public class run_ghost extends JFrame implements KeyListener {
     int score = 0;
     int ghost = 0;
     JTextField check_text;
-    String data = "input text";
-    int ghost_X;
+    String data = "";
+    int[] ghost_X = new int[4];
     Timer T;
+    boolean laserTimerStarted = false;
+    boolean hasTypo = false;
 
     public run_ghost(PlayerAll playerob, int index) {
         this.playerob = playerob;
@@ -91,12 +95,13 @@ public class run_ghost extends JFrame implements KeyListener {
                         if (playerob.getPosition(index, ghost) != null) {
                             
                             if (data.equals(playerob.getWord(index, ghost))) {
-                                ghost_X = playerob.getPosition(index, ghost);
+                                ghost_X[index] = playerob.getPosition(index, ghost);
                                 playerob.deletePosition(index, ghost);
                                 playerob.deleteword(index, ghost);
 
                                 check_text.setText("");
                                 data = "";
+                                hasTypo = false;
 
                                 playerob.setLaser(index, true);
                                 // System.out.println("Laser : "+ playerob.isLaser(index));
@@ -130,40 +135,34 @@ public class run_ghost extends JFrame implements KeyListener {
             g.setFont(new Font("Arial", Font.BOLD, 25));
             g.drawString("Time Remaining: " + timeString + " seconds", 420, 30);
 
-            g.setColor(Color.GRAY);
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString(data, 180, 250 + (index * 130));
+            // Draw typing feedback with color per character
+            drawTypingFeedback(g, index);
 
-            // for (int i = 0; i < playerob.getPlayer() ; i++) {
-            //     if (playerob.isLaser(i)) {
-            //         try {
-            //             Graphics2D g2d = (Graphics2D) g;
-            //             g2d.setColor(Color.RED);
-            //             g2d.setStroke(new BasicStroke(20.0f)); // ความหนา 20 พิกเซล
-            //             g2d.setColor(Color.RED);
-            //             g2d.drawLine(260, 275 + (i * 130), ghost_X, 275 + (i * 130));
-            //         } catch (Exception e) {
-            //             System.out.println("Laser" + e);
-            //         }
-            //     }
-            // }
-
-            for (int i = 0; i < playerob.getPlayer() ; i++) {
+            for (int i = 0; i < playerob.getPlayer(); i++) {
                 if (playerob.isLaser(i) && minutes != 0 && seconds != 0) {
-                    T = new Timer(500, evt -> {
-                        for (int k = 0; k < playerob.getPlayer() ; k++) {
-                            playerob.setLaser(k, false);
-                        }
-                        T.stop();
-                        sendData();
-                    });
-
-                    T.start();
-
                     try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        System.out.println("bang : " + e);
+                        java.awt.Graphics2D g2d = (java.awt.Graphics2D) g;
+                        java.awt.Stroke oldStroke = g2d.getStroke();
+                        g2d.setStroke(new java.awt.BasicStroke(20.0f));
+                        g2d.setColor(Color.RED);
+                        g2d.drawLine(260, 275 + (i * 130), ghost_X[i], 275 + (i * 130));
+                        g2d.setStroke(oldStroke);
+                    } catch (Exception e) {
+                        System.out.println("Laser" + e);
+                    }
+
+                    if (!laserTimerStarted) {
+                        laserTimerStarted = true;
+                        T = new Timer(500, evt -> {
+                            for (int k = 0; k < playerob.getPlayer(); k++) {
+                                playerob.setLaser(k, false);
+                            }
+                            laserTimerStarted = false;
+                            T.stop();
+                            sendData();
+                        });
+                        T.setRepeats(false);
+                        T.start();
                     }
                 }
             }
@@ -251,13 +250,91 @@ public class run_ghost extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
         char ch = e.getKeyChar();
-        data = check_text.getText();
-        data += ch;
+
+        if (keyCode == KeyEvent.VK_BACK_SPACE) {
+            // ลบตัวอักษรสุดท้าย
+            if (data.length() > 0) {
+                data = data.substring(0, data.length() - 1);
+            }
+        } else if (ch != KeyEvent.CHAR_UNDEFINED && !Character.isISOControl(ch)) {
+            // เพิ่มเฉพาะตัวอักษรที่พิมพ์ได้
+            data += ch;
+        }
+
+        // ตรวจสอบว่า typo หรือไม่
+        try {
+            if (playerob.hasPosition(index) && ghost < playerob.sizePosition(index)
+                    && playerob.getPosition(index, ghost) != null) {
+                String targetWord = playerob.getWord(index, ghost);
+                if (data.length() <= targetWord.length()) {
+                    hasTypo = !targetWord.startsWith(data);
+                } else {
+                    hasTypo = true;
+                }
+            }
+        } catch (Exception ex) {}
     }
 
     @Override
     public void keyReleased(KeyEvent e) {}
+
+    void drawTypingFeedback(Graphics g, int playerIndex) {
+        Font font = new Font("Arial", Font.BOLD, 22);
+        g.setFont(font);
+        FontMetrics fm = g.getFontMetrics(font);
+
+        int startX = 180;
+        int startY = 250 + (playerIndex * 130);
+
+        String targetWord = "";
+        boolean hasActiveGhost = false;
+
+        try {
+            if (playerob.hasPosition(playerIndex) && ghost < playerob.sizePosition(playerIndex)
+                    && playerob.getPosition(playerIndex, ghost) != null) {
+                targetWord = playerob.getWord(playerIndex, ghost);
+                hasActiveGhost = (targetWord != null);
+            }
+        } catch (Exception ex) {}
+
+        if (!hasActiveGhost || targetWord == null || targetWord.isEmpty()) {
+            // ไม่มีผี — แสดง data สีเทาธรรมดา
+            g.setColor(Color.GRAY);
+            g.drawString(data.isEmpty() ? "" : data, startX, startY);
+            return;
+        }
+
+        int currentX = startX;
+        boolean errorFound = false;
+
+        // วาดตัวอักษรที่พิมพ์ไปแล้ว
+        for (int c = 0; c < data.length(); c++) {
+            char typedChar = data.charAt(c);
+            String charStr = String.valueOf(typedChar);
+
+            if (c < targetWord.length() && typedChar == targetWord.charAt(c) && !errorFound) {
+                g.setColor(new Color(0, 220, 80));  // เขียวสด = ถูก
+            } else {
+                g.setColor(Color.RED);              // แดง = typo
+                errorFound = true;
+            }
+
+            g.drawString(charStr, currentX, startY);
+            currentX += fm.stringWidth(charStr);
+        }
+
+        // วาดส่วนที่ยังไม่ได้พิมพ์ (เทาอ่อน)
+        if (data.length() < targetWord.length()) {
+            g.setColor(new Color(180, 180, 180));
+            g.drawString(targetWord.substring(data.length()), currentX, startY);
+        }
+
+        // วาด cursor เล็กๆ กระพริบ
+        g.setColor(Color.WHITE);
+        g.fillRect(currentX + 2, startY - 18, 2, 20);
+    }
 
     void sendData() {
         try{

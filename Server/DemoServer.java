@@ -1,3 +1,4 @@
+package Server;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +18,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import Player.PlayerAll;
+import Player.PlayerObject;
 
 public class DemoServer extends JFrame {
     JLabel address = new JLabel();
@@ -271,13 +275,13 @@ class ReveicedThread extends Thread {
 
                     for (int i = 0; i < playerAll.getPlayer() ; i++) {
                         serverob.setScore(playerAll.getScore(i), i);
+                        serverob.setLaser(playerAll.isLaser(i), i);
 
                         if (playerAll.hasPosition(i)) {
                             for (int j = 0; j < playerAll.sizePosition(i); j++) {
                                 if (playerAll.getPosition(i, j) == null) {
                                     serverob.deletePosition(i, j);
                                     serverob.deleteword(i, j);
-                                    serverob.setLaser(playerAll.isLaser(i), i);
                                 }
                             }
                         }
